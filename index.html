@@ -37,12 +37,12 @@ h1,h2,h3{margin:0;font-weight:600;letter-spacing:-0.01em}
 p{margin:0 0 .7rem}
 
 /* ---------- masthead + phase rail (the signature element) ---------- */
-.mast{padding:1.4rem 0 .5rem}
+.mast{padding:1rem 0 .4rem}
 .mark{
   font-family:var(--body); font-weight:700; font-size:.7rem; letter-spacing:.16em;
   text-transform:uppercase; color:var(--ink2);
 }
-.rail{display:flex;gap:3px;margin:.85rem 0 .5rem}
+.rail{display:flex;gap:3px;margin:.6rem 0 .45rem}
 .seg{
   flex:1; height:9px; border-radius:1px; background:var(--rule);
   position:relative; transition:background .5s ease;
@@ -53,59 +53,70 @@ p{margin:0 0 .7rem}
   content:''; position:absolute; left:0; right:0; bottom:-7px; height:3px;
   background:var(--accent); border-radius:2px;
 }
-.railkeys{display:flex;gap:3px;margin-bottom:.55rem}
+.railkeys{display:flex;gap:3px;margin-bottom:.4rem}
 .railkey{
   flex:1; font-size:.6rem; font-weight:700; letter-spacing:.09em; color:var(--ink3);
   text-transform:uppercase;
 }
 .railkey.now{color:var(--accent)}
-.phaseline{font-size:.82rem;color:var(--ink2);margin-bottom:1.3rem}
+.phaseline{font-size:.79rem;color:var(--ink2);margin-bottom:.85rem}
 .phaseline b{color:var(--ink);font-weight:600}
 
 /* ---------- eyebrow badge ---------- */
 .eyebadge{
-  display:inline-flex; align-items:center; gap:.5rem;
-  font-size:.685rem; font-weight:700; letter-spacing:.085em; text-transform:uppercase;
-  color:#0A5A42; background:linear-gradient(135deg,#DFF7E9 0%,#CDEFDD 100%);
-  border:1px solid #A9E3C6; padding:.36rem .78rem .36rem .64rem;
-  border-radius:999px; margin-bottom:.8rem;
-  box-shadow:0 1px 2px rgba(10,90,66,.07);
+  position:relative; overflow:hidden;
+  display:inline-flex; align-items:center; gap:.52rem;
+  font-size:.665rem; font-weight:700; letter-spacing:.095em; text-transform:uppercase;
+  color:#A9EFCB; background:linear-gradient(135deg,#0D4735 0%,#06271D 100%);
+  border:1px solid #1C7053; padding:.38rem .82rem .38rem .68rem;
+  border-radius:999px; margin-bottom:.6rem;
+  box-shadow:0 1px 3px rgba(6,39,29,.3), inset 0 1px 0 rgba(255,255,255,.06);
 }
+.eyebadge::after{
+  content:''; position:absolute; top:0; left:-45%; width:45%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(174,239,205,.18),transparent);
+  animation:badgesheen 5s ease-in-out infinite; pointer-events:none;
+}
+@keyframes badgesheen{0%{left:-45%}55%{left:112%}100%{left:112%}}
 .eyebadge .gdot{
-  width:6px; height:6px; border-radius:50%; background:#17B876; flex:none;
-  box-shadow:0 0 0 3px rgba(23,184,118,.18);
+  width:7px; height:7px; border-radius:50%; background:#2FE894; flex:none;
+  animation:gpulse 2.2s ease-in-out infinite;
+}
+@keyframes gpulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(47,232,148,.6);opacity:.82}
+  50%{box-shadow:0 0 0 5px rgba(47,232,148,0);opacity:1}
 }
 
 h1{
-  font-family:var(--display); font-size:clamp(1.85rem,7vw,2.6rem); line-height:1.08;
-  font-weight:600; letter-spacing:-0.02em; margin-bottom:.6rem;
+  font-family:var(--display); font-size:clamp(1.7rem,5.4vw,2.1rem); line-height:1.1;
+  font-weight:600; letter-spacing:-0.02em; margin-bottom:.42rem;
 }
-.sub{color:var(--ink2);font-size:1rem;margin-bottom:1.4rem}
+.sub{color:var(--ink2);font-size:.93rem;line-height:1.45;margin-bottom:.95rem}
 
 /* ---------- cards ---------- */
 .card{
   background:var(--card); border:1px solid var(--rule); border-radius:5px;
-  padding:1.15rem 1.05rem; margin-bottom:1.1rem;
+  padding:.95rem 1rem; margin-bottom:1rem;
 }
 .card h2{
   font-size:.72rem; text-transform:uppercase; letter-spacing:.13em;
-  color:var(--ink3); font-weight:700; margin-bottom:.85rem;
+  color:var(--ink3); font-weight:700; margin-bottom:.6rem;
 }
 
 /* ---------- form ---------- */
-.field{margin-bottom:1rem}
+.field{margin-bottom:.68rem}
 .field:last-child{margin-bottom:0}
-label{display:block;font-weight:600;font-size:.92rem;margin-bottom:.15rem}
-.hint{font-size:.79rem;color:var(--ink3);margin-bottom:.35rem;line-height:1.4}
+label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.1rem}
+.hint{font-size:.755rem;color:var(--ink3);margin-bottom:.28rem;line-height:1.35}
 input[type=number],input[type=date],select{
-  width:100%; padding:.6rem .65rem; font:inherit; font-size:1rem;
+  width:100%; padding:.52rem .6rem; font:inherit; font-size:1rem;
   border:1px solid var(--rule); border-radius:4px; background:#fff; color:var(--ink);
 }
 .checkrow{display:flex;gap:.6rem;align-items:flex-start}
 .checkrow input{margin-top:.25rem;width:1.05rem;height:1.05rem;flex:none;accent-color:var(--accent)}
 .checkrow label{font-weight:500;margin:0}
 button.go{
-  width:100%; padding:.88rem 1rem; font:inherit; font-weight:700; font-size:1.02rem;
+  width:100%; padding:.76rem 1rem; font:inherit; font-weight:700; font-size:1rem;
   letter-spacing:.005em; color:#fff; border:0; border-radius:5px; cursor:pointer;
   background:linear-gradient(135deg,#12686D 0%,#0B4A4D 100%);
   box-shadow:0 1px 2px rgba(20,32,42,.16), 0 4px 12px rgba(14,90,94,.24);
@@ -228,9 +239,9 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .pinner{
   position:relative; z-index:1; border-radius:7.5px;
   background:linear-gradient(135deg,#123039 0%,#14202A 62%);
-  padding:1.05rem 1.1rem;
+  padding:.95rem .95rem;
 }
-.pitch p{margin:0 0 .65rem; font-size:.93rem; line-height:1.55; color:#D3E2E3}
+.pitch p{margin:0 0 .6rem; font-size:.89rem; line-height:1.5; color:#D3E2E3}
 .pitch p b{color:#fff;font-weight:600}
 .pitch a{
   display:inline-flex; align-items:center; gap:.42rem;
@@ -249,12 +260,21 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .cta li:last-child{margin-bottom:0}
 .cta li b{color:#fff;font-weight:600}
 .cta .fine{font-size:.8rem;color:#8FB3B5;line-height:1.55}
-a.book{
-  display:inline-block;background:#8FD5D8;color:#14202A;
-  font-weight:700;font-size:.94rem;padding:.72rem 1.15rem;border-radius:4px;
+.cta a.book{
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:linear-gradient(135deg,#A3E7EA 0%,#68C4C8 100%); color:#0B2027;
+  font-weight:700; font-size:.95rem; padding:.78rem 1.3rem; border-radius:6px;
   text-decoration:none;
+  box-shadow:0 1px 2px rgba(0,0,0,.24), 0 6px 18px rgba(143,213,216,.16);
+  transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
 }
-a.book:hover{background:#A8E2E4}
+.cta a.book:hover{
+  filter:brightness(1.05); transform:translateY(-1px); color:#0B2027;
+  box-shadow:0 2px 5px rgba(0,0,0,.26), 0 10px 26px rgba(143,213,216,.26);
+}
+.cta a.book:active{transform:translateY(0)}
+.cta a.book .arr{transition:transform .22s ease}
+.cta a.book:hover .arr{transform:translateX(4px)}
 .foot{font-size:.79rem;color:var(--ink3);line-height:1.6;padding-top:.6rem}
 .foot a{color:var(--ink2)}
 .tools{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem}
@@ -359,7 +379,7 @@ a.book:hover{background:#A8E2E4}
 
 <div class="pitch noprint">
   <div class="pinner">
-    <p>This is the second free tool we have built for finance and payroll teams. <b>Tell us the task that eats the most of your week</b> and we will show you, free, what it would take to automate it.</p>
+    <p><b>We've built 50+ tools like this used by millions.</b> You can tell us what task eats the most of your week and we'll show you (for free) what it would take to automate it.</p>
     <a href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Talk to our ex-Google AI engineers <span class="arr" aria-hidden="true">&rarr;</span></a>
   </div>
 </div>
@@ -383,7 +403,7 @@ a.book:hover{background:#A8E2E4}
     <li><b>The blank field that doubles your rate, caught before you file.</b> Out of state headcount has to be on the quarterly report. Leave it empty and you are reclassified from 0.45% to 0.9%.</li>
     <li><b>The rest of the calendar, not just this deadline.</b> FAMLI is one line on a compliance calendar you keep by hand. The same build watches the others and tells you when one moves.</li>
   </ul>
-  <p style="margin-bottom:0"><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team</a></p>
+  <p style="margin-bottom:0"><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team <span class="arr" aria-hidden="true">&rarr;</span></a></p>
 </div>
 
 <!-- =====================================================================
