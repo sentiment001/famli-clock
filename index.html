@@ -66,7 +66,7 @@ h1{
   font-family:var(--display); font-size:clamp(1.85rem,7vw,2.6rem); line-height:1.08;
   font-weight:600; letter-spacing:-0.02em; margin-bottom:.6rem;
 }
-.sub{color:var(--ink2);font-size:1rem;max-width:34rem;margin-bottom:1.5rem}
+.sub{color:var(--ink2);font-size:1rem;margin-bottom:1.4rem}
 
 /* ---------- cards ---------- */
 .card{
@@ -184,6 +184,35 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .moved b{color:var(--accent)}
 
 /* ---------- cta + footer ---------- */
+/* ---------- top pitch panel ---------- */
+.pitch{
+  position:relative; overflow:hidden; border-radius:6px;
+  background:linear-gradient(135deg,#123039 0%,#14202A 62%);
+  padding:1.05rem 1.1rem; margin:0 0 1.5rem;
+}
+.pitch::before{
+  content:''; position:absolute; top:0; left:-55%; width:55%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(143,213,216,.12),transparent);
+  animation:sheen 7s ease-in-out infinite; pointer-events:none;
+}
+@keyframes sheen{0%{left:-55%}60%{left:115%}100%{left:115%}}
+.pitch p{
+  position:relative; margin:0 0 .65rem; font-size:.93rem; line-height:1.55; color:#D3E2E3;
+}
+.pitch p b{color:#fff;font-weight:600}
+.pitch a{
+  position:relative; display:inline-flex; align-items:center; gap:.42rem;
+  color:#8FD5D8; font-weight:700; font-size:.9rem; text-decoration:none;
+}
+.pitch a:hover{color:#B6EBED}
+.pitch .arr{transition:transform .22s ease}
+.pitch a:hover .arr{transform:translateX(4px)}
+.pdot{
+  position:absolute; top:1.2rem; right:1.1rem; width:7px; height:7px; border-radius:50%;
+  background:#8FD5D8; animation:pulse 2.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+
 .cta{background:var(--ink);color:#fff;border:0}
 .cta h2{color:#8FB3B5}
 .cta p{color:#C6D2D6;font-size:.92rem}
@@ -244,6 +273,12 @@ a.book:hover{background:#A8E2E4}
 <h1 id="h1">What Maryland FAMLI costs you, and the date you cannot miss.</h1>
 <p class="sub" id="sub">Five questions. No sign up. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
 
+<div class="pitch noprint">
+  <span class="pdot" aria-hidden="true"></span>
+  <p>Every deadline like this one lands on the same desk. <b>We build AI into the workflows behind them, securely,</b> so quarter end stops eating your evenings.</p>
+  <a href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Talk to our AI engineers <span class="arr" aria-hidden="true">&rarr;</span></a>
+</div>
+
 <form class="card" id="form" novalidate>
   <h2>Your business</h2>
 
@@ -301,7 +336,7 @@ a.book:hover{background:#A8E2E4}
     <li><b>It estimates.</b> Figures come from the numbers you typed and the published rates, not from your payroll records.</li>
     <li><b>It is not a filing.</b> Nothing here reaches Maryland. You still register, report and pay through the FAMLI portal yourself.</li>
     <li><b>It cannot get a private plan approved.</b> It tells you what the Declaration of Intent involves and whether the time still fits. FAMLI decides.</li>
-    <li><b>If a number looks wrong, tell us.</b> Write to Mash at <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a> and say what you were looking at. We fix errors the same week.</li>
+    <li><b>If a number looks wrong, tell us.</b> Write to <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a> and say what you were looking at. We fix errors the same week.</li>
   </ul>
 </div>
 
@@ -310,10 +345,9 @@ a.book:hover{background:#A8E2E4}
   <p><b style="color:#fff">02Launch</b> builds AI into the workflows companies already run. We made this calculator because the FAMLI rules are spread across five COMAR chapters and nobody had put them in one place.</p>
   <p style="margin-bottom:.5rem">What a 30 minute call with our AI engineers does for you:</p>
   <ul>
-    <li><b>Your real payroll in, not an estimate.</b> Your own export, every employee, so the wage cap is applied per person instead of assumed even.</li>
-    <li><b>The quarterly report prepared.</b> Including the out of state headcount field that reclassifies you and doubles your rate if it is left blank.</li>
-    <li><b>Several EINs read together.</b> A group with entities either side of the Maryland line gets one answer rather than four separate ones.</li>
-    <li><b>The notice dates watched.</b> A date crossing a threshold tells you, rather than sitting in a diary you have to remember to open.</li>
+    <li><b>Your actual payroll file, not a typed estimate.</b> Every employee read individually, so the wage cap lands per person and the number you hand your CFO is the real one.</li>
+    <li><b>The blank field that doubles your rate, caught before you file.</b> Out of state headcount has to be on the quarterly report. Leave it empty and you are reclassified from 0.45% to 0.9%.</li>
+    <li><b>The rest of the calendar, not just this deadline.</b> FAMLI is one line on a compliance calendar you keep by hand. The same build watches the others and tells you when one moves.</li>
   </ul>
   <p><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team</a></p>
   <p class="fine" style="margin-bottom:0">Built by a team of AI engineers from Google and Microsoft. No obligation and no pitch deck. Or write to <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock">hello@02launch.com</a>.</p>
@@ -337,7 +371,7 @@ a.book:hover{background:#A8E2E4}
   Maryland regulations and the Division's own published pages, listed against each figure
   above. Check anything you are going to rely on with FAMLI Customer Care on
   <a href="tel:+14105254010">(410) 525-4010</a> or your own advisers before you act on it.</p>
-  <p>Questions, or something here looks wrong? Write to Mash at
+  <p>Questions, or something here looks wrong? Write to
   <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a>
   and tell us what you were looking at. We fix errors the same week.</p>
   <p id="stamp"></p>
