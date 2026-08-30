@@ -277,7 +277,16 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   transition:filter .18s ease, transform .14s ease;
 }
 .cap button:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.cap button:disabled{filter:grayscale(.5) brightness(.9);cursor:default;transform:none}
+.cap button:active{transform:translateY(1px) scale(.985);filter:brightness(.92)}
+.cap button:disabled{filter:grayscale(.35) brightness(.95);cursor:default;transform:none}
+.cap button.sending{animation:pressed .32s ease}
+@keyframes pressed{0%{transform:scale(.96)}55%{transform:scale(1.015)}100%{transform:scale(1)}}
+.spin{
+  width:13px;height:13px;border-radius:50%;display:inline-block;vertical-align:-2px;
+  border:2px solid rgba(255,255,255,.32);border-top-color:#fff;
+  animation:spin .7s linear infinite;margin-right:.45rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 .cap .consent{display:flex;gap:.55rem;align-items:flex-start;margin-top:.7rem}
 .cap .consent input{margin-top:.08rem;width:1.05rem;height:1.05rem;flex:none;accent-color:var(--accent)}
 .cap .consent label{font-weight:500;font-size:.83rem;line-height:1.45;color:var(--ink2);margin:0}
@@ -332,7 +341,26 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .cta li:last-child{margin-bottom:0}
 .cta li b{color:#fff;font-weight:600}
 .cta .fine{font-size:.8rem;color:#8FB3B5;line-height:1.55}
+.bookwrap{
+  position:relative; display:inline-block; padding:2px; border-radius:8px;
+  background:#1D3B41; overflow:hidden; isolation:isolate;
+}
+.bookwrap::before{
+  content:''; position:absolute; z-index:0;
+  top:50%; left:50%; width:300%; aspect-ratio:1/1;
+  transform:translate(-50%,-50%);
+  background:conic-gradient(from 0deg,
+    transparent 0 70%,
+    rgba(255,255,255,.12) 81%,
+    rgba(255,255,255,.6) 88%,
+    #ffffff 91%,
+    rgba(255,255,255,.6) 94%,
+    rgba(255,255,255,.12) 98%,
+    transparent 100%);
+  animation:beam 4.4s linear infinite; pointer-events:none;
+}
 .cta a.book{
+  position:relative; z-index:1;
   display:inline-flex; align-items:center; gap:.5rem;
   background:linear-gradient(135deg,#A3E7EA 0%,#68C4C8 100%); color:#0B2027;
   font-weight:700; font-size:.95rem; padding:.78rem 1.3rem; border-radius:6px;
@@ -655,7 +683,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     <li><b>The blank field that doubles your rate, caught before you file.</b> Out of state headcount has to be on the quarterly report. Leave it empty and you are reclassified from 0.45% to 0.9%.</li>
     <li><b>The rest of the calendar, not just this deadline.</b> FAMLI is one line on a compliance calendar you keep by hand. The same build watches the others and tells you when one moves.</li>
   </ul>
-  <p style="margin-bottom:0"><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team <span class="arr" aria-hidden="true">&rarr;</span></a></p>
+  <p style="margin-bottom:0"><span class="bookwrap"><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team <span class="arr" aria-hidden="true">&rarr;</span></a></span></p>
 </div>
 
 <!-- =====================================================================
@@ -1727,8 +1755,15 @@ function bindCapture(r){
     var email = ($('capEmail').value || '').trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ say('That does not look like an email address.','bad'); return; }
     if (!$('capOk').checked){ say('Tick the box so we know you want these.','bad'); return; }
-    if ($('capHp').value){ say('Thanks.','ok'); return; }
-    b.disabled = true; say('Sending.','ok');
+    if ($('capHp').value){
+      b.disabled = true; b.textContent = 'Signed up';
+      say('Thank you, your email has been recorded and we will assign an Analyst to remind you of your dates.','ok'); return;
+    }
+    b.classList.add('sending');
+    setTimeout(function(){ b.classList.remove('sending'); }, 340);
+    b.disabled = true;
+    b.innerHTML = '<span class="spin"></span>Sending';
+    say('Sending your details.','ok');
     fetch('https://api.web3forms.com/submit', {
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
@@ -1752,11 +1787,15 @@ function bindCapture(r){
       })
     }).then(function(res){ return res.json(); }).then(function(d){
       if (d && d.success){
-        say('Done. We will email you before each date, and in October when the cap is confirmed.','ok');
+        say('Thank you, your email has been recorded and we will assign an Analyst to remind you of your dates.','ok');
         $('capEmail').disabled = true; $('capOk').disabled = true; b.textContent = 'Signed up';
-      } else { b.disabled = false; say('That did not go through. Try again, or write to hello@02launch.com.','bad'); }
+      } else {
+        b.disabled = false; b.textContent = 'Email me my dates';
+        say('That did not go through. Try again, or write to hello@02launch.com.','bad');
+      }
     }).catch(function(){
-      b.disabled = false; say('That did not go through. Try again, or write to hello@02launch.com.','bad');
+      b.disabled = false; b.textContent = 'Email me my dates';
+      say('That did not go through. Try again, or write to hello@02launch.com.','bad');
     });
   });
 }
