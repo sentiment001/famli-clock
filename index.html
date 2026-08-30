@@ -91,10 +91,17 @@ input[type=number],input[type=date],select{
 .checkrow input{margin-top:.25rem;width:1.05rem;height:1.05rem;flex:none;accent-color:var(--accent)}
 .checkrow label{font-weight:500;margin:0}
 button.go{
-  width:100%; padding:.8rem; font:inherit; font-weight:700; font-size:1rem;
-  background:var(--accent); color:#fff; border:0; border-radius:4px; cursor:pointer;
+  width:100%; padding:.88rem 1rem; font:inherit; font-weight:700; font-size:1.02rem;
+  letter-spacing:.005em; color:#fff; border:0; border-radius:5px; cursor:pointer;
+  background:linear-gradient(135deg,#12686D 0%,#0B4A4D 100%);
+  box-shadow:0 1px 2px rgba(20,32,42,.16), 0 4px 12px rgba(14,90,94,.24);
+  transition:transform .14s ease, box-shadow .2s ease, filter .2s ease;
 }
-button.go:hover{background:#0b4a4d}
+button.go:hover{
+  filter:brightness(1.08); transform:translateY(-1px);
+  box-shadow:0 2px 4px rgba(20,32,42,.18), 0 7px 20px rgba(14,90,94,.32);
+}
+button.go:active{transform:translateY(0);box-shadow:0 1px 2px rgba(20,32,42,.2)}
 .err{color:var(--due);font-size:.85rem;font-weight:600;margin-top:.6rem}
 
 /* ---------- lead answer ---------- */
@@ -273,12 +280,6 @@ a.book:hover{background:#A8E2E4}
 <h1 id="h1">What Maryland FAMLI costs you, and the date you cannot miss.</h1>
 <p class="sub" id="sub">Five questions. No sign up. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
 
-<div class="pitch noprint">
-  <span class="pdot" aria-hidden="true"></span>
-  <p>Every deadline like this one lands on the same desk. <b>We build AI into the workflows behind them, securely,</b> so quarter end stops eating your evenings.</p>
-  <a href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Talk to our AI engineers <span class="arr" aria-hidden="true">&rarr;</span></a>
-</div>
-
 <form class="card" id="form" novalidate>
   <h2>Your business</h2>
 
@@ -330,13 +331,19 @@ a.book:hover{background:#A8E2E4}
 
 <main id="out" aria-live="polite"></main>
 
+<div class="pitch noprint">
+  <span class="pdot" aria-hidden="true"></span>
+  <p>Every deadline like this one lands on the same desk. <b>We build AI into the work behind them, securely,</b> so you can go home on time.</p>
+  <a href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Talk to our ex-Google AI engineers <span class="arr" aria-hidden="true">&rarr;</span></a>
+</div>
+
 <div class="card limits">
   <h2>What this tool does not do</h2>
   <ul>
     <li><b>It estimates.</b> Figures come from the numbers you typed and the published rates, not from your payroll records.</li>
     <li><b>It is not a filing.</b> Nothing here reaches Maryland. You still register, report and pay through the FAMLI portal yourself.</li>
     <li><b>It cannot get a private plan approved.</b> It tells you what the Declaration of Intent involves and whether the time still fits. FAMLI decides.</li>
-    <li><b>If a number looks wrong, tell us.</b> Write to <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a> and say what you were looking at. We fix errors the same week.</li>
+    <li><b>If a number looks wrong, tell us.</b> Write to <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a> and say what you were looking at. We have a dedicated engineer who fixes it within 6 hours of you telling us.</li>
   </ul>
 </div>
 
@@ -349,8 +356,7 @@ a.book:hover{background:#A8E2E4}
     <li><b>The blank field that doubles your rate, caught before you file.</b> Out of state headcount has to be on the quarterly report. Leave it empty and you are reclassified from 0.45% to 0.9%.</li>
     <li><b>The rest of the calendar, not just this deadline.</b> FAMLI is one line on a compliance calendar you keep by hand. The same build watches the others and tells you when one moves.</li>
   </ul>
-  <p><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team</a></p>
-  <p class="fine" style="margin-bottom:0">Built by a team of AI engineers from Google and Microsoft. No obligation and no pitch deck. Or write to <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock">hello@02launch.com</a>.</p>
+  <p style="margin-bottom:0"><a class="book" href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Book a call with our team</a></p>
 </div>
 
 <!-- =====================================================================
@@ -373,7 +379,7 @@ a.book:hover{background:#A8E2E4}
   <a href="tel:+14105254010">(410) 525-4010</a> or your own advisers before you act on it.</p>
   <p>Questions, or something here looks wrong? Write to
   <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a>
-  and tell us what you were looking at. We fix errors the same week.</p>
+  and tell us what you were looking at. We have a dedicated engineer who fixes it within 6 hours of you telling us.</p>
   <p id="stamp"></p>
   <p style="margin-bottom:0"><b>02Launch</b> &middot; Forward deployed AI engineering.</p>
 </footer>
