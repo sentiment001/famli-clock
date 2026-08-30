@@ -206,14 +206,28 @@ var t15 = fill(w15, { md: 5, ein: 5, pay: 0 });
 check('zero payroll says so rather than showing $0.00 as an answer',
   t15.indexOf('cannot cost this yet') !== -1);
 
-/* ---- 12. email capture must NOT be present ---- */
-out.push('--- email capture is blocked, deliberately ---');
+/* ---- 12. email capture: consented, optional, never gating ---- */
+out.push('--- email capture ---');
 var w16 = load('?d=2026-08-29');
-fill(w16, { md: 8, ein: 8, pay: 480000 });
-check('no email input anywhere on the page',
+check('no email input before a result is produced',
   w16.document.querySelectorAll('input[type=email]').length === 0);
-check('no form posts to a third party',
+fill(w16, { md: 8, ein: 8, pay: 480000 });
+var capEmail = w16.document.getElementById('capEmail');
+var capOk = w16.document.getElementById('capOk');
+check('email input appears with the result', !!capEmail);
+check('consent box is present', !!capOk);
+check('consent box is unchecked by default', capOk && capOk.checked === false);
+check('email field is not required', capEmail && !capEmail.required);
+check('honeypot field is present', !!w16.document.getElementById('capHp'));
+check('results render in full with no email given',
+  w16.document.body.textContent.indexOf('Full year 2027') !== -1);
+check('capture sits after the results, not before them',
+  (w16.document.querySelector('.lead').compareDocumentPosition(
+     w16.document.querySelector('.cap')) & 4) !== 0);
+check('no form element posts anywhere',
   w16.document.querySelectorAll('form[action]').length === 0);
+check('the page still states it does not store what you typed',
+  w16.document.body.textContent.indexOf('Nothing you typed above is sent') !== -1);
 
 /* ---- 13. the page must be self-contained: this is the bug Mash hit ---- */
 out.push('--- self-contained page (regression guard) ---');
