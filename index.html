@@ -419,6 +419,10 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 @media print{
   @page{ margin:16mm 15mm 17mm; }
 
+  /* Chrome ships "Background graphics" unticked. Without this the emerald band,
+     the orange seam and the zebra striping all vanish. */
+  *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; }
+
   html,body{background:#fff !important;color:#12181D;font-size:10.5pt;line-height:1.42}
   .wrap{max-width:none;padding:0;margin:0}
   a{text-decoration:none;color:#12181D}
@@ -432,73 +436,85 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
      so branding lives on the cover and closing pages instead. */
   .printhead,.printfoot{display:none !important}
 
-  /* ===== cover page ===== */
+  /* ===== cover page, concept C ===== */
+  /* Flow based. Nothing is pinned to a fixed mm offset, so a long business name
+     pushes the block below it instead of colliding with it, and the page fits
+     Letter and A4 without a fixed height. */
   .cover{
-    display:block !important; position:relative; break-after:page; page-break-after:always;
-    height:247mm; overflow:hidden; margin:0; padding:0;
+    display:flex !important; flex-direction:column; position:relative;
+    break-after:page; page-break-after:always;
+    min-height:236mm; overflow:hidden; margin:0; padding:0;
   }
-  .cv-band{position:absolute;top:-16mm;left:-15mm;right:-15mm;height:52mm;background:#0D4735}
-  .cv-band:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1.2mm;background:#C2410C}
+  /* The band is an inline SVG, not a CSS background. SVG fill is document content,
+     so it prints even when the reader leaves "Background graphics" unticked. */
+  .cv-band{
+    position:absolute; top:-16mm; left:-15mm; width:calc(100% + 30mm); height:52mm;
+    display:block; z-index:0;
+  }
+  .cv-head{position:relative; z-index:1; height:36mm; padding-top:7.5mm}
   .cv-mast{
-    position:absolute;top:-8mm;left:0;right:0;font-size:7.6pt;font-weight:800;
-    letter-spacing:.15em;text-transform:uppercase;color:#8FC9AE;
+    font-size:7.6pt;font-weight:800;letter-spacing:.15em;
+    text-transform:uppercase;color:#8FC9AE;
   }
   .cv-mast b{color:#fff;font-weight:800}
   .cv-t{
-    position:absolute;top:2mm;left:0;right:22mm;margin:0;color:#fff;
+    margin:3.5mm 24mm 0 0; color:#fff;
     font-family:var(--display);font-size:21pt;line-height:1.1;font-weight:600;letter-spacing:-.015em;
   }
-  .cv-for{position:absolute;top:44mm;left:0;font-size:10pt;color:#4A5D6C}
+  .cv-for{margin:10mm 0 0;font-size:10pt;color:#4A5D6C}
   .cv-for b{color:#12181D;font-weight:700}
-  .cv-lead{position:absolute;top:58mm;left:0;right:0}
+  .cv-lead{margin-top:7mm}
   .cv-lead .lk{font-size:7.6pt;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#C2410C}
   .cv-lead .lv{
     font-family:var(--display);font-size:38pt;font-weight:600;letter-spacing:-.03em;
     margin:1.5mm 0 1mm;line-height:1;font-variant-numeric:tabular-nums;color:#12181D;
   }
   .cv-lead .ln{font-size:9.6pt;color:#4A5D6C}
-  .cv-tab{position:absolute;top:108mm;left:0;right:0;width:100%;border-collapse:collapse}
+  .cv-tab{margin-top:13mm;width:100%;border-collapse:collapse}
   .cv-tab td{padding:3mm 0;border-bottom:.6pt solid #D8DEE1;font-size:10pt;vertical-align:baseline}
   .cv-tab td.k{color:#4A5D6C}
   .cv-tab td.v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:#12181D}
   .cv-note{
-    position:absolute;bottom:22mm;left:0;right:0;font-size:8.4pt;color:#6B767D;line-height:1.5;
-    border-left:1.6pt solid #C2410C;padding-left:3.5mm;margin:0;
+    margin:auto 0 7mm; font-size:8.4pt;color:#6B767D;line-height:1.5;
+    border-left:1.6pt solid #C2410C;padding-left:3.5mm;
   }
   .cv-foot{
-    position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    display:flex;justify-content:space-between;
     font-size:7.8pt;color:#84939C;border-top:.6pt solid #D8DEE1;padding-top:2.6mm;
   }
 
-  /* ===== closing page ===== */
+  /* ===== closing page, concept A ===== */
+  /* Mast at the top, body optically centred, footer at the foot. Flow based, so
+     the block can never spill a tenth page the way the pinned version did. */
   .closing{
-    display:block !important; position:relative; break-before:page; page-break-before:always;
-    height:247mm; padding-top:26mm;
+    display:flex !important; flex-direction:column; position:relative;
+    break-before:page; page-break-before:always;
+    min-height:236mm; padding:0;
   }
   .cl-mast{
-    position:absolute;top:0;left:0;right:0;font-size:7.6pt;font-weight:800;
-    letter-spacing:.15em;text-transform:uppercase;color:#84939C;
+    font-size:7.6pt;font-weight:800;letter-spacing:.15em;
+    text-transform:uppercase;color:#84939C;
   }
   .cl-mast b{color:#C2410C}
-  .cl-k{font-size:7.6pt;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#C2410C;margin-bottom:3.5mm}
+  .cl-body{margin:auto 0;padding-right:10mm}
+  .cl-k{font-size:7.6pt;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#C2410C;margin-bottom:4mm}
   .cl-t{
-    font-family:var(--display);font-size:22pt;line-height:1.14;font-weight:600;
-    letter-spacing:-.015em;margin:0 0 4mm;color:#12181D;
+    font-family:var(--display);font-size:23pt;line-height:1.12;font-weight:600;
+    letter-spacing:-.015em;margin:0 0 4.5mm;color:#12181D;
   }
-  .cl-p{font-size:10pt;line-height:1.62;color:#4A5D6C;margin:0 0 8mm;max-width:158mm}
-  .cl-not{border-top:1.4pt solid #12181D;padding-top:4mm;margin-bottom:9mm}
-  .cl-not .nk{
+  .cl-p{font-size:10pt;line-height:1.62;color:#4A5D6C;margin:0 0 7mm;max-width:150mm}
+  .cl-nk{
     font-size:7.6pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
-    color:#12181D;margin-bottom:3.5mm;
+    color:#12181D;margin-bottom:3.4mm;
   }
-  .cl-not p{font-size:9.6pt;line-height:1.58;color:#4A5D6C;margin:0 0 3.2mm;padding-left:4mm;border-left:1.6pt solid #D8DEE1}
-  .cl-not p:last-child{margin-bottom:0}
-  .cl-not p b{color:#12181D;font-weight:700}
+  .cl-ul{margin:0 0 9mm;padding-left:5mm;list-style:disc}
+  .cl-ul li{font-size:9.8pt;line-height:1.56;color:#4A5D6C;margin-bottom:2.8mm;max-width:150mm}
+  .cl-ul li b{color:#12181D;font-weight:700}
   .cl-cta{border-top:1.4pt solid #12181D;padding-top:4mm}
-  .cl-cta .cu{font-family:var(--display);font-size:16pt;font-weight:700;color:#C2410C;letter-spacing:-.01em}
+  .cl-cta .cu{font-size:13pt;font-weight:800;color:#C2410C;letter-spacing:-.005em}
   .cl-cta .cs{font-size:9.4pt;color:#4A5D6C;margin-top:1.6mm}
   .cl-foot{
-    position:absolute;bottom:0;left:0;right:0;font-size:7.8pt;color:#84939C;
+    margin-top:9mm; font-size:7.8pt;color:#84939C;
     border-top:.6pt solid #D8DEE1;padding-top:2.6mm;
   }
 
@@ -719,6 +735,10 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   <p id="stamp"></p>
   <p style="margin-bottom:0"><b>02Launch</b> &middot; Forward deployed AI engineering.</p>
 </footer>
+
+<!-- The closing page must be the last printed sheet, so it lives after the
+     legal footer in the DOM rather than inside #out. -->
+<div id="closingslot"></div>
 
 </div>
 
@@ -1369,6 +1389,7 @@ var LAST = null;
 function render(r){
   LAST = r;
   var out = $('out'); out.innerHTML='';
+  var closeSlot = $('closingslot'); if (closeSlot) closeSlot.innerHTML='';
   function add(h){ out.appendChild(el(h)); }
 
   if (!r.in_scope){
@@ -1500,7 +1521,7 @@ function render(r){
   /* ---- DOI ---- */
   if (r.doi) add(doiHTML(r));
 
-  add(closingHTML());
+  if (closeSlot) closeSlot.innerHTML = closingHTML();
 
   /* ---- reminders ---- */
   add(captureHTML(r));
@@ -1662,9 +1683,14 @@ function coverHTML(r){
   var who = r.business_name ? esc(r.business_name) : (r.md_employees + ' employee Maryland employer');
   var nxt = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
   return '<section class="cover">'
-    + '<div class="cv-band"></div>'
-    + '<div class="cv-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
-    + '<h2 class="cv-t">Maryland Family and Medical Leave Insurance</h2>'
+    + '<svg class="cv-band" viewBox="0 0 200 52" preserveAspectRatio="none" aria-hidden="true" focusable="false">'
+    +   '<rect x="0" y="0" width="200" height="50.8" fill="#0D4735"></rect>'
+    +   '<rect x="0" y="50.8" width="200" height="1.2" fill="#C2410C"></rect>'
+    + '</svg>'
+    + '<div class="cv-head">'
+    +   '<div class="cv-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
+    +   '<h2 class="cv-t">Maryland Family and Medical Leave Insurance</h2>'
+    + '</div>'
     + '<div class="cv-for">Prepared for <b>' + who + '</b></div>'
     + '<div class="cv-lead">'
     +   '<div class="lk">Full year 2027, total contribution</div>'
@@ -1687,23 +1713,26 @@ function coverHTML(r){
 function closingHTML(){
   return '<section class="closing">'
     + '<div class="cl-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
-    + '<div class="cl-k">Where this stops and we start</div>'
-    + '<h2 class="cl-t">Everything above came from five numbers.</h2>'
-    + '<p class="cl-p">Give the same engine your real payroll file and every figure sharpens. '
-    + 'The wage cap applies per person instead of assuming even wages. The out of state headcount field, '
-    + 'the blank one that reclassifies you and doubles your rate, gets checked before you file. '
-    + 'Several EINs read as one answer instead of four. And the rest of your compliance calendar '
-    + 'gets watched the same way this one deadline just was.</p>'
-    + '<div class="cl-not"><div class="nk">What we do not do</div>'
-    +   '<p><b>We do not replace your payroll system.</b> Whatever you run stays the system of record. '
-    +   'We build alongside it and read from it.</p>'
-    +   '<p><b>We agree the data boundary before any work starts.</b> Nothing you hold is used to train anything, '
-    +   'and you decide what moves and what does not.</p>'
-    +   '<p><b>A person still signs the filing.</b> We take out the assembly work, not the judgement '
-    +   'and not the accountability. The review step stays yours.</p>'
+    + '<div class="cl-body">'
+    +   '<div class="cl-k">Where this stops and we start</div>'
+    +   '<h2 class="cl-t">Everything above came from five numbers.</h2>'
+    +   '<p class="cl-p">Give the same engine your real payroll file and every figure sharpens. '
+    +   'The wage cap applies per person instead of assuming even wages. The out of state headcount field, '
+    +   'the blank one that reclassifies you and doubles your rate, gets checked before you file. '
+    +   'Several EINs read as one answer instead of four. And the rest of your compliance calendar '
+    +   'gets watched the same way this one deadline just was.</p>'
+    +   '<div class="cl-nk">What we do not do</div>'
+    +   '<ul class="cl-ul">'
+    +     '<li><b>We do not replace your payroll system.</b> Whatever you run stays the system of record. '
+    +     'We build alongside it and read from it.</li>'
+    +     '<li><b>We agree the data boundary before any work starts.</b> Nothing you hold is used to train anything, '
+    +     'and you decide what moves and what does not.</li>'
+    +     '<li><b>A person still signs the filing.</b> We take out the assembly work, not the judgement '
+    +     'and not the accountability. The review step stays yours.</li>'
+    +   '</ul>'
+    +   '<div class="cl-cta"><div class="cu">02launch.com/contact</div>'
+    +   '<div class="cs">Thirty minutes with the engineers who built this. No obligation and no pitch deck.</div></div>'
     + '</div>'
-    + '<div class="cl-cta"><div class="cu">02launch.com/contact</div>'
-    + '<div class="cs">Thirty minutes with the engineers who built this. No obligation and no pitch deck.</div></div>'
     + '<div class="cl-foot">An estimate, not tax, legal or payroll advice. '
     + 'Rules checked against COMAR 09.42 and the Maryland Division of Labor on 29 August 2026.</div>'
     + '</section>';
