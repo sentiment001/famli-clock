@@ -65,11 +65,11 @@ p{margin:0 0 .7rem}
 /* ---------- eyebrow badge ---------- */
 .eyebadge{
   position:relative; overflow:hidden;
-  display:inline-flex; align-items:center; gap:.52rem;
-  font-size:.665rem; font-weight:700; letter-spacing:.095em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:.44rem;
+  font-size:.595rem; font-weight:700; letter-spacing:.085em; text-transform:uppercase;
   color:#A9EFCB; background:linear-gradient(135deg,#0D4735 0%,#06271D 100%);
-  border:1px solid #1C7053; padding:.38rem .82rem .38rem .68rem;
-  border-radius:999px; margin-bottom:.6rem;
+  border:1px solid #1C7053; padding:.28rem .66rem .28rem .54rem;
+  border-radius:999px; margin-bottom:.55rem;
   box-shadow:0 1px 3px rgba(6,39,29,.3), inset 0 1px 0 rgba(255,255,255,.06);
 }
 .eyebadge::after{
@@ -79,7 +79,7 @@ p{margin:0 0 .7rem}
 }
 @keyframes badgesheen{0%{left:-45%}55%{left:112%}100%{left:112%}}
 .eyebadge .gdot{
-  width:7px; height:7px; border-radius:50%; background:#2FE894; flex:none;
+  width:6px; height:6px; border-radius:50%; background:#2FE894; flex:none;
   animation:gpulse 2.2s ease-in-out infinite;
 }
 @keyframes gpulse{
@@ -105,7 +105,7 @@ h1{
 
 /* ---------- form ---------- */
 .formnote{
-  font-size:.83rem;color:var(--ink2);line-height:1.45;margin:-.15rem 0 .85rem;
+  font-size:.83rem;color:var(--ink2);line-height:1.45;margin:0 0 .9rem;
   padding:.5rem .6rem;background:var(--accent-soft);border-radius:4px;
 }
 .formnote b{color:var(--accent)}
@@ -317,12 +317,25 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .cta a.book:hover .arr{transform:translateX(4px)}
 .foot{font-size:.79rem;color:var(--ink3);line-height:1.6;padding-top:.6rem}
 .foot a{color:var(--ink2)}
-.tools{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem}
-.tools button{
-  font:inherit;font-size:.82rem;font-weight:600;padding:.45rem .75rem;background:#fff;
-  border:1px solid var(--rule);border-radius:4px;color:var(--ink2);cursor:pointer;
+.tools{margin-top:1.35rem;padding-top:1.05rem;border-top:1px solid var(--rule2);text-align:center}
+.tcap{
+  font-size:.68rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:.75rem;
 }
-.tools button:hover{border-color:var(--accent);color:var(--accent)}
+.trow{display:flex;gap:.7rem;flex-wrap:wrap;justify-content:center}
+.tools button{
+  font:inherit;font-size:.885rem;font-weight:700;padding:.68rem 1.15rem;background:#fff;
+  border:1.5px solid var(--ink);border-radius:6px;color:var(--ink);cursor:pointer;
+  display:inline-flex;align-items:center;gap:.5rem;
+  box-shadow:0 1px 2px rgba(20,32,42,.09);
+  transition:transform .14s ease, box-shadow .2s ease, border-color .2s ease, color .2s ease;
+}
+.tools button:hover{
+  border-color:var(--accent);color:var(--accent);transform:translateY(-1px);
+  box-shadow:0 3px 11px rgba(20,32,42,.15);
+}
+.tools button:active{transform:translateY(0)}
+.tools button svg{width:15px;height:15px;flex:none}
 .limits ul{margin:0;padding-left:1.1rem}
 .limits li{font-size:.9rem;color:var(--ink2);margin-bottom:.5rem;line-height:1.5}
 .limits li:last-child{margin-bottom:0}
@@ -468,11 +481,11 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 
 <div class="eyebadge"><span class="gdot" aria-hidden="true"></span>Built by ex-Google Engineers from 02Launch.com</div>
 <h1 id="h1">What Maryland FAMLI costs you, and the date you cannot miss.</h1>
-<p class="sub" id="sub">You do not need to sign up to use this tool. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
+<p class="sub" id="sub"><b>No sign up</b> needed to use this tool. We do not store your numbers. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
 
 <form class="card" id="form" novalidate>
+  <p class="formnote">Five numbers in, and you get your dates, your cost, and a <b>printable report</b> you can send straight to your CFO or your accountant. Takes under a minute.</p>
   <h2>Your business</h2>
-  <p class="formnote">Five numbers in, and you get your dates, your cost, and a <b>printable report</b> you can send straight to your CFO or your accountant.</p>
 
   <div class="field">
     <label for="md">Employees working in Maryland</label>
@@ -1150,17 +1163,17 @@ var PHASE = drawRail();
 (function(){
   var h = {
     P1_runway:['What Maryland FAMLI costs you, and the date you cannot miss.',
-      'You do not need to sign up to use this tool. If you want a private plan, the Declaration of Intent is due Friday 13 November 2026 and the work behind it takes weeks.'],
+      '<b>No sign up</b> needed to use this tool. We do not store your numbers. If you want a private plan, the Declaration of Intent is due Friday 13 November 2026 and the work behind it takes weeks.'],
     P2_compressed:['The private plan window is closing. Here is what still fits.',
-      'You do not need to sign up to use this tool. A cold start no longer fits at normal pace, so this asks where you already are and works forward from there.'],
+      '<b>No sign up</b> needed to use this tool. We do not store your numbers. A cold start no longer fits at normal pace, so this asks where you already are and works forward from there.'],
     P3_notice:['Your employees need this notice in writing before January.',
-      'You do not need to sign up to use this tool. Every Maryland employer owes a written notice one full pay period before the first 2027 withholding. This works out your date.'],
+      '<b>No sign up</b> needed to use this tool. We do not store your numbers. Every Maryland employer owes a written notice one full pay period before the first 2027 withholding. This works out your date.'],
     P4_live:['Contributions are live. Here is your first payment and what it is.',
-      'You do not need to sign up to use this tool. Your first report and payment covers Q1 wages and is due Friday 30 April 2027.'],
+      '<b>No sign up</b> needed to use this tool. We do not store your numbers. Your first report and payment covers Q1 wages and is due Friday 30 April 2027.'],
     P5_steady:['Your Maryland FAMLI cost, quarter by quarter.',
-      'You do not need to sign up to use this tool. Quarterly reports, the July notice, and the private plan application deadline, worked out for your business.']
+      '<b>No sign up</b> needed to use this tool. We do not store your numbers. Quarterly reports, the July notice, and the private plan application deadline, worked out for your business.']
   }[PHASE.key];
-  $('h1').textContent = h[0]; $('sub').textContent = h[1];
+  $('h1').textContent = h[0]; $('sub').innerHTML = h[1];
 })();
 
 /* ---------------------------------------------------------------- form state */
@@ -1627,9 +1640,13 @@ function writeURL(){
   var q = new URLSearchParams(location.search).get('d'); if (q) p.set('d',q);
   history.replaceState(null,'','?'+p.toString());
   if (!document.getElementById('tools')){
+    var ICL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
+    var ICD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
     var t = el('<div class="tools noprint" id="tools">'
-      + '<button type="button" id="copy">Copy link to this result</button>'
-      + '<button type="button" id="print">Print or save as PDF</button></div>');
+      + '<div class="tcap">Take this with you</div><div class="trow">'
+      + '<button type="button" id="copy">'+ICL+'Copy link to this result</button>'
+      + '<button type="button" id="print">'+ICD+'Download report as PDF</button>'
+      + '</div></div>');
     $('out').appendChild(t);
     document.getElementById('print').addEventListener('click', function(){ window.print(); });
     document.getElementById('copy').addEventListener('click', function(){
@@ -1637,8 +1654,8 @@ function writeURL(){
       /* strip the QA date override so a shared link always shows the real phase */
       var u = new URL(location.href); u.searchParams.delete('d');
       navigator.clipboard.writeText(u.toString()).then(function(){
-        b.textContent='Link copied'; setTimeout(function(){ b.textContent='Copy link to this result'; },2200);
-      }).catch(function(){ b.textContent='Copy the address bar'; });
+        b.innerHTML=ICL+'Link copied'; setTimeout(function(){ b.innerHTML=ICL+'Copy link to this result'; },2200);
+      }).catch(function(){ b.innerHTML=ICL+'Copy the address bar'; });
     });
   } else { $('out').appendChild(document.getElementById('tools')); }
 }
