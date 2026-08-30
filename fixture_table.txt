@@ -1,0 +1,312 @@
+Maryland FAMLI - computed fixture output (spec v2)
+Generated from famli_ref.py. Reference date 29 Aug 2026 unless the fixture sets its own.
+==============================================================================
+
+### F01 - 8-employee firm, all wages under the cap
+IN md=8 ein=8 payroll=$480,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$60,000.00 base_mode=even valid=True cap_bites=False base=$480,000.00
+annual_total=$2,160.00 employer_withhold=$0.00 employee=$2,160.00 employer_absorb=$2,160.00 absorb_delta=$2,160.00
+per_period total=$83.08 employer=$0.00 employee=$83.08 flat_across_year=True
+quarters Q1[sm base 120,000 due 540.00] Q2[sm base 120,000 due 540.00] Q3[sm base 120,000 due 540.00] Q4[sm base 120,000 due 540.00]
+q1_payment=$540.00 due 2027-04-30 | never_withhold=$2,160.00 per_missed_period=$83.08 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F02 - Same firm, read the absorb column
+IN md=8 ein=8 payroll=$480,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$60,000.00 base_mode=even valid=True cap_bites=False base=$480,000.00
+annual_total=$2,160.00 employer_withhold=$0.00 employee=$2,160.00 employer_absorb=$2,160.00 absorb_delta=$2,160.00
+per_period total=$83.08 employer=$0.00 employee=$83.08 flat_across_year=True
+quarters Q1[sm base 120,000 due 540.00] Q2[sm base 120,000 due 540.00] Q3[sm base 120,000 due 540.00] Q4[sm base 120,000 due 540.00]
+q1_payment=$540.00 due 2027-04-30 | never_withhold=$2,160.00 per_missed_period=$83.08 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F03 - 40-employee firm, average wage above the cap
+IN md=40 ein=40 payroll=$8,400,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$210,000.00 base_mode=even valid=True cap_bites=True base=$7,380,000.00
+annual_total=$66,420.00 employer_withhold=$33,210.00 employee=$33,210.00 employer_absorb=$66,420.00 absorb_delta=$33,210.00
+per_period total=$2,907.69 employer=$1,453.85 employee=$1,453.85 flat_across_year=False
+quarters Q1[st base 2,100,000 due 18,900.00] Q2[st base 2,100,000 due 18,900.00] Q3[st base 2,100,000 due 18,900.00] Q4[st base 1,080,000 due 9,720.00]
+q1_payment=$18,900.00 due 2027-04-30 | never_withhold=$33,210.00 per_missed_period=$1,453.85 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F04 - 200-employee firm, semimonthly
+IN md=200 ein=200 payroll=$16,000,000 freq=semimonthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$80,000.00 base_mode=even valid=True cap_bites=False base=$16,000,000.00
+annual_total=$144,000.00 employer_withhold=$72,000.00 employee=$72,000.00 employer_absorb=$144,000.00 absorb_delta=$72,000.00
+per_period total=$6,000.00 employer=$3,000.00 employee=$3,000.00 flat_across_year=True
+quarters Q1[st base 4,000,000 due 36,000.00] Q2[st base 4,000,000 due 36,000.00] Q3[st base 4,000,000 due 36,000.00] Q4[st base 4,000,000 due 36,000.00]
+q1_payment=$36,000.00 due 2027-04-30 | never_withhold=$72,000.00 per_missed_period=$3,000.00 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F05 - 3 Maryland employees, 400 out of state
+IN md=3 ein=403 payroll=$300,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$100,000.00 base_mode=even valid=True cap_bites=False base=$300,000.00
+annual_total=$2,700.00 employer_withhold=$1,350.00 employee=$1,350.00 employer_absorb=$2,700.00 absorb_delta=$1,350.00
+per_period total=$103.85 employer=$51.92 employee=$51.92 flat_across_year=True
+quarters Q1[st base 75,000 due 675.00] Q2[st base 75,000 due 675.00] Q3[st base 75,000 due 675.00] Q4[st base 75,000 due 675.00]
+q1_payment=$675.00 due 2027-04-30 | never_withhold=$1,350.00 per_missed_period=$51.92 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+FLAGS: small in MD but not under EIN
+
+### F06 - Exactly 15 employees
+IN md=15 ein=15 payroll=$1,050,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,050,000.00
+annual_total=$9,450.00 employer_withhold=$4,725.00 employee=$4,725.00 employer_absorb=$9,450.00 absorb_delta=$4,725.00
+per_period total=$363.46 employer=$181.73 employee=$181.73 flat_across_year=True
+quarters Q1[st base 262,500 due 2,362.50] Q2[st base 262,500 due 2,362.50] Q3[st base 262,500 due 2,362.50] Q4[st base 262,500 due 2,362.50]
+q1_payment=$2,362.50 due 2027-04-30 | never_withhold=$4,725.00 per_missed_period=$181.73 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F07 - 14 employees crossing to 16 mid-year
+IN md=16 ein=16 payroll=$1,050,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$65,625.00 base_mode=even valid=True cap_bites=False base=$1,050,000.00
+annual_total=$7,245.00 employer_withhold=$2,520.00 employee=$4,725.00 employer_absorb=$7,245.00 absorb_delta=$4,725.00
+per_period total=$169.62 employer=$0.00 employee=$169.62 flat_across_year=False
+quarters Q1[sm base 245,000 due 1,102.50] Q2[sm base 245,000 due 1,102.50] Q3[st base 280,000 due 2,520.00] Q4[st base 280,000 due 2,520.00]
+q1_payment=$1,102.50 due 2027-04-30 | never_withhold=$4,725.00 per_missed_period=$169.62 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F08 - Private plan, 60 days out, cold start
+IN md=25 ein=25 payroll=$1,750,000 freq=biweekly private=True today=2026-09-14 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,750,000.00
+annual_total=$15,750.00 employer_withhold=$7,875.00 employee=$7,875.00 employer_absorb=$15,750.00 absorb_delta=$7,875.00
+per_period total=$605.77 employer=$302.88 employee=$302.88 flat_across_year=True
+quarters Q1[st base 437,500 due 3,937.50] Q2[st base 437,500 due 3,937.50] Q3[st base 437,500 due 3,937.50] Q4[st base 437,500 due 3,937.50]
+q1_payment=$3,937.50 due 2027-04-30 | never_withhold=$7,875.00 per_missed_period=$302.88 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+DOI open=True progress=not_started bd_left=41 headline=tight
+  remaining bd fast/typical/slow = 10/31/55
+  fast     earliest_submit=2026-09-28 fits=True fits_with_buffer=True last_cold_start=2026-10-28
+  typical  earliest_submit=2026-10-28 fits=True fits_with_buffer=False last_cold_start=2026-09-28
+  slow     earliest_submit=2026-12-07 fits=False fits_with_buffer=False last_cold_start=2026-08-24
+  self_insure=False epip_fee=$250
+
+### F09 - Private plan, 10 days out, cold start
+IN md=25 ein=25 payroll=$1,750,000 freq=biweekly private=True today=2026-11-03 year=2027
+PHASE P2_compressed (DOI compressed)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,750,000.00
+annual_total=$15,750.00 employer_withhold=$7,875.00 employee=$7,875.00 employer_absorb=$15,750.00 absorb_delta=$7,875.00
+per_period total=$605.77 employer=$302.88 employee=$302.88 flat_across_year=True
+quarters Q1[st base 437,500 due 3,937.50] Q2[st base 437,500 due 3,937.50] Q3[st base 437,500 due 3,937.50] Q4[st base 437,500 due 3,937.50]
+q1_payment=$3,937.50 due 2027-04-30 | never_withhold=$7,875.00 per_missed_period=$302.88 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+DOI open=True progress=not_started bd_left=7 headline=does_not_fit
+  remaining bd fast/typical/slow = 10/31/55
+  fast     earliest_submit=2026-11-18 fits=False fits_with_buffer=False last_cold_start=2026-10-28
+  typical  earliest_submit=2026-12-21 fits=False fits_with_buffer=False last_cold_start=2026-09-28
+  slow     earliest_submit=2027-01-27 fits=False fits_with_buffer=False last_cold_start=2026-08-24
+  self_insure=False epip_fee=$250
+
+### F10 - Private plan, past the deadline
+IN md=25 ein=25 payroll=$1,750,000 freq=biweekly private=True today=2026-11-20 year=2027
+PHASE P3_notice (Notice and withholding)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,750,000.00
+annual_total=$15,750.00 employer_withhold=$7,875.00 employee=$7,875.00 employer_absorb=$15,750.00 absorb_delta=$7,875.00
+per_period total=$605.77 employer=$302.88 employee=$302.88 flat_across_year=True
+quarters Q1[st base 437,500 due 3,937.50] Q2[st base 437,500 due 3,937.50] Q3[st base 437,500 due 3,937.50] Q4[st base 437,500 due 3,937.50]
+q1_payment=$3,937.50 due 2027-04-30 | never_withhold=$7,875.00 per_missed_period=$302.88 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+DOI open=False progress=not_started bd_left=0 headline=closed
+  remaining bd fast/typical/slow = 10/31/55
+  fast     earliest_submit=None fits=False fits_with_buffer=False last_cold_start=2026-10-28
+  typical  earliest_submit=None fits=False fits_with_buffer=False last_cold_start=2026-09-28
+  slow     earliest_submit=None fits=False fits_with_buffer=False last_cold_start=2026-08-24
+  self_insure=False epip_fee=$250
+
+### F11 - 48-employee firm wanting to self-insure
+IN md=48 ein=48 payroll=$3,840,000 freq=monthly private=True today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$80,000.00 base_mode=even valid=True cap_bites=False base=$3,840,000.00
+annual_total=$34,560.00 employer_withhold=$17,280.00 employee=$17,280.00 employer_absorb=$34,560.00 absorb_delta=$17,280.00
+per_period total=$2,880.00 employer=$1,440.00 employee=$1,440.00 flat_across_year=True
+quarters Q1[st base 960,000 due 8,640.00] Q2[st base 960,000 due 8,640.00] Q3[st base 960,000 due 8,640.00] Q4[st base 960,000 due 8,640.00]
+q1_payment=$8,640.00 due 2027-04-30 | never_withhold=$17,280.00 per_missed_period=$1,440.00 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+DOI open=True progress=not_started bd_left=51 headline=on_track
+  remaining bd fast/typical/slow = 10/31/55
+  fast     earliest_submit=2026-09-14 fits=True fits_with_buffer=True last_cold_start=2026-10-28
+  typical  earliest_submit=2026-10-14 fits=True fits_with_buffer=True last_cold_start=2026-09-28
+  slow     earliest_submit=2026-11-19 fits=False fits_with_buffer=False last_cold_start=2026-08-24
+  self_insure=False epip_fee=$250
+
+### F12 - One Maryland employee, not the sole owner
+IN md=1 ein=1 payroll=$65,000 freq=weekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$65,000.00 base_mode=even valid=True cap_bites=False base=$65,000.00
+annual_total=$292.52 employer_withhold=$0.00 employee=$292.52 employer_absorb=$292.52 absorb_delta=$292.52
+per_period total=$5.63 employer=$0.00 employee=$5.63 flat_across_year=True
+quarters Q1[sm base 16,250 due 73.13] Q2[sm base 16,250 due 73.13] Q3[sm base 16,250 due 73.13] Q4[sm base 16,250 due 73.13]
+q1_payment=$73.13 due 2027-04-30 | never_withhold=$292.52 per_missed_period=$5.63 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F13 - Sole owner, only employee of their own entity
+IN md=1 ein=1 payroll=$120,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+OUT: not in scope. You are the sole owner and the only person your entity employs. COMAR 09.42.01.01B(21)(b) says you are not an employer for FAMLI.
+
+### F14 - No Maryland employees
+IN md=0 ein=60 payroll=$0 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+OUT: not in scope. No Maryland employees. FAMLI does not apply to you.
+
+### F15 - Wages exactly at the cap
+IN md=10 ein=10 payroll=$1,845,000 freq=semimonthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$184,500.00 base_mode=even valid=True cap_bites=False base=$1,845,000.00
+annual_total=$8,302.52 employer_withhold=$0.00 employee=$8,302.52 employer_absorb=$8,302.52 absorb_delta=$8,302.52
+per_period total=$345.94 employer=$0.00 employee=$345.94 flat_across_year=True
+quarters Q1[sm base 461,250 due 2,075.63] Q2[sm base 461,250 due 2,075.63] Q3[sm base 461,250 due 2,075.63] Q4[sm base 461,250 due 2,075.63]
+q1_payment=$2,075.63 due 2027-04-30 | never_withhold=$8,302.52 per_missed_period=$345.94 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F16 - Small by EIN, staff out of state (the reporting trap)
+IN md=10 ein=12 payroll=$700,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$700,000.00
+annual_total=$3,150.00 employer_withhold=$0.00 employee=$3,150.00 employer_absorb=$3,150.00 absorb_delta=$3,150.00
+per_period total=$262.50 employer=$0.00 employee=$262.50 flat_across_year=True
+quarters Q1[sm base 175,000 due 787.50] Q2[sm base 175,000 due 787.50] Q3[sm base 175,000 due 787.50] Q4[sm base 175,000 due 787.50]
+q1_payment=$787.50 due 2027-04-30 | never_withhold=$3,150.00 per_missed_period=$262.50 out_of_state_trap=$3,150.00
+notice mode=safe_default by=2026-12-01 (Tue)
+FLAGS: must report out-of-state headcount
+
+### F17 - One employee paid $2m
+IN md=1 ein=1 payroll=$2,000,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$2,000,000.00 base_mode=even valid=True cap_bites=True base=$184,500.00
+annual_total=$830.25 employer_withhold=$0.00 employee=$830.25 employer_absorb=$830.25 absorb_delta=$830.25
+per_period total=$276.75 employer=$0.00 employee=$276.75 flat_across_year=False
+quarters Q1[sm base 184,500 due 830.25] Q2[sm base 0 due 0.00] Q3[sm base 0 due 0.00] Q4[sm base 0 due 0.00]
+q1_payment=$830.25 due 2027-04-30 | never_withhold=$830.25 per_missed_period=$276.75 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F18 - Skewed payroll, even rule (the A2 error case)
+IN md=10 ein=10 payroll=$2,500,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$250,000.00 base_mode=even valid=True cap_bites=True base=$1,845,000.00
+annual_total=$8,302.50 employer_withhold=$0.00 employee=$8,302.50 employer_absorb=$8,302.50 absorb_delta=$8,302.50
+per_period total=$937.50 employer=$0.00 employee=$937.50 flat_across_year=False
+quarters Q1[sm base 625,000 due 2,812.50] Q2[sm base 625,000 due 2,812.50] Q3[sm base 595,000 due 2,677.50] Q4[sm base 0 due 0.00]
+q1_payment=$2,812.50 due 2027-04-30 | never_withhold=$8,302.50 per_missed_period=$937.50 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F19 - Same firm with the high-earner refinement
+IN md=10 ein=10 payroll=$2,500,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$250,000.00 base_mode=refined valid=True cap_bites=True base=$1,084,500.00
+annual_total=$4,880.25 employer_withhold=$0.00 employee=$4,880.25 employer_absorb=$4,880.25 absorb_delta=$4,880.25
+per_period total=$614.25 employer=$0.00 employee=$614.25 flat_across_year=False
+quarters Q1[sm base 409,500 due 1,842.75] Q2[sm base 225,000 due 1,012.50] Q3[sm base 225,000 due 1,012.50] Q4[sm base 225,000 due 1,012.50]
+q1_payment=$1,842.75 due 2027-04-30 | never_withhold=$4,880.25 per_missed_period=$614.25 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F20 - Refinement declared as zero high earners
+IN md=10 ein=10 payroll=$900,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$90,000.00 base_mode=refined valid=True cap_bites=False base=$900,000.00
+annual_total=$4,050.00 employer_withhold=$0.00 employee=$4,050.00 employer_absorb=$4,050.00 absorb_delta=$4,050.00
+per_period total=$337.50 employer=$0.00 employee=$337.50 flat_across_year=True
+quarters Q1[sm base 225,000 due 1,012.50] Q2[sm base 225,000 due 1,012.50] Q3[sm base 225,000 due 1,012.50] Q4[sm base 225,000 due 1,012.50]
+q1_payment=$1,012.50 due 2027-04-30 | never_withhold=$4,050.00 per_missed_period=$337.50 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F21 - Contradictory refinement, must fall back and flag
+IN md=10 ein=10 payroll=$900,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=small rate=0.45% avg_wage=$90,000.00 base_mode=refined_invalid valid=False cap_bites=False base=$900,000.00
+annual_total=$4,050.00 employer_withhold=$0.00 employee=$4,050.00 employer_absorb=$4,050.00 absorb_delta=$4,050.00
+per_period total=$337.50 employer=$0.00 employee=$337.50 flat_across_year=True
+quarters Q1[sm base 225,000 due 1,012.50] Q2[sm base 225,000 due 1,012.50] Q3[sm base 225,000 due 1,012.50] Q4[sm base 225,000 due 1,012.50]
+q1_payment=$1,012.50 due 2027-04-30 | never_withhold=$4,050.00 per_missed_period=$337.50 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+FLAGS: high-earner inputs contradictory, fell back to even rule
+
+### F22 - Notice date refinement, biweekly, first pay 8 Jan 2027
+IN md=30 ein=30 payroll=$2,100,000 freq=biweekly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$2,100,000.00
+annual_total=$18,900.00 employer_withhold=$9,450.00 employee=$9,450.00 employer_absorb=$18,900.00 absorb_delta=$9,450.00
+per_period total=$726.92 employer=$363.46 employee=$363.46 flat_across_year=True
+quarters Q1[st base 525,000 due 4,725.00] Q2[st base 525,000 due 4,725.00] Q3[st base 525,000 due 4,725.00] Q4[st base 525,000 due 4,725.00]
+q1_payment=$4,725.00 due 2027-04-30 | never_withhold=$9,450.00 per_missed_period=$363.46 out_of_state_trap=$0.00
+notice mode=exact by=2026-12-24 (Thu)
+
+### F23 - Phase 2, already registered, 20 Oct 2026
+IN md=25 ein=25 payroll=$1,750,000 freq=biweekly private=True today=2026-10-20 year=2027
+PHASE P2_compressed (DOI compressed)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,750,000.00
+annual_total=$15,750.00 employer_withhold=$7,875.00 employee=$7,875.00 employer_absorb=$15,750.00 absorb_delta=$7,875.00
+per_period total=$605.77 employer=$302.88 employee=$302.88 flat_across_year=True
+quarters Q1[st base 437,500 due 3,937.50] Q2[st base 437,500 due 3,937.50] Q3[st base 437,500 due 3,937.50] Q4[st base 437,500 due 3,937.50]
+q1_payment=$3,937.50 due 2027-04-30 | never_withhold=$7,875.00 per_missed_period=$302.88 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+DOI open=True progress=registered bd_left=16 headline=only_if_everything_goes_right
+  remaining bd fast/typical/slow = 6/18/30
+  fast     earliest_submit=2026-10-28 fits=True fits_with_buffer=False last_cold_start=2026-10-28
+  typical  earliest_submit=2026-11-17 fits=False fits_with_buffer=False last_cold_start=2026-09-28
+  slow     earliest_submit=2026-12-07 fits=False fits_with_buffer=False last_cold_start=2026-08-24
+  self_insure=False epip_fee=$250
+
+### F24 - Phase 2, agent already booked, 20 Oct 2026
+IN md=25 ein=25 payroll=$1,750,000 freq=biweekly private=True today=2026-10-20 year=2027
+PHASE P2_compressed (DOI compressed)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,750,000.00
+annual_total=$15,750.00 employer_withhold=$7,875.00 employee=$7,875.00 employer_absorb=$15,750.00 absorb_delta=$7,875.00
+per_period total=$605.77 employer=$302.88 employee=$302.88 flat_across_year=True
+quarters Q1[st base 437,500 due 3,937.50] Q2[st base 437,500 due 3,937.50] Q3[st base 437,500 due 3,937.50] Q4[st base 437,500 due 3,937.50]
+q1_payment=$3,937.50 due 2027-04-30 | never_withhold=$7,875.00 per_missed_period=$302.88 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+DOI open=True progress=agent_booked bd_left=16 headline=tight
+  remaining bd fast/typical/slow = 1/3/5
+  fast     earliest_submit=2026-10-21 fits=True fits_with_buffer=True last_cold_start=2026-10-28
+  typical  earliest_submit=2026-10-23 fits=True fits_with_buffer=False last_cold_start=2026-09-28
+  slow     earliest_submit=2026-10-27 fits=True fits_with_buffer=False last_cold_start=2026-08-24
+  self_insure=False epip_fee=$250
+
+### F25 - Phase 3, notice urgency, 1 Dec 2026
+IN md=30 ein=30 payroll=$2,100,000 freq=biweekly private=False today=2026-12-01 year=2027
+PHASE P3_notice (Notice and withholding)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$2,100,000.00
+annual_total=$18,900.00 employer_withhold=$9,450.00 employee=$9,450.00 employer_absorb=$18,900.00 absorb_delta=$9,450.00
+per_period total=$726.92 employer=$363.46 employee=$363.46 flat_across_year=True
+quarters Q1[st base 525,000 due 4,725.00] Q2[st base 525,000 due 4,725.00] Q3[st base 525,000 due 4,725.00] Q4[st base 525,000 due 4,725.00]
+q1_payment=$4,725.00 due 2027-04-30 | never_withhold=$9,450.00 per_missed_period=$363.46 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F26 - Phase 4, contributions live, 15 Feb 2027
+IN md=30 ein=30 payroll=$2,100,000 freq=biweekly private=False today=2027-02-15 year=2027
+PHASE P4_live (Contributions live)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$2,100,000.00
+annual_total=$18,900.00 employer_withhold=$9,450.00 employee=$9,450.00 employer_absorb=$18,900.00 absorb_delta=$9,450.00
+per_period total=$726.92 employer=$363.46 employee=$363.46 flat_across_year=True
+quarters Q1[st base 525,000 due 4,725.00] Q2[st base 525,000 due 4,725.00] Q3[st base 525,000 due 4,725.00] Q4[st base 525,000 due 4,725.00]
+q1_payment=$4,725.00 due 2027-04-30 | never_withhold=$9,450.00 per_missed_period=$363.46 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F28 - Cap bites while the band changes mid-year
+IN md=16 ein=16 payroll=$4,000,000 freq=monthly private=False today=2026-08-29 year=2027
+PHASE P1_runway (DOI runway)
+size_basis=quarterly band=standard rate=0.90% avg_wage=$250,000.00 base_mode=even valid=True cap_bites=True base=$2,952,000.00
+annual_total=$17,568.00 employer_withhold=$4,284.00 employee=$13,284.00 employer_absorb=$17,568.00 absorb_delta=$13,284.00
+per_period total=$1,500.00 employer=$0.00 employee=$1,500.00 flat_across_year=False
+quarters Q1[sm base 1,000,000 due 4,500.00] Q2[sm base 1,000,000 due 4,500.00] Q3[st base 952,000 due 8,568.00] Q4[st base 0 due 0.00]
+q1_payment=$4,500.00 due 2027-04-30 | never_withhold=$13,284.00 per_missed_period=$1,500.00 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)
+
+### F27 - 2028 branch, prior-year average crosses the threshold
+IN md=20 ein=20 payroll=$1,400,000 freq=biweekly private=False today=2028-02-01 year=2028
+PHASE P5_steady (Steady state)
+size_basis=prior_year_average band=standard rate=0.90% avg_wage=$70,000.00 base_mode=even valid=True cap_bites=False base=$1,400,000.00
+annual_total=$12,600.00 employer_withhold=$6,300.00 employee=$6,300.00 employer_absorb=$12,600.00 absorb_delta=$6,300.00
+per_period total=$484.62 employer=$242.31 employee=$242.31 flat_across_year=True
+quarters Q1[st base 350,000 due 3,150.00] Q2[st base 350,000 due 3,150.00] Q3[st base 350,000 due 3,150.00] Q4[st base 350,000 due 3,150.00]
+q1_payment=$3,150.00 due 2027-04-30 | never_withhold=$6,300.00 per_missed_period=$242.31 out_of_state_trap=$0.00
+notice mode=safe_default by=2026-12-01 (Tue)

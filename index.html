@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maryland FAMLI Clock: what you owe, and by when</title>
+<meta name="description" content="A free calculator for Maryland employers. Your FAMLI contribution, your written notice date, and your private plan deadline, worked out from five questions.">
+<meta name="robots" content="index,follow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14202A; --ink2:#4A5D6C; --ink3:#6E8090;
+  --paper:#F2F4F3; --card:#FFFFFF; --rule:#D2D9DA; --rule2:#E6EBEB;
+  --accent:#0E5A5E; --accent-soft:#DCEAEA;
+  --due:#8C2F1B; --due-soft:#F6E7E2;
+  --flag:#6E5200; --flag-soft:#F7F0DA;
+  --pass:#8A97A0;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --sp:1rem;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.5;
+  font-variant-numeric:tabular-nums; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem 5rem}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{
+  outline:2.5px solid var(--accent); outline-offset:2px; border-radius:2px;
+}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-0.01em}
+p{margin:0 0 .7rem}
+
+/* ---------- masthead + phase rail (the signature element) ---------- */
+.mast{padding:1.4rem 0 .5rem}
+.mark{
+  font-family:var(--body); font-weight:700; font-size:.7rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink2);
+}
+.rail{display:flex;gap:3px;margin:.85rem 0 .5rem}
+.seg{
+  flex:1; height:9px; border-radius:1px; background:var(--rule);
+  position:relative; transition:background .5s ease;
+}
+.seg.done{background:var(--pass)}
+.seg.now{background:var(--accent)}
+.seg.now::after{
+  content:''; position:absolute; left:0; right:0; bottom:-7px; height:3px;
+  background:var(--accent); border-radius:2px;
+}
+.railkeys{display:flex;gap:3px;margin-bottom:.55rem}
+.railkey{
+  flex:1; font-size:.6rem; font-weight:700; letter-spacing:.09em; color:var(--ink3);
+  text-transform:uppercase;
+}
+.railkey.now{color:var(--accent)}
+.phaseline{font-size:.82rem;color:var(--ink2);margin-bottom:1.3rem}
+.phaseline b{color:var(--ink);font-weight:600}
+
+h1{
+  font-family:var(--display); font-size:clamp(1.85rem,7vw,2.6rem); line-height:1.08;
+  font-weight:600; letter-spacing:-0.02em; margin-bottom:.6rem;
+}
+.sub{color:var(--ink2);font-size:1rem;max-width:34rem;margin-bottom:1.5rem}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--card); border:1px solid var(--rule); border-radius:5px;
+  padding:1.15rem 1.05rem; margin-bottom:1.1rem;
+}
+.card h2{
+  font-size:.72rem; text-transform:uppercase; letter-spacing:.13em;
+  color:var(--ink3); font-weight:700; margin-bottom:.85rem;
+}
+
+/* ---------- form ---------- */
+.field{margin-bottom:1rem}
+.field:last-child{margin-bottom:0}
+label{display:block;font-weight:600;font-size:.92rem;margin-bottom:.15rem}
+.hint{font-size:.79rem;color:var(--ink3);margin-bottom:.35rem;line-height:1.4}
+input[type=number],input[type=date],select{
+  width:100%; padding:.6rem .65rem; font:inherit; font-size:1rem;
+  border:1px solid var(--rule); border-radius:4px; background:#fff; color:var(--ink);
+}
+.checkrow{display:flex;gap:.6rem;align-items:flex-start}
+.checkrow input{margin-top:.25rem;width:1.05rem;height:1.05rem;flex:none;accent-color:var(--accent)}
+.checkrow label{font-weight:500;margin:0}
+button.go{
+  width:100%; padding:.8rem; font:inherit; font-weight:700; font-size:1rem;
+  background:var(--accent); color:#fff; border:0; border-radius:4px; cursor:pointer;
+}
+button.go:hover{background:#0b4a4d}
+.err{color:var(--due);font-size:.85rem;font-weight:600;margin-top:.6rem}
+
+/* ---------- lead answer ---------- */
+.lead{
+  background:var(--card); border:1px solid var(--ink); border-radius:5px;
+  padding:1.3rem 1.1rem; margin-bottom:1.1rem; border-top:4px solid var(--due);
+}
+.eyebrow{
+  font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--due);margin-bottom:.5rem;
+}
+.lead .task{font-family:var(--display);font-size:clamp(1.3rem,5vw,1.7rem);line-height:1.2;font-weight:600;margin-bottom:.45rem}
+.lead .when{font-size:1.02rem;font-weight:700;margin-bottom:.1rem}
+.lead .when .days{font-weight:500;color:var(--ink2)}
+.lead .why{font-size:.9rem;color:var(--ink2);margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--rule2)}
+
+/* ---------- data rows ---------- */
+.row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--rule2);font-size:.94rem}
+.row:last-child{border-bottom:0}
+.row .k{color:var(--ink2)}
+.row .v{font-weight:700;text-align:right;white-space:nowrap}
+.row.big .v{font-size:1.1rem}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.2rem 0 .1rem}
+.opt{border:1px solid var(--rule);border-radius:4px;padding:.7rem}
+.opt .t{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--ink3);margin-bottom:.3rem}
+.opt .n{font-size:1.22rem;font-weight:700;line-height:1.15}
+.opt .d{font-size:.79rem;color:var(--ink2);margin-top:.3rem}
+.delta{margin-top:.7rem;font-size:.89rem;color:var(--ink2)}
+.delta b{color:var(--ink)}
+
+/* ---------- date list ---------- */
+.dates{margin:0;padding:0;list-style:none}
+.dates li{display:flex;gap:.8rem;padding:.6rem 0;border-bottom:1px solid var(--rule2);align-items:baseline}
+.dates li:last-child{border-bottom:0}
+.dates .dt{flex:none;width:6.9rem;font-weight:700;font-size:.85rem}
+.dates .lb{flex:1;font-size:.92rem}
+.dates .nt{display:block;font-size:.78rem;color:var(--ink3);margin-top:.15rem;line-height:1.4}
+.dates .rm{flex:none;font-size:.75rem;font-weight:700;color:var(--ink3);white-space:nowrap}
+.dates li.next .dt{color:var(--due)}
+.dates li.next .rm{color:var(--due)}
+.dates li.gone{color:var(--pass)}
+.dates li.gone .dt,.dates li.gone .lb{color:var(--pass);text-decoration:line-through;text-decoration-thickness:1px}
+.dates li.gone .nt{text-decoration:none}
+
+/* ---------- flags, notes, disclosures ---------- */
+.flag{
+  background:var(--flag-soft); border-left:3px solid var(--flag); border-radius:0 4px 4px 0;
+  padding:.7rem .8rem; margin:.8rem 0 0; font-size:.89rem;
+}
+.flag b{display:block;margin-bottom:.2rem}
+.warn{background:var(--due-soft);border-left-color:var(--due)}
+.warn b{color:var(--due)}
+.note{font-size:.84rem;color:var(--ink2);margin-top:.7rem}
+details.disc{margin-top:.75rem;border-top:1px solid var(--rule2);padding-top:.55rem}
+details.disc summary{
+  cursor:pointer;font-size:.78rem;font-weight:700;color:var(--ink3);
+  letter-spacing:.02em;list-style:none;display:flex;gap:.4rem;align-items:center;
+}
+details.disc summary::-webkit-details-marker{display:none}
+details.disc summary::before{content:'+';font-weight:700;color:var(--accent);width:.8rem}
+details.disc[open] summary::before{content:'\2212'}
+details.disc p{font-size:.83rem;color:var(--ink2);margin:.5rem 0 0;line-height:1.5}
+.src{font-size:.72rem;font-weight:500}
+.src a{color:var(--ink3);text-decoration:underline;text-underline-offset:2px}
+.src a:hover{color:var(--accent)}
+
+/* ---------- DOI ---------- */
+.state{
+  display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:.25rem .5rem;border-radius:3px;margin-bottom:.7rem;
+}
+.s-comfortable,.s-on_track{background:var(--accent-soft);color:var(--accent)}
+.s-tight,.s-only_if_everything_goes_right{background:var(--flag-soft);color:var(--flag)}
+.s-does_not_fit,.s-closed{background:var(--due-soft);color:var(--due)}
+table.pace{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:.6rem}
+table.pace th,table.pace td{text-align:right;padding:.42rem .3rem;border-bottom:1px solid var(--rule2)}
+table.pace th:first-child,table.pace td:first-child{text-align:left}
+table.pace th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);font-weight:700}
+ol.stages{margin:.6rem 0 0;padding-left:1.2rem;font-size:.89rem}
+ol.stages li{margin-bottom:.35rem}
+ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
+
+/* ---------- refinements ---------- */
+.refine{border:1px dashed var(--rule);background:#FAFCFC}
+.refine h2{color:var(--accent)}
+.moved{background:var(--accent-soft);border-radius:4px;padding:.6rem .7rem;font-size:.88rem;margin-top:.8rem}
+.moved b{color:var(--accent)}
+
+/* ---------- cta + footer ---------- */
+.cta{background:var(--ink);color:#fff;border:0}
+.cta h2{color:#8FB3B5}
+.cta p{color:#C6D2D6;font-size:.92rem}
+.cta a{color:#8FD5D8}
+.foot{font-size:.79rem;color:var(--ink3);line-height:1.6;padding-top:.6rem}
+.foot a{color:var(--ink2)}
+.tools{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem}
+.tools button{
+  font:inherit;font-size:.82rem;font-weight:600;padding:.45rem .75rem;background:#fff;
+  border:1px solid var(--rule);border-radius:4px;color:var(--ink2);cursor:pointer;
+}
+.tools button:hover{border-color:var(--accent);color:var(--accent)}
+.limits ul{margin:0;padding-left:1.1rem}
+.limits li{font-size:.9rem;color:var(--ink2);margin-bottom:.5rem;line-height:1.5}
+.limits li:last-child{margin-bottom:0}
+.limits li b{color:var(--ink)}
+.hidden{display:none !important}
+
+@media (max-width:400px){
+  .split{grid-template-columns:1fr}
+  .dates .dt{width:5.8rem;font-size:.8rem}
+  .railkey{font-size:.55rem;letter-spacing:.05em}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .wrap{max-width:none;padding:0}
+  .noprint,form,.tools,.cta{display:none !important}
+  .card,.lead{border:1px solid #999;break-inside:avoid;page-break-inside:avoid}
+  details.disc{display:block}
+  details.disc summary{display:none}
+  details.disc p{display:block !important}
+  a{text-decoration:none;color:#000}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="mark">FAMLI Clock &middot; Maryland</div>
+  <div class="rail" id="rail" aria-hidden="true"></div>
+  <div class="railkeys" id="railkeys" aria-hidden="true"></div>
+  <div class="phaseline" id="phaseline"></div>
+</header>
+
+<h1 id="h1">What Maryland FAMLI costs you, and the date you cannot miss.</h1>
+<p class="sub" id="sub">Five questions. No sign up. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
+
+<form class="card" id="form" novalidate>
+  <h2>Your business</h2>
+
+  <div class="field">
+    <label for="md">Employees working in Maryland</label>
+    <div class="hint">People whose work is localized in Maryland. Independent contractors do not count.</div>
+    <input type="number" id="md" min="0" step="1" inputmode="numeric" placeholder="e.g. 12">
+  </div>
+
+  <div class="field">
+    <label for="ein">Total employees under this EIN</label>
+    <div class="hint">Everyone you pay under one federal EIN, inside and outside Maryland. This is the number that sets your rate, and it is not the same as the number above.</div>
+    <input type="number" id="ein" min="0" step="1" inputmode="numeric" placeholder="e.g. 40">
+  </div>
+
+  <div class="field hidden" id="soleWrap">
+    <div class="checkrow">
+      <input type="checkbox" id="sole">
+      <label for="sole">I am the sole owner of this entity and the only person it employs.</label>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="pay">Approximate annual Maryland payroll</label>
+    <div class="hint">Gross wages paid to your Maryland employees in a year. A round number is fine.</div>
+    <input type="number" id="pay" min="0" step="1000" inputmode="numeric" placeholder="e.g. 900000">
+  </div>
+
+  <div class="field">
+    <label for="freq">How often you run payroll</label>
+    <select id="freq">
+      <option value="weekly">Weekly</option>
+      <option value="biweekly" selected>Every two weeks</option>
+      <option value="semimonthly">Twice a month</option>
+      <option value="monthly">Monthly</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <div class="checkrow">
+      <input type="checkbox" id="priv">
+      <label for="priv">We are considering a private plan instead of the State Plan.</label>
+    </div>
+  </div>
+
+  <button class="go" type="submit">Work out my dates and cost</button>
+  <div class="err hidden" id="err"></div>
+</form>
+
+<main id="out" aria-live="polite"></main>
+
+<div class="card limits">
+  <h2>What this tool does not do</h2>
+  <ul>
+    <li><b>It estimates.</b> Figures come from the numbers you typed and the published rates, not from your payroll records.</li>
+    <li><b>It is not a filing.</b> Nothing here reaches Maryland. You still register, report and pay through the FAMLI portal yourself.</li>
+    <li><b>It cannot get a private plan approved.</b> It tells you what the Declaration of Intent involves and whether the time still fits. FAMLI decides.</li>
+    <li><b>If a number looks wrong, tell us.</b> Write to Mash at <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a> and say what you were looking at. We fix errors the same week.</li>
+  </ul>
+</div>
+
+<div class="card cta noprint">
+  <h2>Who made this</h2>
+  <p><b style="color:#fff">02Launch</b> builds AI and automation into the workflows companies already run. We made this calculator because the FAMLI rules are spread across five COMAR chapters and nobody had put them in one place.</p>
+  <p>Built by a team of AI engineers from Google and Microsoft. If you want the same thing done to a process inside your business, say hello.</p>
+  <p style="margin-bottom:0"><a href="mailto:hello@02launch.com?subject=FAMLI%20Clock">hello@02launch.com</a></p>
+</div>
+
+<!-- =====================================================================
+     EMAIL CAPTURE: NOT BUILT. BLOCKED, DELIBERATELY.
+
+     The build pack (Prompt 2.3) says: "CAN-SPAM needs 02Launch's physical
+     postal address. I will supply it. Do not proceed to the capture build
+     without it." Spec v2 open item 5 repeats it. The address was not supplied,
+     so no capture field ships. Shipping one without the address would put a
+     non-compliant commercial email footer into production.
+
+     To unblock: put the postal address in CONFIG.postal_address in engine.js,
+     then paste the capture block from the Step 2.3 handoff here.
+     ===================================================================== -->
+
+<footer class="foot">
+  <p><b>This is an estimate, not tax, legal or payroll advice.</b> It is built from the
+  Maryland regulations and the Division's own published pages, listed against each figure
+  above. Check anything you are going to rely on with FAMLI Customer Care on
+  <a href="tel:+14105254010">(410) 525-4010</a> or your own advisers before you act on it.</p>
+  <p>Questions, or something here looks wrong? Write to Mash at
+  <a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a>
+  and tell us what you were looking at. We fix errors the same week.</p>
+  <p id="stamp"></p>
+</footer>
+
+</div>
+
+
+<script id="famli-engine">
+/* Maryland FAMLI engine.
+   Built against FAMLI_Spec_and_Fixtures_v2.md. Deliberately written without reading
+   famli_ref.py so that the fixture run is an independent check.
+
+   All money is held in integer cents. Quarterly wage bases are held in "quarter cents"
+   (cents x 4) so that an even split across four quarters stays exact. Nothing here uses
+   floating point for money.
+
+   Runs in the browser (window.FAMLI) and in Node (module.exports). */
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) { module.exports = factory(); }
+  else { root.FAMLI = factory(); }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------ config */
+
+  var CONFIG = {
+    wage_cap: 184500,                 // SSA 2026 taxable max. PLACEHOLDER, see D1.
+    total_rate_bp: 90,                // 0.90% expressed in basis points
+    small_rate_bp: 45,                // 0.45%
+    small_employer_threshold: 15,
+    self_insure_min_md_employees: 50,
+    quarterly_size_year: 2027,
+    doi_deadline: '2026-11-13',       // 15 Nov 2026 is a Sunday, no next-business-day relief
+    doi_nominal_deadline: '2026-11-15',
+    doi_resubmit_safe: '2026-10-21',  // 15 business days before the deadline
+    doi_window_opens: '2026-09-01',
+    contributions_start: '2027-01-01',
+    safe_notice_date: '2026-12-01',
+    q1_payment_due: '2027-04-30',
+    july_notice_nominal: '2027-07-03',
+    benefits_begin: '2028-01-03',
+    epip_application_due: '2027-10-01',
+    doi_expiry: '2027-12-31'
+  };
+
+  /* Phase boundaries live here and nowhere else. Move a phase in one line.
+     `end` is the last day inside the phase. The final phase has no end. */
+  var PHASES = [
+    { key: 'P1_runway',     label: 'DOI runway',              end: '2026-09-28' },
+    { key: 'P2_compressed', label: 'DOI compressed',          end: '2026-11-13' },
+    { key: 'P3_notice',     label: 'Notice and withholding',  end: '2026-12-31' },
+    { key: 'P4_live',       label: 'Contributions live',      end: '2027-04-30' },
+    { key: 'P5_steady',     label: 'Steady state',            end: null }
+  ];
+
+  /* Federal and Maryland state holidays. Runs to Dec 2027 (assumption A8).
+     Includes Election Day 3 Nov 2026 and American Indian Heritage Day 27 Nov 2026,
+     both Maryland state holidays that the federal list does not carry. */
+  var HOLIDAYS = [
+    '2026-01-01', '2026-01-19', '2026-02-16', '2026-05-25', '2026-06-19',
+    '2026-07-03', '2026-09-07', '2026-10-12', '2026-11-03', '2026-11-11',
+    '2026-11-26', '2026-11-27', '2026-12-25',
+    '2027-01-01', '2027-01-18', '2027-02-15', '2027-05-31', '2027-06-18',
+    '2027-07-05', '2027-09-06', '2027-10-11', '2027-11-11', '2027-11-25',
+    '2027-11-26', '2027-12-24', '2027-12-31'
+  ];
+  var HOLIDAY_SET = {};
+  HOLIDAYS.forEach(function (h) { HOLIDAY_SET[h] = true; });
+
+  /* Days in one pay period, used to walk back from the first 2027 pay date. */
+  var PERIOD_DAYS = { weekly: 7, biweekly: 14, semimonthly: 15, monthly: 30 };
+  var PERIODS_PER_YEAR = { weekly: 52, biweekly: 26, semimonthly: 24, monthly: 12 };
+
+  /* DOI critical path. Durations are business days. Only the FAMLI decision is
+     primary sourced (COMAR 09.42.03.10A(2)); the rest are estimates, hence the range. */
+  var DOI_STAGES = [
+    { key: 'officer',  label: 'Designate an Authorized Officer, gather EIN, NAICS and resident agent details', fast: 2, typical: 5,  slow: 10 },
+    { key: 'identity', label: 'Authorized Officer clears Login.gov identity verification',                     fast: 1, typical: 5,  slow: 10 },
+    { key: 'register', label: 'Register the employer in the FAMLI portal',                                     fast: 1, typical: 3,  slow: 5 },
+    { key: 'agent',    label: 'Find an insurance agent and get the consultation booked',                       fast: 5, typical: 15, slow: 25 },
+    { key: 'form',     label: 'Hold the consultation and get the signed form back',                            fast: 1, typical: 3,  slow: 5 }
+  ];
+  var DOI_PROGRESS = [
+    { key: 'not_started',       label: 'Not started yet',                       from: 0 },
+    { key: 'officer_named',     label: 'Authorized Officer named',              from: 1 },
+    { key: 'identity_verified', label: 'Officer cleared Login.gov',             from: 2 },
+    { key: 'registered',        label: 'Registered in the FAMLI portal',        from: 3 },
+    { key: 'agent_booked',      label: 'Agent found, consultation booked',      from: 4 },
+    { key: 'form_in_hand',      label: 'Signed consultation form in hand',      from: 5 }
+  ];
+
+  var EPIP_FEES = [
+    { max: 14,   fee: 100 }, { max: 49,  fee: 250 },  { max: 199, fee: 500 },
+    { max: 499,  fee: 600 }, { max: 999, fee: 750 },  { max: Infinity, fee: 1000 }
+  ];
+
+  var SOURCES = {
+    comar:        'https://regs.maryland.gov/us/md/exec/comar/09.42/index.full.html',
+    contributions:'https://paidleave.maryland.gov/employers/make-contributions/',
+    registration: 'https://paidleave.maryland.gov/employers/understand-employer-registration/',
+    register:     'https://paidleave.maryland.gov/register/',
+    privatePlans: 'https://paidleave.maryland.gov/employers/understand-your-plan/',
+    consultForm:  'https://paidleave.maryland.gov/files/proof-of-private-plan-consultation.pdf',
+    privateFaq:   'https://paidleave.maryland.gov/files/famli-faqs-private-plans-april-2026.pdf',
+    ssaCap:       'https://www.ssa.gov/faqs/en/questions/KA-02387.html',
+    notices:      'https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-801',
+    penalties:    'https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903'
+  };
+
+  /* ------------------------------------------------------------------ dates */
+
+  function iso(v) {
+    if (v == null) return null;
+    if (typeof v === 'string') return v.slice(0, 10);
+    return new Date(Date.UTC(v.getFullYear(), v.getMonth(), v.getDate())).toISOString().slice(0, 10);
+  }
+  function toDay(v) {
+    var p = iso(v).split('-');
+    return Math.round(Date.UTC(+p[0], +p[1] - 1, +p[2]) / 86400000);
+  }
+  function fromDay(n) { return new Date(n * 86400000).toISOString().slice(0, 10); }
+  function weekday(n) { return new Date(n * 86400000).getUTCDay(); }
+  function isBusinessDay(n) {
+    var w = weekday(n);
+    return w !== 0 && w !== 6 && !HOLIDAY_SET[fromDay(n)];
+  }
+  function prevBusinessDay(n) { while (!isBusinessDay(n)) { n -= 1; } return n; }
+  function nextBusinessDay(n) { while (!isBusinessDay(n)) { n += 1; } return n; }
+
+  /* Business days strictly after `from`, up to and including `to`. Never negative. */
+  function businessDaysBetween(from, to) {
+    var c = 0;
+    for (var n = from + 1; n <= to; n += 1) { if (isBusinessDay(n)) c += 1; }
+    return c > 0 ? c : 0;
+  }
+  /* Move forward k business days from `from`, not counting `from` itself. */
+  function addBusinessDays(from, k) {
+    var n = from;
+    while (k > 0) { n += 1; if (isBusinessDay(n)) k -= 1; }
+    return n;
+  }
+  function subBusinessDays(from, k) {
+    var n = from;
+    while (k > 0) { n -= 1; if (isBusinessDay(n)) k -= 1; }
+    return n;
+  }
+  var DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function longDate(v) {
+    if (v == null) return null;
+    var n = toDay(v), d = new Date(n * 86400000);
+    return DAY_NAMES[weekday(n)] + ' ' + d.getUTCDate() + ' ' + MONTH_NAMES[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+  }
+
+  /* ------------------------------------------------------------------ money */
+
+  /* Half-up division of integers. Inputs must be non-negative integers. */
+  function divRound(num, den) { return Math.floor((num * 2 + den) / (2 * den)); }
+  function cents(dollars) { return Math.round(dollars * 100); }
+  function money(c) {
+    var neg = c < 0, v = Math.abs(c);
+    var s = (v / 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (neg ? '-$' : '$') + s;
+  }
+
+  /* ------------------------------------------------------------------ phase */
+
+  function phaseFor(today) {
+    var n = toDay(today);
+    for (var i = 0; i < PHASES.length; i += 1) {
+      if (PHASES[i].end === null || n <= toDay(PHASES[i].end)) { return PHASES[i]; }
+    }
+    return PHASES[PHASES.length - 1];
+  }
+
+  /* ------------------------------------------------------------------ bands */
+
+  function bandFor(headcount) {
+    return headcount < CONFIG.small_employer_threshold ? 'small' : 'standard';
+  }
+  function rateBpFor(band) {
+    return band === 'small' ? CONFIG.small_rate_bp : CONFIG.total_rate_bp;
+  }
+  function epipFee(mdEmployees) {
+    for (var i = 0; i < EPIP_FEES.length; i += 1) {
+      if (mdEmployees <= EPIP_FEES[i].max) { return EPIP_FEES[i].fee; }
+    }
+    return 1000;
+  }
+
+  /* -------------------------------------------------------------- quarters */
+
+  /* A group is a set of employees who are paid the same. Quarterly totals are held
+     in quarter cents. The annual cap is consumed year to date, per employee, which is
+     the Social Security mechanic (assumption A1). */
+  function quarterlyBases(groups) {
+    var out = [0, 0, 0, 0];
+    groups.forEach(function (g) {
+      if (g.n <= 0) return;
+      var capTotalQc = g.n * cents(CONFIG.wage_cap) * 4;
+      var runningQc = 0, prevCapped = 0;
+      for (var q = 0; q < 4; q += 1) {
+        runningQc += g.quartersQc[q];
+        var capped = Math.min(runningQc, capTotalQc);
+        out[q] += capped - prevCapped;
+        prevCapped = capped;
+      }
+    });
+    return out;
+  }
+
+  /* Even split of an annual total across four quarters, expressed in quarter cents.
+     annualCents x 1 per quarter is exactly annualCents/4 cents. */
+  function evenQuarters(annualCents) {
+    return [annualCents, annualCents, annualCents, annualCents];
+  }
+
+  /* ------------------------------------------------------------------ notice */
+
+  function noticeDate(input) {
+    if (input.first_2027_pay_date) {
+      var pay = toDay(input.first_2027_pay_date);
+      var back = pay - (PERIOD_DAYS[input.pay_frequency] || 30);
+      return { mode: 'exact', notice_by: fromDay(prevBusinessDay(back)), first_pay: iso(input.first_2027_pay_date) };
+    }
+    return { mode: 'safe_default', notice_by: CONFIG.safe_notice_date, first_pay: null };
+  }
+
+  /* --------------------------------------------------------------- DOI block */
+
+  function doiBlock(input, today) {
+    var t = toDay(today);
+    var deadline = toDay(CONFIG.doi_deadline);
+    var safe = toDay(CONFIG.doi_resubmit_safe);
+    var open = t <= deadline;
+    var progressKey = input.doi_progress || 'not_started';
+    var pr = DOI_PROGRESS.filter(function (p) { return p.key === progressKey; })[0] || DOI_PROGRESS[0];
+    var remainingStages = DOI_STAGES.slice(pr.from);
+
+    var totals = { fast: 0, typical: 0, slow: 0 };
+    remainingStages.forEach(function (s) {
+      totals.fast += s.fast; totals.typical += s.typical; totals.slow += s.slow;
+    });
+
+    /* Last day a cold start still fits, per pace. Always the full five stages, so these
+       are constants that do not move with the user's progress. */
+    var coldTotals = { fast: 0, typical: 0, slow: 0 };
+    DOI_STAGES.forEach(function (s) {
+      coldTotals.fast += s.fast; coldTotals.typical += s.typical; coldTotals.slow += s.slow;
+    });
+
+    var verdict = {};
+    ['fast', 'typical', 'slow'].forEach(function (pace) {
+      var earliest = open ? addBusinessDays(t, totals[pace]) : null;
+      verdict[pace] = {
+        earliest_submission: earliest === null ? null : fromDay(earliest),
+        fits_deadline: earliest !== null && earliest <= deadline,
+        fits_with_resubmit_buffer: earliest !== null && earliest <= safe,
+        last_cold_start: fromDay(subBusinessDays(deadline, coldTotals[pace]))
+      };
+    });
+
+    var headline;
+    if (!open) { headline = 'closed'; }
+    else if (verdict.slow.fits_with_resubmit_buffer) { headline = 'comfortable'; }
+    else if (verdict.typical.fits_with_resubmit_buffer) { headline = 'on_track'; }
+    else if (verdict.typical.fits_deadline) { headline = 'tight'; }
+    else if (verdict.fast.fits_deadline) { headline = 'only_if_everything_goes_right'; }
+    else { headline = 'does_not_fit'; }
+
+    return {
+      window_open: open,
+      progress: progressKey,
+      progress_label: pr.label,
+      business_days_left: open ? businessDaysBetween(t, deadline) : 0,
+      headline: headline,
+      totals_remaining: totals,
+      remaining_stages: remainingStages,
+      verdict: verdict,
+      deadline: CONFIG.doi_deadline,
+      resubmit_safe: CONFIG.doi_resubmit_safe,
+      can_self_insure: input.md_employees >= CONFIG.self_insure_min_md_employees,
+      epip_fee: epipFee(input.md_employees)
+    };
+  }
+
+  /* ------------------------------------------------------------- date list */
+
+  function dateList(r, today) {
+    var t = toDay(today);
+    var rows = [];
+    function add(label, dateStr, note) {
+      if (dateStr === null) { rows.push({ label: label, date: null, note: note, days: null, passed: false }); return; }
+      var n = toDay(dateStr);
+      rows.push({ label: label, date: dateStr, note: note, days: n - t, passed: n < t });
+    }
+    add('Register with FAMLI', null, 'Open now. No deadline, but everything else waits on it.');
+    if (r.doi) {
+      add('Submit your Declaration of Intent', CONFIG.doi_deadline, '15 Nov 2026 is a Sunday, so Friday 13 November is the real deadline.');
+      add('Submit early enough to survive a rejection', CONFIG.doi_resubmit_safe, 'Fifteen business days before the deadline. After this, your first attempt is your only attempt.');
+    }
+    add('Written notice to employees', r.notice.notice_by,
+        r.notice.mode === 'exact'
+          ? 'One full pay period before your first 2027 pay date.'
+          : 'Safe for every pay frequency. Add your first 2027 pay date above for your exact date.');
+    add('Start withholding', CONFIG.contributions_start, 'Contributions begin on wages paid from this date.');
+    add('First report and payment (Q1 wages)', CONFIG.q1_payment_due, 'Quarterly from here.');
+    add('Six month pre benefit notice', fromDay(prevBusinessDay(toDay(CONFIG.july_notice_nominal))),
+        '3 July 2027 falls on a Saturday. Notices get no next business day relief, so it moves earlier.');
+    if (r.doi) {
+      add('EPIP application due', CONFIG.epip_application_due, 'Applications open in summer 2027.');
+      add('All Declarations of Intent expire', CONFIG.doi_expiry, 'Your plan must be approved before 1 Jan 2028 or the escrow is remitted with interest.');
+    }
+    add('Benefits begin', CONFIG.benefits_begin, 'Employees can start claiming.');
+
+    var undated = rows.filter(function (x) { return x.date === null; });
+    var dated = rows.filter(function (x) { return x.date !== null; })
+      .sort(function (a, b) { return toDay(a.date) - toDay(b.date); });
+    return undated.concat(dated);
+  }
+
+  /* ------------------------------------------------------------------ main */
+
+  function compute(input) {
+    var today = iso(input.today || new Date());
+    var ph = phaseFor(today);
+    var year = input.contribution_year || 2027;
+    var md = Math.max(0, Math.floor(input.md_employees || 0));
+    var ein = Math.max(0, Math.floor(input.ein_employees || 0));
+    var payrollC = cents(input.md_payroll || 0);
+    var freq = PERIODS_PER_YEAR[input.pay_frequency] ? input.pay_frequency : 'biweekly';
+
+    var base = {
+      phase: ph.key, phase_label: ph.label, today: today,
+      contribution_year: year, in_scope: true, reason: null,
+      sources: SOURCES, config: CONFIG
+    };
+
+    if (md === 0) {
+      base.in_scope = false;
+      base.reason = 'No Maryland employees. FAMLI does not apply to you.';
+      return base;
+    }
+    if (ein === 1 && input.sole_owner_only_employee) {
+      base.in_scope = false;
+      base.reason = 'You are the sole owner and the only person your entity employs. '
+        + 'COMAR 09.42.01.01B(21)(b) says you are not an employer for FAMLI.';
+      return base;
+    }
+    if (ein < md) {
+      base.in_scope = false;
+      base.reason = 'Total employees under the EIN cannot be fewer than your Maryland employees.';
+      base.input_error = true;
+      return base;
+    }
+
+    /* ---- size band, per quarter ---- */
+    var sizeBasis, quarterBands = [];
+    if (year >= 2028 && input.prior_year_quarterly_headcount) {
+      var pq = input.prior_year_quarterly_headcount;
+      var avg = (pq[0] + pq[1] + pq[2] + pq[3]) / 4;
+      var fixedBand = bandFor(avg);
+      quarterBands = [fixedBand, fixedBand, fixedBand, fixedBand];
+      sizeBasis = { basis: 'prior_year_average', average: avg, quarters: pq };
+    } else if (input.quarterly_ein_headcount) {
+      quarterBands = input.quarterly_ein_headcount.map(bandFor);
+      sizeBasis = { basis: 'quarterly', quarters: input.quarterly_ein_headcount };
+    } else {
+      var b = bandFor(ein);
+      quarterBands = [b, b, b, b];
+      sizeBasis = { basis: year >= 2028 ? 'prior_year_average' : 'quarterly', quarters: null };
+    }
+    var headlineBand = (year >= 2028 && input.prior_year_quarterly_headcount)
+      ? quarterBands[0] : bandFor(ein);
+
+    /* ---- contribution base ---- */
+    var hc = input.high_earner_count;
+    var hw = input.high_earner_wages;
+    var baseMode = 'even', baseValid = true;
+    var groups;
+
+    if (hc !== undefined && hc !== null) {
+      var hwC = cents(hw || 0);
+      var capC = cents(CONFIG.wage_cap);
+      var contradictory = (hc < 0) || (hc > md) || (hwC < hc * capC) || (hwC > payrollC);
+      if (contradictory) {
+        baseMode = 'refined_invalid';
+        baseValid = false;
+      } else {
+        baseMode = 'refined';
+        groups = [
+          { n: hc, quartersQc: evenQuarters(hwC) },
+          { n: md - hc, quartersQc: evenQuarters(payrollC - hwC) }
+        ];
+      }
+    }
+    if (!groups) {
+      groups = [{ n: md, quartersQc: input.quarterly_md_payroll
+        ? input.quarterly_md_payroll.map(function (v) { return cents(v) * 4; })
+        : evenQuarters(payrollC) }];
+    }
+
+    var qBaseQc = quarterlyBases(groups);
+
+    /* ---- quarterly money ---- */
+    var quarters = [], annualDue = 0, annualEmployer = 0, baseTotalQc = 0;
+    for (var q = 0; q < 4; q += 1) {
+      var bandQ = quarterBands[q];
+      var bp = rateBpFor(bandQ);
+      var dueC = divRound(qBaseQc[q] * bp, 40000);
+      var empC = bandQ === 'small' ? 0 : divRound(dueC, 2);
+      quarters.push({
+        quarter: q + 1, band: bandQ, rate_bp: bp,
+        base_cents: divRound(qBaseQc[q], 4),
+        base_qc: qBaseQc[q],
+        due_cents: dueC,
+        employer_cents: empC,
+        employee_cents: dueC - empC
+      });
+      annualDue += dueC;
+      annualEmployer += empC;
+      baseTotalQc += qBaseQc[q];
+    }
+    var baseTotalC = divRound(baseTotalQc, 4);
+    var annualEmployee = annualDue - annualEmployer;
+
+    /* ---- per period, quoted from Q1 ---- */
+    var ppy = PERIODS_PER_YEAR[freq];
+    var q1 = quarters[0];
+    var perPeriodTotal = divRound(q1.due_cents * 4, ppy);
+    var perPeriodEmployer = divRound(q1.employer_cents * 4, ppy);
+    var perPeriodEmployee = divRound(q1.employee_cents * 4, ppy);
+    var flat = quarters.every(function (x) {
+      return x.due_cents === q1.due_cents && x.band === q1.band;
+    });
+
+    /* ---- flags ---- */
+    var smallMdNotEin = md < CONFIG.small_employer_threshold && ein >= CONFIG.small_employer_threshold;
+    var mustReportOutOfState = ein < CONFIG.small_employer_threshold && ein > md;
+
+    var r = base;
+    r.md_employees = md;
+    r.ein_employees = ein;
+    r.pay_frequency = freq;
+    r.periods_per_year = ppy;
+    r.payroll_cents = payrollC;
+    r.size_basis = sizeBasis;
+    r.band = headlineBand;
+    r.rate_bp = rateBpFor(headlineBand);
+    r.avg_wage_cents = md > 0 ? divRound(payrollC, md) : 0;
+    r.base_mode = baseMode;
+    r.base_inputs_valid = baseValid;
+    r.base_cents = baseTotalC;
+    r.cap_bites = baseTotalC < payrollC;
+    r.quarters = quarters;
+    r.annual_total_cents = annualDue;
+    r.annual_employer_if_withholding_cents = annualEmployer;
+    r.annual_employee_if_withholding_cents = annualEmployee;
+    r.absorb_annual_employer_cents = annualDue;
+    r.absorb_delta_cents = annualEmployee;
+    r.per_period_total_cents = perPeriodTotal;
+    r.per_period_employer_cents = perPeriodEmployer;
+    r.per_period_employee_cents = perPeriodEmployee;
+    r.flat_across_year = flat;
+    r.q1_payment_cents = q1.due_cents;
+    r.q1_payment_due = CONFIG.q1_payment_due;
+    r.cost_of_never_withholding_cents = annualEmployee;
+    r.cost_per_missed_pay_period_cents = perPeriodEmployee;
+    r.cost_of_unreported_out_of_state_cents = mustReportOutOfState ? annualDue : 0;
+    r.small_by_md_but_not_by_ein = smallMdNotEin;
+    r.must_report_out_of_state = mustReportOutOfState;
+    r.zero_payroll = payrollC === 0;
+    r.notice = noticeDate(input);
+    if (input.considering_private_plan) { r.doi = doiBlock({
+      md_employees: md, doi_progress: input.doi_progress
+    }, today); }
+    r.dates = dateList(r, today);
+    return r;
+  }
+
+  return {
+    compute: compute,
+    phaseFor: phaseFor,
+    CONFIG: CONFIG,
+    PHASES: PHASES,
+    DOI_STAGES: DOI_STAGES,
+    DOI_PROGRESS: DOI_PROGRESS,
+    PERIODS_PER_YEAR: PERIODS_PER_YEAR,
+    SOURCES: SOURCES,
+    money: money,
+    longDate: longDate,
+    iso: iso,
+    toDay: toDay,
+    fromDay: fromDay,
+    isBusinessDay: isBusinessDay,
+    businessDaysBetween: businessDaysBetween,
+    prevBusinessDay: prevBusinessDay,
+    nextBusinessDay: nextBusinessDay
+  };
+}));
+</script>
+<script>
+(function(){
+'use strict';
+var F = window.FAMLI, C = F.CONFIG, S = F.SOURCES;
+var $ = function(id){ return document.getElementById(id); };
+var money = F.money, longDate = F.longDate;
+
+/* ---------------------------------------------------------------- today
+   Decision: the phase is computed in the browser, in Maryland's timezone, with no
+   server call. A user in Hawaii at 11pm would otherwise see yesterday's phase while
+   Maryland has already moved on. Intl gives us the Maryland civil date directly.
+   ?d=YYYY-MM-DD overrides it, for QA only. */
+function marylandToday(){
+  var q = new URLSearchParams(location.search).get('d');
+  if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) return q;
+  try {
+    return new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',
+      year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  } catch(e){ return new Date().toISOString().slice(0,10); }
+}
+var TODAY = marylandToday();
+
+/* ---------------------------------------------------------------- helpers */
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function el(html){ var t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstChild; }
+function src(label,url){ return '<span class="src"><a href="'+url+'" target="_blank" rel="noopener">'+esc(label)+'</a></span>'; }
+function disc(summary,body){ return '<details class="disc"><summary>'+esc(summary)+'</summary><p>'+body+'</p></details>'; }
+function plural(n,s,p){ return n===1?s:(p||s+'s'); }
+function money0(d){ return '$'+String(d).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+var CAP = money0(C.wage_cap);
+function daysWord(n){
+  if(n===0) return 'today';
+  if(n===1) return 'tomorrow';
+  if(n<0) return Math.abs(n)+' '+plural(Math.abs(n),'day')+' ago';
+  return n+' '+plural(n,'day')+' from now';
+}
+
+/* Disclosure text, verbatim from the rules doc register. */
+var D1 = 'Figures use the 2026 Social Security wage cap of '+CAP+'. SSA publishes the 2027 cap in October and we will update these numbers the day it lands. Only employees earning above the cap are affected.';
+var D2 = 'Under 15 employers escrow only the employee half, because that is all that would otherwise be due to the State. MDOL has not addressed this case directly, so check with FAMLI on (410) 525-4010 before you rely on it.';
+var D3 = 'The 15 business days for a FAMLI decision is set by regulation. The other stage durations are our planning estimates. No agency publishes them. Booking an insurance agent is the step most likely to run long.';
+var D4 = 'We cannot tell you what a private plan costs. Carriers set their own rates and may charge employers more than the State Plan. What we can tell you is that they cannot withhold more than 0.45% from your employees, and the annual application fee is $100 to $1,000.';
+var DEVEN = 'This assumes your Maryland salaries are broadly similar. If a few people earn well above the cap, the real figure is lower. The refinement below removes this assumption entirely.';
+
+/* ---------------------------------------------------------------- phase rail */
+function drawRail(){
+  var ph = F.phaseFor(TODAY), rail = $('rail'), keys = $('railkeys');
+  var shorts = ['P1','P2','P3','P4','P5'];
+  var idx = F.PHASES.findIndex(function(p){ return p.key===ph.key; });
+  rail.innerHTML=''; keys.innerHTML='';
+  F.PHASES.forEach(function(p,i){
+    rail.appendChild(el('<div class="seg '+(i<idx?'done':(i===idx?'now':''))+'"></div>'));
+    keys.appendChild(el('<div class="railkey '+(i===idx?'now':'')+'">'+shorts[i]+'</div>'));
+  });
+  var ends = ph.end ? ' to ' + longDate(ph.end) : ' onwards';
+  $('phaseline').innerHTML = 'Phase '+(idx+1)+' of 5 &middot; <b>'+esc(ph.label)+'</b>'+esc(ends)
+    + ' &middot; reading this on ' + esc(longDate(TODAY));
+  $('stamp').innerHTML = 'Rules checked against the Division\u2019s published pages and COMAR 09.42 on 29 August 2026. '
+    + 'Page read on ' + esc(longDate(TODAY)) + '. ' + src('COMAR 09.42', S.comar);
+  return ph;
+}
+var PHASE = drawRail();
+
+/* Phase drives the headline copy, so the page tells the truth on the day it is read. */
+(function(){
+  var h = {
+    P1_runway:['What Maryland FAMLI costs you, and the date you cannot miss.',
+      'Five questions. No sign up. If you want a private plan, the Declaration of Intent is due Friday 13 November 2026 and the work behind it takes weeks.'],
+    P2_compressed:['The private plan window is closing. Here is what still fits.',
+      'Five questions. No sign up. A cold start no longer fits at normal pace, so this asks where you already are and works forward from there.'],
+    P3_notice:['Your employees need this notice in writing before January.',
+      'Five questions. No sign up. Every Maryland employer owes a written notice one full pay period before the first 2027 withholding. This works out your date.'],
+    P4_live:['Contributions are live. Here is your first payment and what it is.',
+      'Five questions. No sign up. Your first report and payment covers Q1 wages and is due Friday 30 April 2027.'],
+    P5_steady:['Your Maryland FAMLI cost, quarter by quarter.',
+      'Five questions. No sign up. Quarterly reports, the July notice, and the private plan application deadline, worked out for your business.']
+  }[PHASE.key];
+  $('h1').textContent = h[0]; $('sub').textContent = h[1];
+})();
+
+/* ---------------------------------------------------------------- form state */
+var st = { hc:null, hw:null, fp:null, dp:'not_started' };
+
+function readForm(){
+  return {
+    md_employees: parseInt($('md').value,10),
+    ein_employees: parseInt($('ein').value,10),
+    md_payroll: parseFloat($('pay').value),
+    pay_frequency: $('freq').value,
+    considering_private_plan: $('priv').checked,
+    sole_owner_only_employee: $('sole').checked,
+    today: TODAY,
+    high_earner_count: st.hc, high_earner_wages: st.hw,
+    first_2027_pay_date: st.fp, doi_progress: st.dp
+  };
+}
+$('ein').addEventListener('input', function(){
+  $('soleWrap').classList.toggle('hidden', parseInt($('ein').value,10)!==1);
+});
+
+/* ---------------------------------------------------------------- lead output
+   The lead is the next task and its date. Money sits underneath as the reason
+   the date matters. It never leads with the cost of doing nothing. */
+function lead(r){
+  var p = r.phase;
+  if ((p==='P1_runway'||p==='P2_compressed') && r.doi && r.doi.window_open){
+    var d = r.doi;
+    if (p==='P2_compressed' || d.headline==='only_if_everything_goes_right' || d.headline==='does_not_fit'){
+      return { eyebrow:'Your next move',
+        task: d.headline==='does_not_fit'
+          ? 'Plan for the State Plan in January, and apply for a private plan for 2028 instead.'
+          : 'Book the insurance agent consultation this week.',
+        date: C.doi_deadline,
+        why: d.headline==='does_not_fit'
+          ? 'A cold start no longer fits before Friday 13 November, even at the fastest pace we have modelled. Your money position for 2027 does not change: the escrow under a private plan costs exactly what the State Plan costs.'
+          : 'You have '+d.business_days_left+' business '+plural(d.business_days_left,'day')+' left and '+d.totals_remaining.typical+' days of work at normal pace. The agent booking is the step that runs long.' };
+    }
+    return { eyebrow:'Your next move',
+      task:'Start the Declaration of Intent now. Name your Authorized Officer this week.',
+      date:C.doi_deadline,
+      why:'Submission closes Friday 13 November 2026, because 15 November is a Sunday and the Declaration gets no next business day relief. Behind that date sits about '+d.totals_remaining.typical+' business days of work at normal pace.' };
+  }
+  if (p==='P3_notice'){
+    return { eyebrow:'Your next move', task:'Put your withholding notice to employees in writing.',
+      date:r.notice.notice_by,
+      why:'You must tell employees in writing at least one full pay period before you start withholding. Miss it and you can still withhold, but the notice obligation is on every Maryland employer and the Division has not published a template, so you are writing it yourself.' };
+  }
+  if (p==='P4_live'){
+    return { eyebrow:'Your next move', task:'File your first quarterly report and pay Q1.',
+      date:C.q1_payment_due,
+      why:'Q1 covers wages paid from 1 January. Your estimated payment is '+money(r.q1_payment_cents)+'.' };
+  }
+  if (p==='P5_steady'){
+    var nxt = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
+    return { eyebrow:'Your next move', task: nxt ? nxt.label : 'Keep filing quarterly.',
+      date: nxt ? nxt.date : C.q1_payment_due,
+      why:'Reports and payments are quarterly from here. The six month pre benefit notice is a separate obligation and it is easy to miss.' };
+  }
+  return { eyebrow:'Your next move', task:'Put your withholding notice to employees in writing.',
+    date:r.notice.notice_by,
+    why:'Registration is open now and has no deadline, but the written notice does. Everything else waits on registering.' };
+}
+
+/* ---------------------------------------------------------------- render */
+function render(r){
+  var out = $('out'); out.innerHTML='';
+  function add(h){ out.appendChild(el(h)); }
+
+  if (!r.in_scope){
+    add('<div class="lead"><div class="eyebrow">Result</div>'
+      + '<div class="task">You are out of scope.</div>'
+      + '<p style="margin-top:.6rem">'+esc(r.reason)+'</p>'
+      + (r.input_error ? '' : '<div class="why">Nothing to register, nothing to withhold, nothing to pay. If that changes, for example you take on a Maryland employee, you must register within 20 days of first paying them. '+src('COMAR 09.42.02.03',S.comar)+'</div>')
+      + '</div>');
+    return;
+  }
+
+  /* ---- lead ---- */
+  var L = lead(r), ld = F.toDay(L.date) - F.toDay(TODAY);
+  add('<div class="lead"><div class="eyebrow">'+esc(L.eyebrow)+'</div>'
+    + '<div class="task">'+esc(L.task)+'</div>'
+    + '<div class="when">'+esc(longDate(L.date))+' <span class="days">&middot; '+esc(daysWord(ld))+'</span></div>'
+    + '<div class="why">'+L.why+'</div></div>');
+
+  /* ---- in scope ---- */
+  var bandWords = r.band==='small'
+    ? 'Under 15 employees under your EIN, so you are a <b>small employer</b>. You are responsible for 0.45% of Maryland wages, half the full rate, and you may pass all of it to your employees.'
+    : '15 or more employees under your EIN, so you pay the <b>full 0.9%</b>. You may withhold up to half of that from employees and must fund the rest yourself.';
+  add('<div class="card"><h2>Where you stand</h2>'
+    + '<p>You have '+r.md_employees+' '+plural(r.md_employees,'employee')+' in Maryland, so FAMLI applies to you. '
+    + '<b>Registration is open now</b> and has no deadline, but nothing else can happen until it is done. '+src('Register',S.register)+'</p>'
+    + '<p style="margin-bottom:0">'+bandWords+' '+src('COMAR 09.42.02.06D',S.comar)+'</p>'
+    + (r.size_basis.basis==='prior_year_average'
+        ? '<p class="note">Your band comes from the average of last year\u2019s four quarters ('+r.size_basis.average+'), fixed for the whole year. From 2028 that is how size works.</p>'
+        : '<p class="note">In 2027 your size is worked out quarter by quarter, so crossing 15 mid year changes your rate from that quarter forward, never backwards.</p>')
+    + '</div>');
+
+  if (r.zero_payroll){
+    add('<div class="card"><h2>Your cost</h2><div class="flag warn"><b>We cannot cost this yet.</b>'
+      + 'You entered zero Maryland payroll. That is legal, and it means zero contributions for now, but it is not really an answer. Put in an approximate annual figure and we will work it out.</div></div>');
+  } else {
+    /* ---- money ---- */
+    var perLabel = {weekly:'week',biweekly:'two weeks',semimonthly:'half month',monthly:'month'}[r.pay_frequency];
+    add('<div class="card"><h2>What it costs</h2>'
+      + '<div class="row big"><span class="k">Every '+esc(perLabel)+', total</span><span class="v">'+money(r.per_period_total_cents)+'</span></div>'
+      + '<div class="row"><span class="k">of which you fund</span><span class="v">'+money(r.per_period_employer_cents)+'</span></div>'
+      + '<div class="row"><span class="k">of which employees fund</span><span class="v">'+money(r.per_period_employee_cents)+'</span></div>'
+      + '<div class="row big"><span class="k">Full year 2027, total</span><span class="v">'+money(r.annual_total_cents)+'</span></div>'
+      + '<div class="row"><span class="k">Contribution base after the wage cap</span><span class="v">'+money(r.base_cents)+'</span></div>'
+      + '<p class="note" style="margin-top:.55rem"><b>Wage cap in use: '+CAP+', a placeholder.</b> '
+        + 'That is the 2026 Social Security taxable maximum. SSA publishes the 2027 figure in October and we will update this page the day it lands. '
+        + 'It only changes the answer for employees paid above it.</p>'
+      + (r.flat_across_year ? ''
+          : '<div class="flag"><b>This per period figure does not hold all year.</b>'
+            + (r.cap_bites ? 'Your higher earners hit the '+CAP+' cap partway through, so contributions are front loaded and later quarters are smaller. '
+                           : 'Your band changes during the year, so the rate changes with it. ')
+            + 'The quarter by quarter split is below.</div>')
+      + '<table class="pace" style="margin-top:.9rem"><thead><tr><th>Quarter</th><th>Rate</th><th>Wages counted</th><th>Due</th></tr></thead><tbody>'
+      + r.quarters.map(function(q){
+          return '<tr><td>Q'+q.quarter+'</td><td>'+(q.rate_bp/100).toFixed(2)+'%</td><td>'+money(q.base_cents)+'</td><td>'+money(q.due_cents)+'</td></tr>';
+        }).join('')
+      + '</tbody></table>'
+      + '<p class="note">Rate '+src('0.9% total for 2027',S.contributions)+'. Wages counted stop at the Social Security cap per person per year '+src('COMAR 09.42.02.04A',S.comar)+'. Cap figure '+src('SSA 2026 taxable maximum',S.ssaCap)+'.</p>'
+      + disc('What could move these numbers', esc(D1) + (r.base_mode==='even' ? '</p><p>'+esc(DEVEN) : ''))
+      + '</div>');
+
+    /* ---- withhold vs absorb ---- */
+    add('<div class="card"><h2>Withhold or absorb</h2>'
+      + '<div class="split">'
+      + '<div class="opt"><div class="t">If you withhold</div><div class="n">'+money(r.annual_employer_if_withholding_cents)+'</div><div class="d">your cash, per year. Employees fund '+money(r.annual_employee_if_withholding_cents)+'.</div></div>'
+      + '<div class="opt"><div class="t">If you absorb</div><div class="n">'+money(r.absorb_annual_employer_cents)+'</div><div class="d">your cash, per year. Employees fund nothing.</div></div>'
+      + '</div>'
+      + '<div class="delta">Choosing to absorb costs you <b>'+money(r.absorb_delta_cents)+'</b> more a year.'
+      + (r.band==='small' ? ' As a small employer you may legally pass your entire obligation to staff.' : '')
+      + '</div>'
+      + '<p class="note">Withholding is optional, up to half the total rate '+src('COMAR 09.42.02.05B',S.comar)+'. If you absorb, you must notify employees using the Division\u2019s template, and MDOL warns there may be tax implications. Take tax advice before you decide.</p>'
+      + '<div class="flag warn"><b>If you simply do not withhold, you are deemed to have chosen to pay it.</b>'
+      + 'You cannot recover it from later pay cycles. That is '+money(r.cost_per_missed_pay_period_cents)+' for every pay period you miss, and '
+      + money(r.cost_of_never_withholding_cents)+' if you never start. '+src('COMAR 09.42.02.07',S.comar)+'</div>'
+      + '</div>');
+
+    /* ---- P4: what has already gone ---- */
+    if (r.phase==='P4_live'){
+      var days = F.toDay(TODAY)-F.toDay(C.contributions_start);
+      var per = {weekly:7,biweekly:14,semimonthly:15,monthly:30}[r.pay_frequency];
+      var missed = Math.max(0, Math.floor(days/per));
+      if (missed>0){
+        add('<div class="card"><h2>If you have not started withholding</h2>'
+          + '<div class="row big"><span class="k">'+missed+' pay '+plural(missed,'period')+' since 1 January</span><span class="v">'+money(missed*r.cost_per_missed_pay_period_cents)+'</span></div>'
+          + '<p class="note">That is what you are already deemed to have elected to pay, and it cannot be recouped from future cycles. Starting now stops the meter; it does not wind it back. '+src('COMAR 09.42.02.07',S.comar)+'</p></div>');
+      }
+    }
+
+    /* ---- first payment ---- */
+    add('<div class="card"><h2>First payment</h2>'
+      + '<div class="row big"><span class="k">Q1 2027 wages, due '+esc(longDate(C.q1_payment_due))+'</span><span class="v">'+money(r.q1_payment_cents)+'</span></div>'
+      + '<p class="note">Reports and payments are quarterly. Where a payment date falls at a weekend it moves to the next business day; notice dates do not get that relief and move earlier instead. '+src('COMAR 09.42.02.08E',S.comar)+'</p></div>');
+  }
+
+  /* ---- flags ---- */
+  if (r.small_by_md_but_not_by_ein || r.must_report_out_of_state){
+    var fl = '<div class="card"><h2>Watch these</h2>';
+    if (r.small_by_md_but_not_by_ein){
+      fl += '<div class="flag"><b>You are small in Maryland but not small under your EIN.</b>'
+        + 'Size counts every employee under the EIN, in and out of Maryland. With '+r.md_employees+' in Maryland and '+r.ein_employees+' in total you pay the full 0.9%, not 0.45%. '
+        + 'That is an extra '+money(r.absorb_delta_cents)+' a year against the small employer rate. '+src('COMAR 09.42.02.06A',S.comar)+'</div>';
+    }
+    if (r.must_report_out_of_state){
+      fl += '<div class="flag warn"><b>Report your out of state headcount or your bill doubles.</b>'
+        + 'To be classified small, your quarterly report must state how many employees work outside Maryland. You have '+(r.ein_employees-r.md_employees)+'. Leave that field blank and you are deemed not small and pay 0.9% instead of 0.45%, which costs you an extra '
+        + money(r.cost_of_unreported_out_of_state_cents)+' a year. A blank field, nothing else. '+src('COMAR 09.42.02.08C and D',S.comar)+'</div>';
+    }
+    add(fl+'</div>');
+  }
+
+  /* ---- refinements ---- */
+  add(refineHTML(r));
+
+  /* ---- dates ---- */
+  var firstFuture = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
+  add('<div class="card"><h2>Your dates</h2><ul class="dates">'
+    + r.dates.map(function(x){
+        var cls = x.passed ? 'gone' : (firstFuture && x.date===firstFuture.date ? 'next' : '');
+        return '<li class="'+cls+'">'
+          + '<span class="dt">'+(x.date ? esc(longDate(x.date)) : 'Now') + '</span>'
+          + '<span class="lb">'+esc(x.label)+'<span class="nt">'+esc(x.note)+'</span></span>'
+          + '<span class="rm">'+(x.date ? (x.passed ? 'passed' : x.days+'d') : 'open')+'</span></li>';
+      }).join('')
+    + '</ul><p class="note">Dates that have gone are struck through, not hidden, so you can see what you may have missed. '
+    + src('Notice obligations, LE 8.3-801',S.notices)+'</p></div>');
+
+  /* ---- DOI ---- */
+  if (r.doi) add(doiHTML(r));
+
+  window.scrollTo({top: $('out').offsetTop-10, behavior:'smooth'});
+  bindRefinements(r);
+  writeURL();
+}
+
+/* ---------------------------------------------------------------- refinements */
+function refineHTML(r){
+  var capTxt = CAP;
+  var h = '<div class="card refine"><h2>Make this exact</h2>';
+
+  /* R1 */
+  h += '<div class="field"><label for="hc">Do a few people earn much more than the rest?</label>'
+    + '<div class="hint">FAMLI contributions stop at '+capTxt+' per person per year. Our estimate above assumes your Maryland salaries are broadly similar. '
+    + 'If a few people earn well above '+capTxt+', your real cost is lower than we have shown. '
+    + 'Tell us how many and what they are paid in total and we will give you the exact figure.</div></div>'
+    + '<div class="field"><label for="hc" style="font-weight:500;font-size:.86rem">How many Maryland employees are paid more than '+capTxt+'?</label>'
+    + '<input type="number" id="hc" min="0" step="1" inputmode="numeric" value="'+(st.hc==null?'':st.hc)+'"></div>'
+    + '<div class="field"><label for="hw" style="font-weight:500;font-size:.86rem">What are those people paid in total, per year?</label>'
+    + '<input type="number" id="hw" min="0" step="1000" inputmode="numeric" value="'+(st.hw==null?'':st.hw)+'"></div>';
+
+  if (r.base_mode==='refined_invalid'){
+    h += '<div class="flag warn"><b>Those two numbers do not fit together.</b>'
+      + 'You said '+st.hc+' '+plural(st.hc,'person','people')+' earn more than '+capTxt+' each, which is at least '
+      + money0(st.hc*F.CONFIG.wage_cap)+', but you gave a total of '+money((st.hw||0)*100)+'. '
+      + 'We have gone back to the even wages estimate rather than guess which number you meant. Fix either one and we will use it.</div>';
+  } else if (r.base_mode==='refined' && r.refineDelta!=null){
+    h += '<div class="moved"><b>Updated.</b> Using your figures, the contribution base is '+money(r.base_cents)
+      + ' and the year costs '+money(r.annual_total_cents)+'. That is '
+      + (r.refineDelta>0 ? money(r.refineDelta)+' lower' : (r.refineDelta<0 ? money(-r.refineDelta)+' higher' : 'unchanged'))
+      + ' than the even wages estimate.</div>';
+  }
+
+  /* R2 */
+  h += '<div class="field" style="margin-top:1.3rem"><label for="fp">Want your exact notice date?</label>'
+    + '<div class="hint">The law says you must tell employees in writing at least one full pay period before you start withholding. '
+    + 'That date depends on your own pay calendar, so we have shown the date that is safe for everyone. '
+    + 'Give us your first 2027 pay date and we will give you yours.</div>'
+    + '<input type="date" id="fp" min="2027-01-01" max="2027-12-31" value="'+(st.fp||'')+'"></div>';
+
+  h += '<div class="moved">'
+    + (r.notice.mode==='exact'
+      ? '<b>Your date.</b> Notice by <b>'+esc(longDate(r.notice.notice_by))+'</b>, one full pay period before your first 2027 pay date of '+esc(longDate(r.notice.first_pay))+'. This replaces the safe default of '+esc(longDate(F.CONFIG.safe_notice_date))+'.'
+      : '<b>Showing the safe default.</b> Notice by <b>'+esc(longDate(r.notice.notice_by))+'</b>, which works at every pay frequency. Add your first 2027 pay date above for your own, which is usually later.')
+    + '</div>';
+
+  h += '<button class="go" type="button" id="applyRef" style="margin-top:1rem">Update my figures</button>';
+  h += disc('Why we ask rather than assume',
+    'The even wages assumption is the largest error in this tool. For a firm with one very high earner it can overstate the cost by up to 70%. These two fields remove it. '
+    + 'We do not store anything you type here; the numbers stay in the page and in the link you can copy below.');
+  return h + '</div>';
+}
+
+function bindRefinements(r){
+  var b = $('applyRef'); if (!b) return;
+  b.addEventListener('click', function(){
+    var hc = $('hc').value.trim(), hw = $('hw').value.trim(), fp = $('fp').value;
+    st.hc = hc==='' ? null : parseInt(hc,10);
+    st.hw = hw==='' ? null : parseFloat(hw);
+    st.fp = fp || null;
+    if (st.hc===null && st.hw!==null) st.hc = null;
+    run(true);
+  });
+  var dp = document.getElementById('dp');
+  if (dp) dp.addEventListener('change', function(){ st.dp = dp.value; run(true); });
+}
+
+/* ---------------------------------------------------------------- DOI block */
+function doiHTML(r){
+  var d = r.doi;
+  var words = {
+    comfortable:['Comfortable','This fits even if every stage runs slowly, with time left to fix a rejection.'],
+    on_track:['On track','This fits at normal pace with time left to fix a rejection and resubmit.'],
+    tight:['Tight','This fits at normal pace, but there is no room to recover from a rejection. If FAMLI sends it back, that is the end of it.'],
+    only_if_everything_goes_right:['Only if everything goes right','At normal pace you need '+d.totals_remaining.typical+' business days and you have '+d.business_days_left+'. It fits only on the fast path, which means moving on every stage this week.'],
+    does_not_fit:['Does not fit','Starting from here, this does not reach 13 November even at the fastest pace we have modelled. There is no countdown to show you.'],
+    closed:['Closed','The window shut on Friday 13 November 2026.']
+  }[d.headline];
+
+  var h = '<div class="card"><h2>Private plan, the Declaration of Intent</h2>'
+    + '<span class="state s-'+d.headline+'">'+esc(words[0])+'</span>'
+    + '<p>'+esc(words[1])+'</p>';
+
+  if (d.window_open){
+    h += '<div class="row"><span class="k">Business days until Friday 13 November</span><span class="v">'+d.business_days_left+'</span></div>'
+      + '<div class="row"><span class="k">Business days of work left, at normal pace</span><span class="v">'+d.totals_remaining.typical+'</span></div>';
+
+    /* P2 asks where you already are instead of running a dead countdown. */
+    h += '<div class="field" style="margin-top:1rem"><label for="dp">Where are you already?</label>'
+      + '<div class="hint">Most of the calendar is the agent consultation. If you have already registered, you have three stages left, not five.</div>'
+      + '<select id="dp">'
+      + F.DOI_PROGRESS.map(function(p){
+          return '<option value="'+p.key+'"'+(p.key===d.progress?' selected':'')+'>'+esc(p.label)+'</option>'; }).join('')
+      + '</select></div>';
+
+    if (d.remaining_stages.length){
+      h += '<p style="margin-top:1rem;font-weight:600;font-size:.9rem">What is left, and how long each step takes</p><ol class="stages">'
+        + d.remaining_stages.map(function(s){
+            return '<li>'+esc(s.label)+' <span class="bd">'+s.fast+' to '+s.slow+' business days, typically '+s.typical+'</span></li>';
+          }).join('')
+        + '<li>FAMLI decides <span class="bd">15 business days, set by regulation</span></li></ol>';
+    }
+
+    h += '<table class="pace"><thead><tr><th>Pace</th><th>Days left</th><th>Earliest you could submit</th><th>Fits?</th></tr></thead><tbody>'
+      + ['fast','typical','slow'].map(function(k){
+          var v = d.verdict[k];
+          return '<tr><td>'+k+'</td><td>'+d.totals_remaining[k]+'</td><td>'+(v.earliest_submission?esc(longDate(v.earliest_submission)):'n/a')+'</td><td>'
+            + (v.fits_with_resubmit_buffer ? 'yes, with room to resubmit' : (v.fits_deadline ? 'yes, no second chance' : 'no'))+'</td></tr>';
+        }).join('')
+      + '</tbody></table>'
+      + '<p class="note">Submit by '+esc(longDate(d.resubmit_safe))+' and a rejected form can still be fixed and resubmitted. After that, your first attempt is your only attempt.</p>';
+  } else {
+    h += '<p>Contributions start 1 January 2027 either way, and your 2027 cash cost is the same. Plan for the State Plan now and apply for a private plan for 2028 when applications open in summer 2027. '+src('Private plans',S.privatePlans)+'</p>';
+  }
+
+  h += '<div class="flag"><b>A private plan does not save you money in 2027.</b>'
+    + 'If your Declaration is accepted you still collect the same contributions from 1 January 2027. You hold them in escrow instead of remitting them to the State. The cash cost is identical; only the destination changes. '
+    + src('COMAR 09.42.03.10A(1)(d)',S.comar)+'</div>';
+
+  if (r.band==='small'){
+    h += '<div class="row" style="margin-top:.8rem"><span class="k">Escrowed each year, employee half only</span><span class="v">'+money(r.annual_total_cents)+'</span></div>'
+      + disc('One thing we could not confirm', esc(D2));
+  }
+
+  h += '<div class="row"><span class="k">Annual EPIP application fee, at your Maryland headcount</span><span class="v">$'+d.epip_fee+'</span></div>'
+    + '<p class="note">Fees are annual and approval lasts one year. '+src('COMAR 09.42.03.05F',S.comar)+'</p>';
+
+  if (!d.can_self_insure){
+    h += '<div class="flag"><b>You cannot self insure.</b>'
+      + 'Self insurance needs 50 or more employees localized in Maryland and you have '+r.md_employees+'. '
+      + 'The under 50 exception needed a compliant plan already in effect by 31 July 2026, which has passed. A commercial plan through a carrier is the route open to you. '
+      + src('COMAR 09.42.03.05K',S.comar)+'</div>';
+  }
+
+  h += disc('How we built the timings, and where they could be wrong',
+      esc(D3) + '</p><p>Pushing the estimate down: Login.gov proofing online is usually same day, carriers have been issuing illustrative quotes since June 2026, the person signing your form does not need a Maryland producer licence, and the Insurance Administration set a 30 September 2026 filing deadline for carriers wanting to sell these plans, so agents are working this product line now.</p>'
+    + '<p>Pushing it up: a failed Login.gov check routes you to in person verification at a Post Office, agent familiarity with FAMLI varies a lot, and October and November are open enrolment season.')
+    + disc('What a private plan costs', esc(D4));
+
+  return h + '</div>';
+}
+
+/* ---------------------------------------------------------------- run */
+function run(keepScroll){
+  var i = readForm(), e = $('err');
+  e.classList.add('hidden');
+  if (isNaN(i.md_employees) || isNaN(i.ein_employees) || isNaN(i.md_payroll)){
+    e.textContent = 'Fill in all three numbers and we will work it out.'; e.classList.remove('hidden'); return;
+  }
+  if (i.ein_employees < i.md_employees){
+    e.textContent = 'Total employees under the EIN cannot be fewer than your Maryland employees. Check the second box.';
+    e.classList.remove('hidden'); return;
+  }
+  var r = window.FAMLI.compute(i);
+  /* how far the refinement moved the answer, for the "it moved by" copy */
+  if (r.base_mode==='refined'){
+    var plain = window.FAMLI.compute(Object.assign({}, i, {high_earner_count:null, high_earner_wages:null}));
+    r.refineDelta = plain.annual_total_cents - r.annual_total_cents;
+  }
+  var y = window.scrollY;
+  render(r);
+  if (keepScroll) window.scrollTo({top:y});
+}
+
+$('form').addEventListener('submit', function(ev){ ev.preventDefault(); run(false); });
+
+/* ------------------------------------------------------- shareable URL
+   The URL is the only place state lives. No localStorage, no sessionStorage,
+   no cookies. Copy the link and the result comes back exactly. */
+function writeURL(){
+  var p = new URLSearchParams();
+  p.set('md',$('md').value); p.set('ein',$('ein').value); p.set('pay',$('pay').value);
+  p.set('freq',$('freq').value);
+  if ($('priv').checked) p.set('pp','1');
+  if ($('sole').checked) p.set('so','1');
+  if (st.hc!=null) p.set('hc',st.hc);
+  if (st.hw!=null) p.set('hw',st.hw);
+  if (st.fp) p.set('fp',st.fp);
+  if (st.dp && st.dp!=='not_started') p.set('dp',st.dp);
+  var q = new URLSearchParams(location.search).get('d'); if (q) p.set('d',q);
+  history.replaceState(null,'','?'+p.toString());
+  if (!document.getElementById('tools')){
+    var t = el('<div class="tools noprint" id="tools">'
+      + '<button type="button" id="copy">Copy link to this result</button>'
+      + '<button type="button" id="print">Print or save as PDF</button></div>');
+    $('out').appendChild(t);
+    document.getElementById('print').addEventListener('click', function(){ window.print(); });
+    document.getElementById('copy').addEventListener('click', function(){
+      var b=this;
+      /* strip the QA date override so a shared link always shows the real phase */
+      var u = new URL(location.href); u.searchParams.delete('d');
+      navigator.clipboard.writeText(u.toString()).then(function(){
+        b.textContent='Link copied'; setTimeout(function(){ b.textContent='Copy link to this result'; },2200);
+      }).catch(function(){ b.textContent='Copy the address bar'; });
+    });
+  } else { $('out').appendChild(document.getElementById('tools')); }
+}
+
+function readURL(){
+  var p = new URLSearchParams(location.search);
+  if (!p.get('md')) return;
+  $('md').value=p.get('md')||''; $('ein').value=p.get('ein')||''; $('pay').value=p.get('pay')||'';
+  if (p.get('freq')) $('freq').value=p.get('freq');
+  $('priv').checked = p.get('pp')==='1';
+  $('sole').checked = p.get('so')==='1';
+  $('soleWrap').classList.toggle('hidden', parseInt($('ein').value,10)!==1);
+  if (p.get('hc')!=null) st.hc=parseInt(p.get('hc'),10);
+  if (p.get('hw')!=null) st.hw=parseFloat(p.get('hw'));
+  if (p.get('fp')) st.fp=p.get('fp');
+  if (p.get('dp')) st.dp=p.get('dp');
+  run(true);
+}
+readURL();
+})();
+</script>
+<script>
+/* If the app failed to start, say so rather than leaving a dead form. */
+if (!window.FAMLI) {
+  document.getElementById('form').insertAdjacentHTML('beforeend',
+    '<div class="err">This page did not load properly. Reload it, and if it happens again '
+    + 'tell us at <a href="mailto:hello@02launch.com">hello@02launch.com</a>.</div>');
+}
+</script>
+</body>
+</html>
