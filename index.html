@@ -215,6 +215,33 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .moved{background:var(--accent-soft);border-radius:4px;padding:.6rem .7rem;font-size:.88rem;margin-top:.8rem}
 .moved b{color:var(--accent)}
 
+/* ---------- email capture ---------- */
+.cap{border:1px solid var(--accent);background:#F6FBFB}
+.cap h2{color:var(--accent)}
+.cap .lead2{font-size:.92rem;color:var(--ink);margin:0 0 .2rem;font-weight:600}
+.cap .why{font-size:.83rem;color:var(--ink2);margin:0 0 .8rem;line-height:1.5}
+.cap .caprow{display:flex;gap:.5rem;flex-wrap:wrap;align-items:stretch;margin-top:.55rem}
+.cap input[type=email]{
+  flex:1 1 15rem; min-width:0; padding:.55rem .6rem; font:inherit; font-size:.95rem;
+  border:1px solid var(--rule); border-radius:4px; background:#fff; color:var(--ink);
+}
+.cap button{
+  flex:0 0 auto; font:inherit; font-weight:700; font-size:.92rem; padding:.55rem 1.05rem;
+  color:#fff; border:0; border-radius:4px; cursor:pointer;
+  background:linear-gradient(135deg,#12686D 0%,#0B4A4D 100%);
+  transition:filter .18s ease, transform .14s ease;
+}
+.cap button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.cap button:disabled{filter:grayscale(.5) brightness(.9);cursor:default;transform:none}
+.cap .consent{display:flex;gap:.55rem;align-items:flex-start;margin-top:.7rem}
+.cap .consent input{margin-top:.08rem;width:1.05rem;height:1.05rem;flex:none;accent-color:var(--accent)}
+.cap .consent label{font-weight:500;font-size:.83rem;line-height:1.45;color:var(--ink2);margin:0}
+.cap .capmsg{margin:.7rem 0 0;font-size:.87rem;font-weight:600}
+.cap .capmsg.ok{color:var(--accent)}
+.cap .capmsg.bad{color:var(--due)}
+.cap .fine2{font-size:.76rem;color:var(--ink3);margin:.65rem 0 0;line-height:1.45}
+.hp{position:absolute!important;left:-9999px!important;opacity:0!important;height:0!important}
+
 /* ---------- cta + footer ---------- */
 /* ---------- pitch panel, travelling border beam ---------- */
 .pitch{
@@ -1203,8 +1230,12 @@ function render(r){
   /* ---- DOI ---- */
   if (r.doi) add(doiHTML(r));
 
+  /* ---- reminders ---- */
+  add(captureHTML(r));
+
   window.scrollTo({top: $('out').offsetTop-10, behavior:'smooth'});
   bindRefinements(r);
+  bindCapture(r);
   writeURL();
 }
 
@@ -1251,7 +1282,8 @@ function refineHTML(r){
   h += '<button class="go" type="button" id="applyRef" style="margin-top:1rem">Update my figures</button>';
   h += disc('Why we ask rather than assume',
     'The even wages assumption is the largest error in this tool. For a firm with one very high earner it can overstate the cost by up to 70%. These two fields remove it. '
-    + 'We do not store anything you type here; the numbers stay in the page and in the link you can copy below.');
+    + 'The numbers you type stay in this page and in the link you can copy below. We never send them anywhere. '
+    + 'If you ask for date reminders we store your email address and whether you are a small or standard employer, and nothing else.');
   return h + '</div>';
 }
 
@@ -1342,6 +1374,71 @@ function doiHTML(r){
     + disc('What a private plan costs', esc(D4));
 
   return h + '</div>';
+}
+
+/* ---------------------------------------------------------------- email capture
+   Web3Forms. The access key is public by design and carries no account access.
+   Nothing typed into the calculator is transmitted. Only the address they volunteer,
+   the consent string they were shown, their size band and the phase. */
+var W3_KEY = '582eb9f4-85fe-408c-8121-612973de4d87';
+var CONSENT_VERSION = 'CONSENT-v1.0';
+var CONSENT_TEXT = 'Email me before each of my Maryland FAMLI dates, and when the 2027 Social Security wage cap is confirmed in October.';
+
+function captureHTML(r){
+  var nxt = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
+  return '<div class="card cap noprint"><h2>Do not miss these dates</h2>'
+    + '<p class="lead2">We can email you before each one.</p>'
+    + '<p class="why">'
+    + (nxt ? 'Your next date is ' + esc(longDate(nxt.date)) + ', and the one after it is weeks later. That gap is exactly how these get missed. ' : '')
+    + 'We will also email you the day SSA confirms the 2027 wage cap in October, because the figures above change when it lands.</p>'
+    + '<div class="caprow">'
+    + '<input type="email" id="capEmail" placeholder="you@company.com" autocomplete="email" inputmode="email">'
+    + '<button type="button" id="capGo">Email me my dates</button>'
+    + '</div>'
+    + '<input type="text" id="capHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">'
+    + '<div class="consent"><input type="checkbox" id="capOk">'
+    + '<label for="capOk">' + esc(CONSENT_TEXT) + '</label></div>'
+    + '<p class="capmsg hidden" id="capMsg"></p>'
+    + '<p class="fine2">Your results are not hidden behind this and never will be. '
+    + 'We store your address and whether you are a small or standard employer. Nothing you typed above is sent. '
+    + 'Unsubscribe from any email.</p>'
+    + '</div>';
+}
+
+function bindCapture(r){
+  var b = $('capGo'); if (!b) return;
+  var msg = $('capMsg');
+  function say(text, cls){ msg.textContent = text; msg.className = 'capmsg ' + cls; }
+  b.addEventListener('click', function(){
+    var email = ($('capEmail').value || '').trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ say('That does not look like an email address.','bad'); return; }
+    if (!$('capOk').checked){ say('Tick the box so we know you want these.','bad'); return; }
+    if ($('capHp').value){ say('Thanks.','ok'); return; }
+    b.disabled = true; say('Sending.','ok');
+    fetch('https://api.web3forms.com/submit', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({
+        access_key: W3_KEY,
+        subject: 'FAMLI Clock reminder signup',
+        from_name: 'FAMLI Clock',
+        email: email,
+        consent_version: CONSENT_VERSION,
+        consent_text: CONSENT_TEXT,
+        size_band: r.band,
+        phase: r.phase,
+        considering_private_plan: r.doi ? 'yes' : 'no',
+        submitted_at: new Date().toISOString()
+      })
+    }).then(function(res){ return res.json(); }).then(function(d){
+      if (d && d.success){
+        say('Done. We will email you before each date, and in October when the cap is confirmed.','ok');
+        $('capEmail').disabled = true; $('capOk').disabled = true; b.textContent = 'Signed up';
+      } else { b.disabled = false; say('That did not go through. Try again, or write to hello@02launch.com.','bad'); }
+    }).catch(function(){
+      b.disabled = false; say('That did not go through. Try again, or write to hello@02launch.com.','bad');
+    });
+  });
 }
 
 /* ---------------------------------------------------------------- run */
