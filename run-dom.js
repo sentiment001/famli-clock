@@ -256,7 +256,6 @@ check('it sits above the CTA block',
   check('covers "' + p + '"', lim && lim.textContent.indexOf(p) !== -1);
 });
 
-console.log(out.join('\n'));
 /* ---- 15. print report furniture ---- */
 out.push('--- print report ---');
 var w20 = load('?d=2026-08-29');
@@ -310,11 +309,50 @@ check('closing points at the working contact URL',
 check('both are hidden on screen',
   w21.getComputedStyle(cov).display === 'none' && w21.getComputedStyle(clo).display === 'none');
 
+/* ---- 16b. print structure. These lock the 30 Aug fixes for the Letter paper
+   spill, the vanished emerald band and the closing landing before the legal
+   footer. Each one failed against the PDF Mash exported. ---- */
+out.push('--- print structure ---');
+var band = cov.querySelector('.cv-band');
+check('band is an inline SVG, not a CSS background',
+  !!band && band.tagName.toLowerCase() === 'svg');
+check('band carries both the emerald field and the orange seam',
+  !!band && band.querySelectorAll('rect').length === 2);
+check('band is the emerald 0D4735',
+  !!band && band.querySelector('rect').getAttribute('fill') === '#0D4735');
+check('cover masthead and title share the band block',
+  !!cov.querySelector('.cv-head .cv-mast') && !!cov.querySelector('.cv-head .cv-t'));
+check('cover no longer sets a fixed page height',
+  HTML.indexOf('.cover{') !== -1 && !/\.cover\{[^}]*height:247mm/.test(HTML));
+check('closing no longer sets a fixed page height',
+  !/\.closing\{[^}]*height:247mm/.test(HTML));
+check('print CSS forces colour fidelity',
+  HTML.indexOf('print-color-adjust:exact') !== -1);
+
+var slot21 = w21.document.getElementById('closingslot');
+var foot21 = w21.document.querySelector('footer.foot');
+check('closing renders into its own slot, not #out',
+  !!slot21 && slot21.contains(clo) && !w21.document.getElementById('out').contains(clo));
+check('closing prints after the legal footer, so it is the last sheet',
+  !!foot21 && (foot21.compareDocumentPosition(clo) & 4) !== 0);
+check('closing limits are a list, concept A',
+  clo.querySelectorAll('.cl-ul li').length === 3);
+check('closing body is a single centred block',
+  !!clo.querySelector('.cl-body .cl-cta'));
+
+/* re-rendering must not stack two closing pages */
+fill(w21, { md: 41, ein: 41, pay: 3300000 });
+check('re-render replaces the closing rather than appending a second one',
+  w21.document.querySelectorAll('.closing').length === 1);
+check('re-render replaces the cover rather than appending a second one',
+  w21.document.querySelectorAll('.cover').length === 1);
+
 /* no business name still works */
 var w22 = load('?d=2026-08-29');
 fill(w22, { md: 8, ein: 8, pay: 480000 });
 check('cover falls back gracefully with no business name',
   w22.document.querySelector('.cover').textContent.indexOf('8 employee Maryland employer') !== -1);
 
+console.log(out.join('\n'));
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
