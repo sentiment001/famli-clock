@@ -104,6 +104,11 @@ h1{
 }
 
 /* ---------- form ---------- */
+.formnote{
+  font-size:.83rem;color:var(--ink2);line-height:1.45;margin:-.15rem 0 .85rem;
+  padding:.5rem .6rem;background:var(--accent-soft);border-radius:4px;
+}
+.formnote b{color:var(--accent)}
 .field{margin-bottom:.68rem}
 .field:last-child{margin-bottom:0}
 label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.1rem}
@@ -339,30 +344,33 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .printhead,.printfoot,.printtitle{display:none}
 
 @media print{
-  @page{ margin:20mm 14mm 16mm; }
+  @page{ margin:27mm 14mm 20mm; }
 
   html,body{background:#fff !important;color:#12181D;font-size:10.5pt;line-height:1.42}
   .wrap{max-width:none;padding:0;margin:0}
   a{text-decoration:none;color:#12181D}
 
   /* strip every piece of web furniture */
-  .noprint,form,.tools,.cta,.pitch,.cap,.mast,.eyebadge,.sub,h1,.refine,.limits{
+  .noprint,form,.formnote,.tools,.cta,.pitch,.cap,.mast,.eyebadge,.sub,h1,.refine,.limits{
     display:none !important;
   }
 
   /* running header and footer, repeated on every sheet */
   .printhead{
-    display:flex !important; position:fixed; top:-13mm; left:0; right:0;
-    justify-content:space-between; align-items:baseline;
-    font-size:8.4pt; letter-spacing:.01em; color:#3E4A52;
-    border-bottom:.9pt solid #C2410C; padding-bottom:2.2mm;
+    display:flex !important; position:fixed; top:-18mm; left:0; right:0; height:8mm;
+    justify-content:space-between; align-items:flex-end;
+    font-size:8pt; letter-spacing:.01em; color:#3E4A52;
+    border-bottom:.9pt solid #C2410C; padding-bottom:2mm;
+    background:#fff;
   }
   .printhead .ph-l b{color:#C2410C;font-weight:800;letter-spacing:.01em}
   .printhead .ph-r{font-weight:600;color:#12181D}
   .printfoot{
-    display:flex !important; position:fixed; bottom:-11mm; left:0; right:0;
-    justify-content:space-between; font-size:7.6pt; color:#6B767D;
+    display:flex !important; position:fixed; bottom:-14mm; left:0; right:0; height:7mm;
+    justify-content:space-between; align-items:flex-start;
+    font-size:7.4pt; color:#6B767D;
     border-top:.5pt solid #C9D0D4; padding-top:1.8mm;
+    background:#fff;
   }
 
   /* report title block */
@@ -382,6 +390,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   table.ptin td.v{font-weight:700;width:24%;padding-right:6mm}
 
   /* cards become report sections */
+  .card,.lead,.dates li,table.pace tr,.flag,details.disc{break-inside:avoid;page-break-inside:avoid}
   .card,.lead{
     border:0 !important; border-radius:0 !important;
     border-top:.9pt solid #12181D !important;
@@ -463,6 +472,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 
 <form class="card" id="form" novalidate>
   <h2>Your business</h2>
+  <p class="formnote">Five numbers in, and you get your dates, your cost, and a <b>printable report</b> you can send straight to your CFO or your accountant.</p>
 
   <div class="field">
     <label for="md">Employees working in Maryland</label>
