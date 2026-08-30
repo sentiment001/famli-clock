@@ -216,8 +216,16 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .moved b{color:var(--accent)}
 
 /* ---------- email capture ---------- */
-.cap{border:1px solid var(--accent);background:#F6FBFB}
-.cap h2{color:var(--accent)}
+.cap{
+  border:1px solid #16B87A; background:#F4FCF8; position:relative;
+  animation:capglow 3s ease-in-out infinite;
+}
+@keyframes capglow{
+  0%,100%{box-shadow:0 0 0 0 rgba(22,184,122,0), 0 0 12px rgba(22,184,122,.16)}
+  50%{box-shadow:0 0 0 3px rgba(22,184,122,.09), 0 0 26px rgba(22,184,122,.36)}
+}
+.cap h2{color:#07794E; text-shadow:0 0 12px rgba(22,184,122,.28)}
+
 .cap .lead2{font-size:.92rem;color:var(--ink);margin:0 0 .2rem;font-weight:600}
 .cap .why{font-size:.83rem;color:var(--ink2);margin:0 0 .8rem;line-height:1.5}
 .cap .caprow{display:flex;gap:.5rem;flex-wrap:wrap;align-items:stretch;margin-top:.55rem}
@@ -327,15 +335,115 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   .railkey{font-size:.55rem;letter-spacing:.05em}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+/* screen: the report furniture is hidden */
+.printhead,.printfoot,.printtitle{display:none}
+
 @media print{
-  body{background:#fff;font-size:11pt}
-  .wrap{max-width:none;padding:0}
-  .noprint,form,.tools,.cta{display:none !important}
-  .card,.lead{border:1px solid #999;break-inside:avoid;page-break-inside:avoid}
-  details.disc{display:block}
+  @page{ margin:20mm 14mm 16mm; }
+
+  html,body{background:#fff !important;color:#12181D;font-size:10.5pt;line-height:1.42}
+  .wrap{max-width:none;padding:0;margin:0}
+  a{text-decoration:none;color:#12181D}
+
+  /* strip every piece of web furniture */
+  .noprint,form,.tools,.cta,.pitch,.cap,.mast,.eyebadge,.sub,h1,.refine,.limits{
+    display:none !important;
+  }
+
+  /* running header and footer, repeated on every sheet */
+  .printhead{
+    display:flex !important; position:fixed; top:-13mm; left:0; right:0;
+    justify-content:space-between; align-items:baseline;
+    font-size:8.4pt; letter-spacing:.01em; color:#3E4A52;
+    border-bottom:.9pt solid #C2410C; padding-bottom:2.2mm;
+  }
+  .printhead .ph-l b{color:#C2410C;font-weight:800;letter-spacing:.01em}
+  .printhead .ph-r{font-weight:600;color:#12181D}
+  .printfoot{
+    display:flex !important; position:fixed; bottom:-11mm; left:0; right:0;
+    justify-content:space-between; font-size:7.6pt; color:#6B767D;
+    border-top:.5pt solid #C9D0D4; padding-top:1.8mm;
+  }
+
+  /* report title block */
+  .printtitle{display:block !important; margin:0 0 7mm}
+  .printtitle .pt-k{
+    font-size:7.6pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:#C2410C;margin-bottom:1.6mm;
+  }
+  .printtitle .pt-t{
+    font-family:var(--display); font-size:19pt; line-height:1.12; font-weight:600;
+    letter-spacing:-.01em; color:#12181D; margin:0 0 1.8mm;
+  }
+  .printtitle .pt-s{font-size:9.4pt;color:#4A5D6C;margin:0 0 4mm;max-width:150mm}
+  table.ptin{width:100%;border-collapse:collapse;border-top:.9pt solid #12181D;border-bottom:.9pt solid #12181D}
+  table.ptin td{padding:1.9mm 0;font-size:9.4pt;vertical-align:baseline}
+  table.ptin td.k{color:#5A6A74;width:26%}
+  table.ptin td.v{font-weight:700;width:24%;padding-right:6mm}
+
+  /* cards become report sections */
+  .card,.lead{
+    border:0 !important; border-radius:0 !important;
+    border-top:.9pt solid #12181D !important;
+    padding:2.6mm 0 0 !important; margin:0 0 5.5mm !important;
+    background:#fff !important;
+    break-inside:avoid; page-break-inside:avoid;
+  }
+  .card h2{
+    font-size:8pt;letter-spacing:.14em;color:#12181D !important;
+    font-weight:800;margin-bottom:2.4mm;
+  }
+  .lead{border-top:2pt solid #C2410C !important}
+  .lead .eyebrow{color:#C2410C;font-size:7.6pt;margin-bottom:1.6mm}
+  .lead .task{font-family:var(--display);font-size:14.5pt;line-height:1.18;margin-bottom:1.4mm}
+  .lead .when{font-size:10.5pt}
+  .lead .why{font-size:9.2pt;color:#4A5D6C;margin-top:2.6mm;padding-top:2.4mm;border-top:.5pt solid #C9D0D4}
+
+  /* figures */
+  .row{font-size:10pt;padding:1.5mm 0;border-bottom:.4pt solid #D8DEE1}
+  .row.big .v{font-size:11.5pt}
+  .row:last-child{border-bottom:0}
+  .split{gap:4mm}
+  .opt{border:.5pt solid #C9D0D4;border-radius:0;padding:2.4mm}
+  .opt .n{font-size:12.5pt}
+  .delta{font-size:9.4pt}
+
+  table.pace{font-size:9.3pt;margin-top:2.4mm}
+  table.pace th{
+    color:#12181D;font-size:7.6pt;border-bottom:.9pt solid #12181D;padding:1.4mm .8mm;
+  }
+  table.pace td{border-bottom:.4pt solid #D8DEE1;padding:1.5mm .8mm}
+  table.pace tbody tr:nth-child(odd){background:#F7F9FA}
+
+  .dates li{padding:1.7mm 0;border-bottom:.4pt solid #D8DEE1}
+  .dates .dt{width:34mm;font-size:9.2pt}
+  .dates .lb{font-size:9.6pt}
+  .dates .nt{font-size:8.4pt;color:#5A6A74}
+  .dates .rm{font-size:8.2pt}
+  .dates li.next .dt,.dates li.next .rm{color:#C2410C}
+
+  .flag{
+    background:#F5F7F8 !important;border-left:2pt solid #8A97A0 !important;
+    border-radius:0;padding:2.4mm 3mm;font-size:9.2pt;margin-top:3mm;
+  }
+  .warn{background:#FCF2EE !important;border-left-color:#C2410C !important}
+  .warn b{color:#C2410C}
+  .note{font-size:8.6pt;color:#5A6A74;margin-top:2.4mm}
+  .state{border:.5pt solid #8A97A0;background:#fff !important;color:#12181D !important;font-size:7.6pt}
+  ol.stages{font-size:9.3pt}
+  ol.stages .bd{font-size:8.4pt;color:#5A6A74}
+
+  /* disclosures print open, they are the honest part of the document */
+  details.disc{display:block;border-top:.4pt solid #D8DEE1;padding-top:2mm;margin-top:2.8mm}
   details.disc summary{display:none}
-  details.disc p{display:block !important}
-  a{text-decoration:none;color:#000}
+  details.disc p{display:block !important;font-size:8.6pt;color:#4A5D6C}
+  .src a{color:#6B767D !important;text-decoration:none}
+  .src{font-size:7.6pt}
+
+  footer.foot{
+    border-top:.9pt solid #12181D;padding-top:3mm;margin-top:2mm;
+    font-size:8.4pt;color:#5A6A74;break-inside:avoid;
+  }
 }
 </style>
 </head>
@@ -445,6 +553,15 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
      To unblock: put the postal address in CONFIG.postal_address in engine.js,
      then paste the capture block from the Step 2.3 handoff here.
      ===================================================================== -->
+
+<div class="printhead" aria-hidden="true">
+  <span class="ph-l">Built by ex-Google Engineers at <b>02Launch.com</b></span>
+  <span class="ph-r">Maryland FAMLI employer report</span>
+</div>
+<div class="printfoot" aria-hidden="true">
+  <span>famliclock.com &middot; an estimate, not tax, legal or payroll advice</span>
+  <span>Rules checked against COMAR 09.42 on 29 August 2026</span>
+</div>
 
 <footer class="foot">
   <p><b>This is an estimate, not tax, legal or payroll advice.</b> It is built from the
@@ -1113,6 +1230,8 @@ function render(r){
     return;
   }
 
+  add(reportHeadHTML(r));
+
   /* ---- lead ---- */
   var L = lead(r), ld = F.toDay(L.date) - F.toDay(TODAY);
   add('<div class="lead"><div class="eyebrow">'+esc(L.eyebrow)+'</div>'
@@ -1383,6 +1502,23 @@ function doiHTML(r){
 var W3_KEY = '582eb9f4-85fe-408c-8121-612973de4d87';
 var CONSENT_VERSION = 'CONSENT-v1.0';
 var CONSENT_TEXT = 'Email me before each of my Maryland FAMLI dates, and when the 2027 Social Security wage cap is confirmed in October.';
+
+function reportHeadHTML(r){
+  var f = {weekly:'Weekly',biweekly:'Every two weeks',semimonthly:'Twice a month',monthly:'Monthly'}[r.pay_frequency];
+  return '<div class="printtitle">'
+    + '<div class="pt-k">Prepared for</div>'
+    + '<h2 class="pt-t">Maryland Family and Medical Leave Insurance</h2>'
+    + '<p class="pt-s">Contribution estimate and statutory date schedule for the 2027 contribution year, '
+    + 'prepared ' + esc(longDate(TODAY)) + '.</p>'
+    + '<table class="ptin"><tbody>'
+    + '<tr><td class="k">Employees in Maryland</td><td class="v">'+r.md_employees+'</td>'
+    + '<td class="k">Total under the EIN</td><td class="v">'+r.ein_employees+'</td></tr>'
+    + '<tr><td class="k">Annual Maryland payroll</td><td class="v">'+money(r.payroll_cents)+'</td>'
+    + '<td class="k">Payroll run</td><td class="v">'+esc(f)+'</td></tr>'
+    + '<tr><td class="k">Employer size band</td><td class="v">'+(r.band==='small'?'Small, under 15':'Standard, 15 or more')+'</td>'
+    + '<td class="k">Private plan considered</td><td class="v">'+(r.doi?'Yes':'No')+'</td></tr>'
+    + '</tbody></table></div>';
+}
 
 function captureHTML(r){
   var nxt = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
