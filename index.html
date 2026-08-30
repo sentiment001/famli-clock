@@ -13,11 +13,11 @@
 <meta property="og:site_name" content="FAMLI Clock">
 <meta property="og:url" content="https://www.famliclock.com/">
 <meta property="og:title" content="Maryland FAMLI Clock: what you owe, and by when">
-<meta property="og:description" content="Free calculator for Maryland employers. Your FAMLI contribution, your employee notice date, and the 13 November private plan deadline, from five questions. No sign up.">
+<meta property="og:description" content="Free calculator for Maryland employers. Your FAMLI contribution, your employee notice date, and the 15 November private plan deadline, from five questions. No sign up.">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Maryland FAMLI Clock: what you owe, and by when">
-<meta name="twitter:description" content="Free calculator for Maryland employers. Your contribution, your notice date, and the 13 November private plan deadline. No sign up.">
+<meta name="twitter:description" content="Free calculator for Maryland employers. Your contribution, your notice date, and the 15 November private plan deadline. No sign up.">
 <meta name="theme-color" content="#0E5A5E">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -30,7 +30,7 @@
  {"@type":"Question","name":"What is the Maryland FAMLI contribution rate for 2027?",
   "acceptedAnswer":{"@type":"Answer","text":"0.90 percent of covered wages, split evenly between employer and employee at 0.45 percent each. Employers with fewer than 15 employees pay no employer share but still withhold and remit the employee share."}},
  {"@type":"Question","name":"When is the Maryland FAMLI Declaration of Intent due?",
-  "acceptedAnswer":{"@type":"Answer","text":"Friday 13 November 2026 for a private plan covering 2027. The Declaration is a five stage process, not a form, and the insurance agent consultation alone typically takes about 15 business days to arrange."}},
+  "acceptedAnswer":{"@type":"Answer","text":"Sunday 15 November 2026 for a private plan covering 2027. Friday 13 November is the last business day before it, which is the practical deadline because FAMLI customer care is closed at the weekend. The Declaration is a five stage process, not a form, and the insurance agent consultation alone typically takes about 15 business days to arrange."}},
  {"@type":"Question","name":"Do Maryland employers have to give employees written notice?",
   "acceptedAnswer":{"@type":"Answer","text":"Yes. Written notice must reach employees at least one full pay period before the first withholding, which for most employers means December 2026 ahead of contributions starting 1 January 2027."}},
  {"@type":"Question","name":"How is employer size determined for Maryland FAMLI?",
@@ -748,7 +748,8 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     small_employer_threshold: 15,
     self_insure_min_md_employees: 50,
     quarterly_size_year: 2027,
-    doi_deadline: '2026-11-13',       // 15 Nov 2026 is a Sunday, no next-business-day relief
+    doi_deadline: '2026-11-13',       // Recommended date, the last business day before the deadline.
+    doi_official_deadline: '2026-11-15', // The state's published close. A Sunday, so nobody is on the phone.
     doi_nominal_deadline: '2026-11-15',
     doi_resubmit_safe: '2026-10-21',  // 15 business days before the deadline
     doi_window_opens: '2026-09-01',
@@ -1014,7 +1015,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     }
     add('Register with FAMLI', null, 'Open now. No deadline, but everything else waits on it.');
     if (r.doi) {
-      add('Submit your Declaration of Intent', CONFIG.doi_deadline, '15 Nov 2026 is a Sunday, so Friday 13 November is the real deadline.');
+      add('Submit your Declaration of Intent', CONFIG.doi_deadline, 'The state closes the window on Sunday 15 November 2026. Friday 13 November is the last business day before it, so that is the date we plan to.');
       add('Submit early enough to survive a rejection', CONFIG.doi_resubmit_safe, 'Fifteen business days before the deadline. After this, your first attempt is your only attempt.');
     }
     add('Written notice to employees', r.notice.notice_by,
@@ -1286,7 +1287,7 @@ var PHASE = drawRail();
 (function(){
   var h = {
     P1_runway:['What Maryland FAMLI costs you, and the date you cannot miss.',
-      '<b>No sign up</b> needed to use this tool. We do not store your numbers. If you want a private plan, the Declaration of Intent is due Friday 13 November 2026 and the work behind it takes weeks.'],
+      '<b>No sign up</b> needed to use this tool. We do not store your numbers. If you want a private plan, the Declaration of Intent is due 15 November 2026 and the work behind it takes weeks.'],
     P2_compressed:['The private plan window is closing. Here is what still fits.',
       '<b>No sign up</b> needed to use this tool. We do not store your numbers. A cold start no longer fits at normal pace, so this asks where you already are and works forward from there.'],
     P3_notice:['Your employees need this notice in writing before January.',
@@ -1334,13 +1335,13 @@ function lead(r){
           : 'Book the insurance agent consultation this week.',
         date: C.doi_deadline,
         why: d.headline==='does_not_fit'
-          ? 'A cold start no longer fits before Friday 13 November, even at the fastest pace we have modelled. Your money position for 2027 does not change: the escrow under a private plan costs exactly what the State Plan costs.'
+          ? 'A cold start no longer fits before Friday 13 November, the last business day before the deadline, even at the fastest pace we have modelled. Your money position for 2027 does not change: the escrow under a private plan costs exactly what the State Plan costs.'
           : 'You have '+d.business_days_left+' business '+plural(d.business_days_left,'day')+' left and '+d.totals_remaining.typical+' days of work at normal pace. The agent booking is the step that runs long.' };
     }
     return { eyebrow:'Your next move',
       task:'Start the Declaration of Intent now. Name your Authorized Officer this week.',
       date:C.doi_deadline,
-      why:'Submission closes Friday 13 November 2026, because 15 November is a Sunday and the Declaration gets no next business day relief. Behind that date sits about '+d.totals_remaining.typical+' business days of work at normal pace.' };
+      why:'The state closes the window on Sunday 15 November 2026. We count to Friday 13 November because it is the last business day before it, and FAMLI customer care is shut at the weekend, so there is nobody to call if the portal rejects you. Behind that date sits about '+d.totals_remaining.typical+' business days of work at normal pace.' };
   }
   if (p==='P3_notice'){
     return { eyebrow:'Your next move', task:'Put your withholding notice to employees in writing.',
@@ -1581,8 +1582,8 @@ function doiHTML(r){
     on_track:['On track','This fits at normal pace with time left to fix a rejection and resubmit.'],
     tight:['Tight','This fits at normal pace, but there is no room to recover from a rejection. If FAMLI sends it back, that is the end of it.'],
     only_if_everything_goes_right:['Only if everything goes right','At normal pace you need '+d.totals_remaining.typical+' business days and you have '+d.business_days_left+'. It fits only on the fast path, which means moving on every stage this week.'],
-    does_not_fit:['Does not fit','Starting from here, this does not reach 13 November even at the fastest pace we have modelled. There is no countdown to show you.'],
-    closed:['Closed','The window shut on Friday 13 November 2026.']
+    does_not_fit:['Does not fit','Starting from here, this does not reach Friday 13 November, the last business day before the deadline, even at the fastest pace we have modelled. There is no countdown to show you.'],
+    closed:['Closed','The state window shut on Sunday 15 November 2026.']
   }[d.headline];
 
   var h = '<div class="card"><h2>Private plan, the Declaration of Intent</h2>'
@@ -1590,7 +1591,7 @@ function doiHTML(r){
     + '<p>'+esc(words[1])+'</p>';
 
   if (d.window_open){
-    h += '<div class="row"><span class="k">Business days until Friday 13 November</span><span class="v">'+d.business_days_left+'</span></div>'
+    h += '<div class="row"><span class="k">Business days until Friday 13 November, the last one before the deadline</span><span class="v">'+d.business_days_left+'</span></div>'
       + '<div class="row"><span class="k">Business days of work left, at normal pace</span><span class="v">'+d.totals_remaining.typical+'</span></div>';
 
     /* P2 asks where you already are instead of running a dead countdown. */
@@ -1736,7 +1737,7 @@ function captureHTML(r){
     + '<input type="email" id="capEmail" placeholder="you@company.com" autocomplete="email" inputmode="email">'
     + '<button type="button" id="capGo">Email me my dates</button>'
     + '</div>'
-    + '<input type="text" id="capHp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">'
+    + '<input type="checkbox" id="capHp" name="botcheck" class="hp" tabindex="-1" aria-hidden="true">'
     + '<div class="consent"><input type="checkbox" id="capOk">'
     + '<label for="capOk">' + esc(CONSENT_TEXT) + '</label></div>'
     + '<p class="capmsg hidden" id="capMsg"></p>'
@@ -1755,7 +1756,7 @@ function bindCapture(r){
     var email = ($('capEmail').value || '').trim();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)){ say('That does not look like an email address.','bad'); return; }
     if (!$('capOk').checked){ say('Tick the box so we know you want these.','bad'); return; }
-    if ($('capHp').value){
+    if ($('capHp').checked){
       b.disabled = true; b.textContent = 'Signed up';
       say('Thank you, your email has been recorded and we will assign an Analyst to remind you of your dates.','ok'); return;
     }
@@ -1791,11 +1792,14 @@ function bindCapture(r){
         $('capEmail').disabled = true; $('capOk').disabled = true; b.textContent = 'Signed up';
       } else {
         b.disabled = false; b.textContent = 'Email me my dates';
-        say('That did not go through. Try again, or write to hello@02launch.com.','bad');
+        var why = (d && d.message) ? ' (' + d.message + ')' : '';
+        say('That did not go through' + why + '. Try again, or write to hello@02launch.com.','bad');
+        if (window.console) console.error('capture rejected', d);
       }
-    }).catch(function(){
+    }).catch(function(err){
       b.disabled = false; b.textContent = 'Email me my dates';
       say('That did not go through. Try again, or write to hello@02launch.com.','bad');
+      if (window.console) console.error('capture failed', err);
     });
   });
 }
