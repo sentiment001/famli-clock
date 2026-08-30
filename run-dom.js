@@ -255,5 +255,31 @@ check('it sits above the CTA block',
 });
 
 console.log(out.join('\n'));
+/* ---- 15. print report furniture ---- */
+out.push('--- print report ---');
+var w20 = load('?d=2026-08-29');
+fill(w20, { md: 40, ein: 40, pay: 3200000 });
+var ph = w20.document.querySelector('.printhead');
+var pf = w20.document.querySelector('.printfoot');
+var pt = w20.document.querySelector('.printtitle');
+check('running header exists', !!ph);
+check('running footer exists', !!pf);
+check('header carries the 02Launch credential',
+  ph && ph.textContent.indexOf('ex-Google Engineers at 02Launch.com') !== -1);
+check('credential domain is emphasised for colour',
+  ph && ph.querySelector('b') && ph.querySelector('b').textContent === '02Launch.com');
+check('report title block is built from the result', !!pt);
+check('title block restates the employee count',
+  pt && pt.textContent.indexOf('40') !== -1);
+check('title block restates the payroll',
+  pt && pt.textContent.indexOf('$3,200,000.00') !== -1);
+check('title block names the size band',
+  pt && pt.textContent.indexOf('Standard, 15 or more') !== -1);
+check('title block sits above the lead answer',
+  (pt.compareDocumentPosition(w20.document.querySelector('.lead')) & 4) !== 0);
+check('report furniture is hidden on screen',
+  w20.getComputedStyle(ph).display === 'none' &&
+  w20.getComputedStyle(pt).display === 'none');
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
