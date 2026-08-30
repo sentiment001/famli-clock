@@ -62,6 +62,20 @@ p{margin:0 0 .7rem}
 .phaseline{font-size:.82rem;color:var(--ink2);margin-bottom:1.3rem}
 .phaseline b{color:var(--ink);font-weight:600}
 
+/* ---------- eyebrow badge ---------- */
+.eyebadge{
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-size:.685rem; font-weight:700; letter-spacing:.085em; text-transform:uppercase;
+  color:#0A5A42; background:linear-gradient(135deg,#DFF7E9 0%,#CDEFDD 100%);
+  border:1px solid #A9E3C6; padding:.36rem .78rem .36rem .64rem;
+  border-radius:999px; margin-bottom:.8rem;
+  box-shadow:0 1px 2px rgba(10,90,66,.07);
+}
+.eyebadge .gdot{
+  width:6px; height:6px; border-radius:50%; background:#17B876; flex:none;
+  box-shadow:0 0 0 3px rgba(23,184,118,.18);
+}
+
 h1{
   font-family:var(--display); font-size:clamp(1.85rem,7vw,2.6rem); line-height:1.08;
   font-weight:600; letter-spacing:-0.02em; margin-bottom:.6rem;
@@ -191,34 +205,40 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .moved b{color:var(--accent)}
 
 /* ---------- cta + footer ---------- */
-/* ---------- top pitch panel ---------- */
+/* ---------- pitch panel, travelling border beam ---------- */
 .pitch{
-  position:relative; overflow:hidden; border-radius:6px;
-  background:linear-gradient(135deg,#123039 0%,#14202A 62%);
-  padding:1.05rem 1.1rem; margin:0 0 1.5rem;
+  position:relative; overflow:hidden; border-radius:9px;
+  padding:1.5px; margin:0 0 1.5rem; background:#243A42; isolation:isolate;
 }
 .pitch::before{
-  content:''; position:absolute; top:0; left:-55%; width:55%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(143,213,216,.12),transparent);
-  animation:sheen 7s ease-in-out infinite; pointer-events:none;
+  content:''; position:absolute; z-index:0;
+  top:50%; left:50%; width:210%; aspect-ratio:1/1;
+  transform:translate(-50%,-50%) rotate(0deg);
+  background:conic-gradient(from 0deg,
+    transparent 0 74%,
+    rgba(255,255,255,.10) 82%,
+    rgba(255,255,255,.55) 89%,
+    #ffffff 92%,
+    rgba(255,255,255,.55) 95%,
+    rgba(255,255,255,.10) 98%,
+    transparent 100%);
+  animation:beam 5.5s linear infinite; pointer-events:none;
 }
-@keyframes sheen{0%{left:-55%}60%{left:115%}100%{left:115%}}
-.pitch p{
-  position:relative; margin:0 0 .65rem; font-size:.93rem; line-height:1.55; color:#D3E2E3;
+@keyframes beam{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.pinner{
+  position:relative; z-index:1; border-radius:7.5px;
+  background:linear-gradient(135deg,#123039 0%,#14202A 62%);
+  padding:1.05rem 1.1rem;
 }
+.pitch p{margin:0 0 .65rem; font-size:.93rem; line-height:1.55; color:#D3E2E3}
 .pitch p b{color:#fff;font-weight:600}
 .pitch a{
-  position:relative; display:inline-flex; align-items:center; gap:.42rem;
+  display:inline-flex; align-items:center; gap:.42rem;
   color:#8FD5D8; font-weight:700; font-size:.9rem; text-decoration:none;
 }
 .pitch a:hover{color:#B6EBED}
 .pitch .arr{transition:transform .22s ease}
 .pitch a:hover .arr{transform:translateX(4px)}
-.pdot{
-  position:absolute; top:1.2rem; right:1.1rem; width:7px; height:7px; border-radius:50%;
-  background:#8FD5D8; animation:pulse 2.6s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
 
 .cta{background:var(--ink);color:#fff;border:0}
 .cta h2{color:#8FB3B5}
@@ -247,6 +267,11 @@ a.book:hover{background:#A8E2E4}
 .limits li{font-size:.9rem;color:var(--ink2);margin-bottom:.5rem;line-height:1.5}
 .limits li:last-child{margin-bottom:0}
 .limits li b{color:var(--ink)}
+.limits .fixnote{
+  margin:.9rem 0 0; padding-top:.85rem; border-top:1px solid var(--rule2);
+  font-size:.88rem; color:var(--ink2); line-height:1.55;
+}
+.limits .fixnote b{color:var(--ink)}
 .hidden{display:none !important}
 
 @media (max-width:400px){
@@ -277,6 +302,7 @@ a.book:hover{background:#A8E2E4}
   <div class="phaseline" id="phaseline"></div>
 </header>
 
+<div class="eyebadge"><span class="gdot" aria-hidden="true"></span>Built by ex-Google Engineers from 02Launch.com</div>
 <h1 id="h1">What Maryland FAMLI costs you, and the date you cannot miss.</h1>
 <p class="sub" id="sub">Five questions. No sign up. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
 
@@ -332,9 +358,10 @@ a.book:hover{background:#A8E2E4}
 <main id="out" aria-live="polite"></main>
 
 <div class="pitch noprint">
-  <span class="pdot" aria-hidden="true"></span>
-  <p>This is the second free tool we have built for finance and payroll teams. <b>Tell us the task that eats the most of your week</b> and we will show you, free, what it would take to automate it.</p>
-  <a href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Talk to our ex-Google AI engineers <span class="arr" aria-hidden="true">&rarr;</span></a>
+  <div class="pinner">
+    <p>This is the second free tool we have built for finance and payroll teams. <b>Tell us the task that eats the most of your week</b> and we will show you, free, what it would take to automate it.</p>
+    <a href="https://calendly.com/ahmed-asif1/30min" target="_blank" rel="noopener">Talk to our ex-Google AI engineers <span class="arr" aria-hidden="true">&rarr;</span></a>
+  </div>
 </div>
 
 <div class="card limits">
@@ -343,8 +370,8 @@ a.book:hover{background:#A8E2E4}
     <li><b>It estimates.</b> Figures come from the numbers you typed and the published rates, not from your payroll records.</li>
     <li><b>It is not a filing.</b> Nothing here reaches Maryland. You still register, report and pay through the FAMLI portal yourself.</li>
     <li><b>It cannot get a private plan approved.</b> It tells you what the Declaration of Intent involves and whether the time still fits. FAMLI decides.</li>
-    <li><b>If a number looks wrong, tell us.</b> Write to <!--email_off--><a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a><!--/email_off--> and say what you were looking at. We have a dedicated engineer who fixes it within 6 hours of you telling us.</li>
   </ul>
+  <p class="fixnote"><b>If a number looks wrong, tell us.</b> Write to <!--email_off--><a href="mailto:hello@02launch.com?subject=FAMLI%20Clock%3A%20this%20looks%20wrong">hello@02launch.com</a><!--/email_off--> and say what you were looking at. We have a dedicated engineer who fixes it within 6 hours of you telling us.</p>
 </div>
 
 <div class="card cta noprint">
