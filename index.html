@@ -6,6 +6,37 @@
 <title>Maryland FAMLI Clock: what you owe, and by when</title>
 <meta name="description" content="A free calculator for Maryland employers. Your FAMLI contribution, your written notice date, and your private plan deadline, worked out from five questions.">
 <meta name="robots" content="index,follow">
+<link rel="canonical" href="https://www.famliclock.com/">
+<meta name="author" content="02Launch">
+<meta name="keywords" content="Maryland FAMLI, Maryland paid family leave, FAMLI calculator, FAMLI contribution rate, Declaration of Intent, Maryland private plan, FAMLI employer registration, Maryland paid leave 2027, FAMLI employee notice, COMAR 09.42">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FAMLI Clock">
+<meta property="og:url" content="https://www.famliclock.com/">
+<meta property="og:title" content="Maryland FAMLI Clock: what you owe, and by when">
+<meta property="og:description" content="Free calculator for Maryland employers. Your FAMLI contribution, your employee notice date, and the 13 November private plan deadline, from five questions. No sign up.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Maryland FAMLI Clock: what you owe, and by when">
+<meta name="twitter:description" content="Free calculator for Maryland employers. Your contribution, your notice date, and the 13 November private plan deadline. No sign up.">
+<meta name="theme-color" content="#0E5A5E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"Maryland FAMLI Clock","url":"https://www.famliclock.com/",
+ "applicationCategory":"BusinessApplication","operatingSystem":"Any","inLanguage":"en-US",
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+ "description":"Free calculator for Maryland employers. Works out your 2027 FAMLI contribution, your employee notice date, and whether you can still file a Declaration of Intent for a private plan before 13 November 2026.",
+ "creator":{"@type":"Organization","name":"02Launch","url":"https://02launch.com"}},
+{"@type":"FAQPage","mainEntity":[
+ {"@type":"Question","name":"What is the Maryland FAMLI contribution rate for 2027?",
+  "acceptedAnswer":{"@type":"Answer","text":"0.90 percent of covered wages, split evenly between employer and employee at 0.45 percent each. Employers with fewer than 15 employees pay no employer share but still withhold and remit the employee share."}},
+ {"@type":"Question","name":"When is the Maryland FAMLI Declaration of Intent due?",
+  "acceptedAnswer":{"@type":"Answer","text":"Friday 13 November 2026 for a private plan covering 2027. The Declaration is a five stage process, not a form, and the insurance agent consultation alone typically takes about 15 business days to arrange."}},
+ {"@type":"Question","name":"Do Maryland employers have to give employees written notice?",
+  "acceptedAnswer":{"@type":"Answer","text":"Yes. Written notice must reach employees at least one full pay period before the first withholding, which for most employers means December 2026 ahead of contributions starting 1 January 2027."}},
+ {"@type":"Question","name":"How is employer size determined for Maryland FAMLI?",
+  "acceptedAnswer":{"@type":"Answer","text":"By total headcount under the same federal EIN, counting employees inside and outside Maryland. Contractors are excluded. Size is recalculated quarterly during 2027 and moves to a four quarter average from 2028."}}
+]}]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -109,6 +140,7 @@ h1{
   padding:.5rem .6rem;background:var(--accent-soft);border-radius:4px;
 }
 .formnote b{color:var(--accent)}
+.opt2{font-weight:500;font-size:.76rem;color:var(--ink3);letter-spacing:.02em;text-transform:none}
 .field{margin-bottom:.68rem}
 .field:last-child{margin-bottom:0}
 label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.1rem}
@@ -317,7 +349,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .cta a.book:hover .arr{transform:translateX(4px)}
 .foot{font-size:.79rem;color:var(--ink3);line-height:1.6;padding-top:.6rem}
 .foot a{color:var(--ink2)}
-.tools{margin-top:1.35rem;padding-top:1.05rem;border-top:1px solid var(--rule2);text-align:center}
+.tools{margin-top:1.35rem;margin-bottom:1.9rem;padding-top:1.05rem;border-top:1px solid var(--rule2);text-align:center}
 .tcap{
   font-size:.68rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
   color:var(--ink3);margin-bottom:.75rem;
@@ -354,10 +386,10 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 /* screen: the report furniture is hidden */
-.printhead,.printfoot,.printtitle{display:none}
+.printhead,.printfoot,.printtitle,.cover,.closing{display:none}
 
 @media print{
-  @page{ margin:27mm 14mm 20mm; }
+  @page{ margin:16mm 15mm 17mm; }
 
   html,body{background:#fff !important;color:#12181D;font-size:10.5pt;line-height:1.42}
   .wrap{max-width:none;padding:0;margin:0}
@@ -368,22 +400,78 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     display:none !important;
   }
 
-  /* running header and footer, repeated on every sheet */
-  .printhead{
-    display:flex !important; position:fixed; top:-18mm; left:0; right:0; height:8mm;
-    justify-content:space-between; align-items:flex-end;
-    font-size:8pt; letter-spacing:.01em; color:#3E4A52;
-    border-bottom:.9pt solid #C2410C; padding-bottom:2mm;
-    background:#fff;
+  /* No fixed running furniture. Fixed positioning in print overlaps flowed content,
+     so branding lives on the cover and closing pages instead. */
+  .printhead,.printfoot{display:none !important}
+
+  /* ===== cover page ===== */
+  .cover{
+    display:block !important; position:relative; break-after:page; page-break-after:always;
+    height:247mm; overflow:hidden; margin:0; padding:0;
   }
-  .printhead .ph-l b{color:#C2410C;font-weight:800;letter-spacing:.01em}
-  .printhead .ph-r{font-weight:600;color:#12181D}
-  .printfoot{
-    display:flex !important; position:fixed; bottom:-14mm; left:0; right:0; height:7mm;
-    justify-content:space-between; align-items:flex-start;
-    font-size:7.4pt; color:#6B767D;
-    border-top:.5pt solid #C9D0D4; padding-top:1.8mm;
-    background:#fff;
+  .cv-band{position:absolute;top:-16mm;left:-15mm;right:-15mm;height:52mm;background:#0D4735}
+  .cv-band:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1.2mm;background:#C2410C}
+  .cv-mast{
+    position:absolute;top:-8mm;left:0;right:0;font-size:7.6pt;font-weight:800;
+    letter-spacing:.15em;text-transform:uppercase;color:#8FC9AE;
+  }
+  .cv-mast b{color:#fff;font-weight:800}
+  .cv-t{
+    position:absolute;top:2mm;left:0;right:22mm;margin:0;color:#fff;
+    font-family:var(--display);font-size:21pt;line-height:1.1;font-weight:600;letter-spacing:-.015em;
+  }
+  .cv-for{position:absolute;top:44mm;left:0;font-size:10pt;color:#4A5D6C}
+  .cv-for b{color:#12181D;font-weight:700}
+  .cv-lead{position:absolute;top:58mm;left:0;right:0}
+  .cv-lead .lk{font-size:7.6pt;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#C2410C}
+  .cv-lead .lv{
+    font-family:var(--display);font-size:38pt;font-weight:600;letter-spacing:-.03em;
+    margin:1.5mm 0 1mm;line-height:1;font-variant-numeric:tabular-nums;color:#12181D;
+  }
+  .cv-lead .ln{font-size:9.6pt;color:#4A5D6C}
+  .cv-tab{position:absolute;top:108mm;left:0;right:0;width:100%;border-collapse:collapse}
+  .cv-tab td{padding:3mm 0;border-bottom:.6pt solid #D8DEE1;font-size:10pt;vertical-align:baseline}
+  .cv-tab td.k{color:#4A5D6C}
+  .cv-tab td.v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:#12181D}
+  .cv-note{
+    position:absolute;bottom:22mm;left:0;right:0;font-size:8.4pt;color:#6B767D;line-height:1.5;
+    border-left:1.6pt solid #C2410C;padding-left:3.5mm;margin:0;
+  }
+  .cv-foot{
+    position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;
+    font-size:7.8pt;color:#84939C;border-top:.6pt solid #D8DEE1;padding-top:2.6mm;
+  }
+
+  /* ===== closing page ===== */
+  .closing{
+    display:block !important; position:relative; break-before:page; page-break-before:always;
+    height:247mm; padding-top:26mm;
+  }
+  .cl-mast{
+    position:absolute;top:0;left:0;right:0;font-size:7.6pt;font-weight:800;
+    letter-spacing:.15em;text-transform:uppercase;color:#84939C;
+  }
+  .cl-mast b{color:#C2410C}
+  .cl-k{font-size:7.6pt;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#C2410C;margin-bottom:3.5mm}
+  .cl-t{
+    font-family:var(--display);font-size:22pt;line-height:1.14;font-weight:600;
+    letter-spacing:-.015em;margin:0 0 4mm;color:#12181D;
+  }
+  .cl-p{font-size:10pt;line-height:1.62;color:#4A5D6C;margin:0 0 8mm;max-width:158mm}
+  .cl-not{border-top:1.4pt solid #12181D;padding-top:4mm;margin-bottom:9mm}
+  .cl-not .nk{
+    font-size:7.6pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:#12181D;margin-bottom:3.5mm;
+  }
+  .cl-not p{font-size:9.6pt;line-height:1.58;color:#4A5D6C;margin:0 0 3.2mm;padding-left:4mm;border-left:1.6pt solid #D8DEE1}
+  .cl-not p:last-child{margin-bottom:0}
+  .cl-not p b{color:#12181D;font-weight:700}
+  .cl-cta{border-top:1.4pt solid #12181D;padding-top:4mm}
+  .cl-cta .cu{font-family:var(--display);font-size:16pt;font-weight:700;color:#C2410C;letter-spacing:-.01em}
+  .cl-cta .cs{font-size:9.4pt;color:#4A5D6C;margin-top:1.6mm}
+  .cl-foot{
+    position:absolute;bottom:0;left:0;right:0;font-size:7.8pt;color:#84939C;
+    border-top:.6pt solid #D8DEE1;padding-top:2.6mm;
   }
 
   /* report title block */
@@ -486,6 +574,12 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 <form class="card" id="form" novalidate>
   <p class="formnote">Five numbers in, and you get your dates, your cost, and a <b>printable report</b> you can send straight to your CFO or your accountant. Takes under a minute.</p>
   <h2>Your business</h2>
+
+  <div class="field">
+    <label for="biz">Business name <span class="opt2">optional</span></label>
+    <div class="hint">Only used to head your report. Leave it blank and everything still works.</div>
+    <input type="text" id="biz" maxlength="80" autocomplete="organization" placeholder="Your company">
+  </div>
 
   <div class="field">
     <label for="md">Employees working in Maryland</label>
@@ -1035,6 +1129,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     var mustReportOutOfState = ein < CONFIG.small_employer_threshold && ein > md;
 
     var r = base;
+    r.business_name = (input.business_name || '').toString().trim().slice(0,80);
     r.md_employees = md;
     r.ein_employees = ein;
     r.pay_frequency = freq;
@@ -1181,6 +1276,7 @@ var st = { hc:null, hw:null, fp:null, dp:'not_started' };
 
 function readForm(){
   return {
+    business_name: ($('biz').value || '').trim().slice(0,80),
     md_employees: parseInt($('md').value,10),
     ein_employees: parseInt($('ein').value,10),
     md_payroll: parseFloat($('pay').value),
@@ -1240,7 +1336,9 @@ function lead(r){
 }
 
 /* ---------------------------------------------------------------- render */
+var LAST = null;
 function render(r){
+  LAST = r;
   var out = $('out'); out.innerHTML='';
   function add(h){ out.appendChild(el(h)); }
 
@@ -1253,6 +1351,7 @@ function render(r){
     return;
   }
 
+  add(coverHTML(r));
   add(reportHeadHTML(r));
 
   /* ---- lead ---- */
@@ -1372,6 +1471,8 @@ function render(r){
   /* ---- DOI ---- */
   if (r.doi) add(doiHTML(r));
 
+  add(closingHTML());
+
   /* ---- reminders ---- */
   add(captureHTML(r));
 
@@ -1424,8 +1525,9 @@ function refineHTML(r){
   h += '<button class="go" type="button" id="applyRef" style="margin-top:1rem">Update my figures</button>';
   h += disc('Why we ask rather than assume',
     'The even wages assumption is the largest error in this tool. For a firm with one very high earner it can overstate the cost by up to 70%. These two fields remove it. '
-    + 'The numbers you type stay in this page and in the link you can copy below. We never send them anywhere. '
-    + 'If you ask for date reminders we store your email address and whether you are a small or standard employer, and nothing else.');
+    + 'The numbers you type stay in this page and in the link you can copy below. Nothing is sent anywhere '
+    + 'unless you ask us for date reminders further down, in which case your figures come with your email so '
+    + 'our reply can be about your actual numbers.');
   return h + '</div>';
 }
 
@@ -1526,6 +1628,58 @@ var W3_KEY = '582eb9f4-85fe-408c-8121-612973de4d87';
 var CONSENT_VERSION = 'CONSENT-v1.0';
 var CONSENT_TEXT = 'Email me before each of my Maryland FAMLI dates, and when the 2027 Social Security wage cap is confirmed in October.';
 
+function coverHTML(r){
+  var f = {weekly:'Weekly',biweekly:'Every two weeks',semimonthly:'Twice a month',monthly:'Monthly'}[r.pay_frequency];
+  var who = r.business_name ? esc(r.business_name) : (r.md_employees + ' employee Maryland employer');
+  var nxt = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
+  return '<section class="cover">'
+    + '<div class="cv-band"></div>'
+    + '<div class="cv-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
+    + '<h2 class="cv-t">Maryland Family and Medical Leave Insurance</h2>'
+    + '<div class="cv-for">Prepared for <b>' + who + '</b></div>'
+    + '<div class="cv-lead">'
+    +   '<div class="lk">Full year 2027, total contribution</div>'
+    +   '<div class="lv">' + money(r.annual_total_cents) + '</div>'
+    +   '<div class="ln">' + r.md_employees + ' Maryland employees &middot; ' + money(r.payroll_cents)
+    +   ' payroll &middot; ' + (r.band==='small' ? 'small band, employee share only' : 'standard band, 0.90%') + '</div>'
+    + '</div>'
+    + '<table class="cv-tab"><tbody>'
+    +   '<tr><td class="k">' + esc(f) + ', total per run</td><td class="v">' + money(r.per_period_total_cents) + '</td></tr>'
+    +   '<tr><td class="k">Of which you fund</td><td class="v">' + money(r.per_period_employer_cents) + '</td></tr>'
+    +   (nxt ? '<tr><td class="k">Your next deadline</td><td class="v">' + esc(longDate(nxt.date)) + '</td></tr>' : '')
+    +   '<tr><td class="k">First payment due</td><td class="v">' + esc(longDate(r.q1_payment_due)) + '</td></tr>'
+    + '</tbody></table>'
+    + '<p class="cv-note">Figures use the 2026 Social Security wage cap of ' + CAP
+    + '. SSA confirms the 2027 cap in October and these numbers change when it lands.</p>'
+    + '<div class="cv-foot"><span>famliclock.com</span><span>Prepared ' + esc(longDate(TODAY)) + '</span></div>'
+    + '</section>';
+}
+
+function closingHTML(){
+  return '<section class="closing">'
+    + '<div class="cl-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
+    + '<div class="cl-k">Where this stops and we start</div>'
+    + '<h2 class="cl-t">Everything above came from five numbers.</h2>'
+    + '<p class="cl-p">Give the same engine your real payroll file and every figure sharpens. '
+    + 'The wage cap applies per person instead of assuming even wages. The out of state headcount field, '
+    + 'the blank one that reclassifies you and doubles your rate, gets checked before you file. '
+    + 'Several EINs read as one answer instead of four. And the rest of your compliance calendar '
+    + 'gets watched the same way this one deadline just was.</p>'
+    + '<div class="cl-not"><div class="nk">What we do not do</div>'
+    +   '<p><b>We do not replace your payroll system.</b> Whatever you run stays the system of record. '
+    +   'We build alongside it and read from it.</p>'
+    +   '<p><b>We agree the data boundary before any work starts.</b> Nothing you hold is used to train anything, '
+    +   'and you decide what moves and what does not.</p>'
+    +   '<p><b>A person still signs the filing.</b> We take out the assembly work, not the judgement '
+    +   'and not the accountability. The review step stays yours.</p>'
+    + '</div>'
+    + '<div class="cl-cta"><div class="cu">02launch.com/contact</div>'
+    + '<div class="cs">Thirty minutes with the engineers who built this. No obligation and no pitch deck.</div></div>'
+    + '<div class="cl-foot">An estimate, not tax, legal or payroll advice. '
+    + 'Rules checked against COMAR 09.42 and the Maryland Division of Labor on 29 August 2026.</div>'
+    + '</section>';
+}
+
 function reportHeadHTML(r){
   var f = {weekly:'Weekly',biweekly:'Every two weeks',semimonthly:'Twice a month',monthly:'Monthly'}[r.pay_frequency];
   return '<div class="printtitle">'
@@ -1559,7 +1713,8 @@ function captureHTML(r){
     + '<label for="capOk">' + esc(CONSENT_TEXT) + '</label></div>'
     + '<p class="capmsg hidden" id="capMsg"></p>'
     + '<p class="fine2">Your results are not hidden behind this and never will be. '
-    + 'We store your address and whether you are a small or standard employer. Nothing you typed above is sent. '
+    + 'We store your email address and the figures you entered above, so that a reply from us makes sense '
+    + 'against your actual numbers rather than a generic answer. Nothing else, and never passed on. '
     + 'Unsubscribe from any email.</p>'
     + '</div>';
 }
@@ -1584,7 +1739,13 @@ function bindCapture(r){
         email: email,
         consent_version: CONSENT_VERSION,
         consent_text: CONSENT_TEXT,
+        business_name: r.business_name || '(not given)',
+        md_employees: r.md_employees,
+        ein_employees: r.ein_employees,
+        md_payroll: money(r.payroll_cents),
+        pay_frequency: r.pay_frequency,
         size_band: r.band,
+        annual_2027_total: money(r.annual_total_cents),
         phase: r.phase,
         considering_private_plan: r.doi ? 'yes' : 'no',
         submitted_at: new Date().toISOString()
@@ -1643,12 +1804,19 @@ function writeURL(){
     var ICL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
     var ICD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
     var t = el('<div class="tools noprint" id="tools">'
-      + '<div class="tcap">Take this with you</div><div class="trow">'
+      + '<div class="tcap">Take your findings with you</div><div class="trow">'
       + '<button type="button" id="copy">'+ICL+'Copy link to this result</button>'
       + '<button type="button" id="print">'+ICD+'Download report as PDF</button>'
       + '</div></div>');
     $('out').appendChild(t);
-    document.getElementById('print').addEventListener('click', function(){ window.print(); });
+    document.getElementById('print').addEventListener('click', function(){
+      /* Browsers use document.title for the suggested PDF filename. */
+      var prev = document.title;
+      var who = (LAST && LAST.business_name) ? LAST.business_name.replace(/[\\/:*?"<>|]/g,'').trim() : '';
+      document.title = 'Maryland FAMLI Report' + (who ? ' ' + who : '') + ' famliclock.com';
+      window.print();
+      setTimeout(function(){ document.title = prev; }, 800);
+    });
     document.getElementById('copy').addEventListener('click', function(){
       var b=this;
       /* strip the QA date override so a shared link always shows the real phase */
