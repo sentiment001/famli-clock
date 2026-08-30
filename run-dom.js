@@ -226,8 +226,10 @@ check('capture sits after the results, not before them',
      w16.document.querySelector('.cap')) & 4) !== 0);
 check('no form element posts anywhere',
   w16.document.querySelectorAll('form[action]').length === 0);
-check('the page still states it does not store what you typed',
-  w16.document.body.textContent.indexOf('Nothing you typed above is sent') !== -1);
+check('the capture card states exactly what is transmitted',
+  w16.document.body.textContent.indexOf('We store your email address and the figures you entered above') !== -1);
+check('the earlier storage note matches what the capture actually sends',
+  w16.document.body.textContent.indexOf('your figures come with your email') !== -1);
 
 /* ---- 13. the page must be self-contained: this is the bug Mash hit ---- */
 out.push('--- self-contained page (regression guard) ---');
@@ -280,6 +282,39 @@ check('title block sits above the lead answer',
 check('report furniture is hidden on screen',
   w20.getComputedStyle(ph).display === 'none' &&
   w20.getComputedStyle(pt).display === 'none');
+
+
+/* ---- 16. cover and closing pages ---- */
+out.push('--- report cover and closing ---');
+var w21 = load('?d=2026-08-29');
+var bz = w21.document.getElementById('biz');
+check('business name field exists and is optional', !!bz && !bz.required);
+bz.value = 'Chesapeake Mills LLC';
+fill(w21, { md: 40, ein: 40, pay: 3200000 });
+var cov = w21.document.querySelector('.cover');
+var clo = w21.document.querySelector('.closing');
+check('cover page is generated', !!cov);
+check('closing page is generated', !!clo);
+check('cover is the first thing in the report',
+  w21.document.querySelector('#out').firstElementChild === cov);
+check('closing sits after the results', (cov.compareDocumentPosition(clo) & 4) !== 0);
+check('cover names the business', cov.textContent.indexOf('Chesapeake Mills LLC') !== -1);
+check('cover carries the credential', cov.textContent.indexOf('ex-Google Engineers at 02Launch.com') !== -1);
+check('cover leads with the annual total', cov.textContent.indexOf('$28,800.00') !== -1);
+check('closing names the three limits',
+  clo.textContent.indexOf('do not replace your payroll system') !== -1 &&
+  clo.textContent.indexOf('data boundary before any work starts') !== -1 &&
+  clo.textContent.indexOf('person still signs the filing') !== -1);
+check('closing points at the working contact URL',
+  clo.textContent.indexOf('02launch.com/contact') !== -1);
+check('both are hidden on screen',
+  w21.getComputedStyle(cov).display === 'none' && w21.getComputedStyle(clo).display === 'none');
+
+/* no business name still works */
+var w22 = load('?d=2026-08-29');
+fill(w22, { md: 8, ein: 8, pay: 480000 });
+check('cover falls back gracefully with no business name',
+  w22.document.querySelector('.cover').textContent.indexOf('8 employee Maryland employer') !== -1);
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
