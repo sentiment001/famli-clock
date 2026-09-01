@@ -8,6 +8,21 @@
 <meta name="robots" content="index,follow">
 <link rel="canonical" href="https://www.famliclock.com/">
 <meta name="author" content="02Launch">
+<!-- Microsoft Clarity. Analytics only. Skipped on file:// so the page still works
+     opened from disk with no external calls, per the self-contained rule. Masking
+     mode is set to Balanced in the Clarity dashboard, which masks all input boxes,
+     all dropdowns and all numbers. The business name is the one value Balanced
+     would capture, so it carries data-clarity-mask where it renders. -->
+<script>
+(function(){
+  if (location.protocol === 'file:') { return; }
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "yatz1z728u");
+})();
+</script>
 <meta name="keywords" content="Maryland FAMLI, Maryland paid family leave, FAMLI calculator, FAMLI contribution rate, Declaration of Intent, Maryland private plan, FAMLI employer registration, Maryland paid leave 2027, FAMLI employee notice, COMAR 09.42">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FAMLI Clock">
@@ -45,6 +60,10 @@
   --ink:#14202A; --ink2:#4A5D6C; --ink3:#6E8090;
   --paper:#F2F4F3; --card:#FFFFFF; --rule:#D2D9DA; --rule2:#E6EBEB;
   --accent:#0E5A5E; --accent-soft:#DCEAEA;
+  /* Forest green, reserved for the on-pace states. Tied to the cover band #0D4735
+     so the report reads as one document. */
+  --ok:#14563B; --ok-soft:#E7F1EA;
+  --warn:#C2410C; --warn-soft:#FBEADF;
   --due:#8C2F1B; --due-soft:#F6E7E2;
   --flag:#6E5200; --flag-soft:#F7F0DA;
   --pass:#8A97A0;
@@ -235,8 +254,12 @@ details.disc p{font-size:.83rem;color:var(--ink2);margin:.5rem 0 0;line-height:1
   display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
   padding:.25rem .5rem;border-radius:3px;margin-bottom:.7rem;
 }
-.s-comfortable,.s-on_track{background:var(--accent-soft);color:var(--accent)}
-.s-tight,.s-only_if_everything_goes_right{background:var(--flag-soft);color:var(--flag)}
+/* Four severity tiers, not three. "Only if everything goes right" is materially
+   worse than "Tight" (it needs the fast path on every remaining stage) and was
+   sharing a colour with it. Green, yellow, orange, red, in that order. */
+.s-comfortable,.s-on_track{background:var(--ok-soft);color:var(--ok)}
+.s-tight{background:var(--flag-soft);color:var(--flag)}
+.s-only_if_everything_goes_right{background:var(--warn-soft);color:var(--warn)}
 .s-does_not_fit,.s-closed{background:var(--due-soft);color:var(--due)}
 table.pace{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:.6rem}
 table.pace th,table.pace td{text-align:right;padding:.42rem .3rem;border-bottom:1px solid var(--rule2)}
@@ -417,7 +440,13 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 .printhead,.printfoot,.printtitle,.cover,.closing{display:none}
 
 @media print{
-  @page{ margin:16mm 15mm 17mm; }
+  /* Bottom margin reserves room for the running footer, which is position:fixed
+     and repeats on every sheet. 18mm was chosen by measurement, not taste: swept
+     against nine input scenarios, it gives 11.1mm of clearance between the last
+     line of content and the footer rule, against 4.2mm at 25mm, and costs two
+     fewer sheets across the sweep. Tightening the margin widened the gap because
+     break-inside:avoid moves whole cards rather than letting them run to the edge. */
+  @page{ margin:16mm 15mm 18mm; }
 
   /* Chrome ships "Background graphics" unticked. Without this the emerald band,
      the orange seam and the zebra striping all vanish. */
@@ -428,13 +457,35 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   a{text-decoration:none;color:#12181D}
 
   /* strip every piece of web furniture */
-  .noprint,form,.formnote,.tools,.cta,.pitch,.cap,.mast,.eyebadge,.sub,h1,.refine,.limits{
+  /* .foot is the site footer. It used to print, and because it sits after the
+     last card it always landed alone on its own sheet carrying nothing but the
+     basis note. Measured: page 5 ended at 227mm with 35mm free, the block needed
+     43mm, so it could never pull back. Its content now lives in the closing
+     notice instead, which removes the ghost sheet and the duplication. */
+  .noprint,form,.formnote,.tools,.cta,.pitch,.cap,.mast,.eyebadge,.sub,h1,.refine,.limits,.foot{
     display:none !important;
   }
 
   /* No fixed running furniture. Fixed positioning in print overlaps flowed content,
      so branding lives on the cover and closing pages instead. */
-  .printhead,.printfoot{display:none !important}
+  /* Running footer only. A running header was tried and abandoned: in Chrome a
+     fixed element positions against the page CONTENT box, never the margin, so a
+     header lands exactly where the first line of content starts and overlaps it.
+     Negative offsets, transforms and table-header-group were all measured and all
+     failed. A footer works because content rarely reaches the bottom of the box,
+     and the deeper bottom margin above guarantees the gap. run-dom asserts it. */
+  .printhead{display:none !important}
+  .printfoot{
+    display:block !important; position:fixed; bottom:0; left:0; right:0;
+    font-size:7.2pt; color:#84939C;
+    border-top:.6pt solid #D8DEE1; padding-top:2.2mm;
+  }
+  .printfoot b{color:#5A6A74; font-weight:700}
+
+  /* The cover and closing pages carried their own footers. With one on every
+     sheet those would stack, so they come off. The prepared date survives in the
+     report head on sheet 2. */
+  .cv-foot,.cl-foot{display:none !important}
 
   /* ===== cover page, concept C ===== */
   /* Flow based. Nothing is pinned to a fixed mm offset, so a long business name
@@ -446,12 +497,18 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     min-height:236mm; overflow:hidden; margin:0; padding:0;
   }
   /* The band is an inline SVG, not a CSS background. SVG fill is document content,
-     so it prints even when the reader leaves "Background graphics" unticked. */
+     so it prints even when the reader leaves "Background graphics" unticked.
+     The negative offsets below aim past the page margins, but Chrome clips all
+     content to the @page margin box, so the band renders inset 15mm at each side,
+     not full bleed. The offsets are kept so it bleeds correctly if @page ever
+     moves to margin:0 with the margins reapplied as content padding. Because the
+     band stops at the content edge, .cv-head carries its own left padding, or the
+     masthead text sits flush against the green with a 0mm gap. Measured. */
   .cv-band{
     position:absolute; top:-16mm; left:-15mm; width:calc(100% + 30mm); height:52mm;
     display:block; z-index:0;
   }
-  .cv-head{position:relative; z-index:1; height:36mm; padding-top:7.5mm}
+  .cv-head{position:relative; z-index:1; height:36mm; padding:7.5mm 0 0 9mm}
   .cv-mast{
     font-size:7.6pt;font-weight:800;letter-spacing:.15em;
     text-transform:uppercase;color:#8FC9AE;
@@ -494,15 +551,19 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   .cl-mast{
     font-size:7.6pt;font-weight:800;letter-spacing:.15em;
     text-transform:uppercase;color:#84939C;
+    margin-bottom:4mm;
   }
   .cl-mast b{color:#C2410C}
-  .cl-body{margin:auto 0;padding-right:10mm}
+  .cl-body{margin:0;padding-right:0}
+  /* The closing page used to be sparse and was optically centred. It now carries
+     the offer panel, so it flows from the top and the footer follows the content
+     rather than being pushed to a ninth sheet. */
   .cl-k{font-size:7.6pt;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#C2410C;margin-bottom:4mm}
   .cl-t{
     font-family:var(--display);font-size:23pt;line-height:1.12;font-weight:600;
     letter-spacing:-.015em;margin:0 0 4.5mm;color:#12181D;
   }
-  .cl-p{font-size:10pt;line-height:1.62;color:#4A5D6C;margin:0 0 7mm;max-width:150mm}
+  .cl-p{font-size:9.7pt;line-height:1.55;color:#4A5D6C;margin:0 0 3.6mm;max-width:none}
   .cl-nk{
     font-size:7.6pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
     color:#12181D;margin-bottom:3.4mm;
@@ -514,9 +575,69 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   .cl-cta .cu{font-size:13pt;font-weight:800;color:#C2410C;letter-spacing:-.005em}
   .cl-cta .cs{font-size:9.4pt;color:#4A5D6C;margin-top:1.6mm}
   .cl-foot{
-    margin-top:9mm; font-size:7.8pt;color:#84939C;
+    margin-top:4.5mm; font-size:7.8pt;color:#84939C;
     border-top:.6pt solid #D8DEE1;padding-top:2.6mm;
   }
+  .cl-foot b{color:#12181D;font-weight:700}
+
+  /* Section key with the orange rule, mirroring the FL register's closing page. */
+  /* Section keys match the report's cards: hairline rule above, small caps below.
+     The orange leader dash was borrowed from the FL register and did not belong. */
+  .cl-rk{
+    border-top:.9pt solid #12181D; padding-top:2.4mm;
+    font-size:7.6pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:#12181D; margin:0 0 3mm;
+  }
+  .cl-rk.sp{margin-top:5mm}
+
+  /* The offer panel. Bordered and tinted so it reads as the one thing on the page
+     that is an offer rather than a statement of fact. */
+  /* Offer panel uses the report's own callout treatment, a soft fill with a left
+     bar, rather than the FL register's outlined box. Bar is the cover emerald. */
+  .cl-offer{
+    background:#F1F6F3; border-left:2.4pt solid #0D4735;
+    padding:3.6mm 5mm; margin:0 0 4mm;
+    break-inside:avoid; page-break-inside:avoid;
+  }
+  .of-k{font-size:7.2pt;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#C2410C;margin-bottom:2mm}
+  .of-t{
+    font-family:var(--display);font-size:16pt;line-height:1.1;font-weight:600;
+    letter-spacing:-.015em;color:#12181D;margin:0 0 2.6mm;
+  }
+  .of-p{font-size:9.2pt;line-height:1.5;color:#4A5D6C;margin:0 0 3mm;max-width:none}
+  .of-when{
+    border-top:.6pt solid #D8DEE1;padding-top:2.8mm;
+    font-size:9.4pt;font-weight:700;color:#12181D;margin-bottom:2.8mm;
+  }
+  .of-row{display:flex;align-items:center;gap:5mm;margin-bottom:2.6mm}
+  .of-btn{
+    background:#0D4735;color:#fff;font-size:9.4pt;font-weight:700;
+    padding:2.8mm 4.6mm;white-space:nowrap;
+  }
+  .of-alt{font-size:9.2pt;color:#4A5D6C;line-height:1.45}
+  .of-alt b{color:#12181D;font-weight:700}
+  /* Full measure, so it sets as one line under the button rather than wrapping
+     into a ragged block halfway across the panel. */
+  .of-fine{font-size:8.4pt;color:#6B767D;line-height:1.5;max-width:none}
+
+  /* Two column band, the WHO WE ARE / WHY NO AI pair. */
+  .cl-cols{display:flex;gap:8mm;margin:0}
+  .cl-cols > div{flex:1 1 0;min-width:0}
+  .cl-cols p{font-size:9.2pt;line-height:1.55;color:#4A5D6C;margin:0}
+  .cl-cols p b{color:#12181D;font-weight:700}
+
+  /* Trust strip, variant B only. */
+  .cl-nots{
+    display:flex;gap:6mm;margin:0 0 4mm;
+    border-top:.6pt solid #D8DEE1;border-bottom:.6pt solid #D8DEE1;padding:2.4mm 0;
+  }
+  .cl-nots > div{flex:1 1 0;min-width:0;font-size:8.6pt;line-height:1.45;color:#4A5D6C}
+  .cl-nots b{color:#12181D;font-weight:700}
+
+  .cl-notice{
+    margin-top:2.4mm;font-size:6.9pt;line-height:1.45;color:#9AA6AD;max-width:none;
+  }
+  .cl-notice b{color:#5A6A74;font-weight:700}
 
   /* report title block */
   .printtitle{display:block !important; margin:0 0 7mm}
@@ -584,6 +705,22 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   .warn b{color:#C2410C}
   .note{font-size:8.6pt;color:#5A6A74;margin-top:2.4mm}
   .state{border:.5pt solid #8A97A0;background:#fff !important;color:#12181D !important;font-size:7.6pt}
+  /* Every tier keeps its colour in print. The blanket rule above used to flatten
+     all six states to a grey outline, which meant "Does not fit" printed exactly
+     like "On track" in the document someone forwards to their CFO. That is the
+     one place the signal has to survive. */
+  .s-comfortable,.s-on_track{
+    border-color:#14563B !important; color:#14563B !important; background:#E7F1EA !important;
+  }
+  .s-tight{
+    border-color:#6E5200 !important; color:#6E5200 !important; background:#F7F0DA !important;
+  }
+  .s-only_if_everything_goes_right{
+    border-color:#C2410C !important; color:#C2410C !important; background:#FBEADF !important;
+  }
+  .s-does_not_fit,.s-closed{
+    border-color:#8C2F1B !important; color:#8C2F1B !important; background:#F6E7E2 !important;
+  }
   ol.stages{font-size:9.3pt}
   ol.stages .bd{font-size:8.4pt;color:#5A6A74}
 
@@ -613,7 +750,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 
 <div class="eyebadge"><span class="gdot" aria-hidden="true"></span>Built by ex-Google Engineers from 02Launch.com</div>
 <h1 id="h1">What Maryland FAMLI costs you, and the date you cannot miss.</h1>
-<p class="sub" id="sub"><b>No sign up</b> needed to use this tool. We do not store your numbers. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
+<p class="sub" id="sub"><b>Free, no sign up.</b> Your figures stay on this page unless you ask us to email you your dates. Contributions start 1 January 2027 and the written notice to your employees is due before that.</p>
 
 <form class="card" id="form" novalidate>
   <p class="formnote">Five numbers in, and you get your dates, your cost, and a <b>printable report</b> you can send straight to your CFO or your accountant. Takes under a minute.</p>
@@ -633,7 +770,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
 
   <div class="field">
     <label for="ein">Total employees under this EIN</label>
-    <div class="hint">Everyone you pay under one federal EIN, inside and outside Maryland. This is the number that sets your rate, and it is not the same as the number above.</div>
+    <div class="hint">Everyone you pay under one federal EIN, inside and outside Maryland. This is the number that sets your rate. If your whole workforce is in Maryland it is the same as the number above.</div>
     <input type="number" id="ein" min="0" step="1" inputmode="numeric" placeholder="e.g. 40">
   </div>
 
@@ -719,10 +856,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   <span class="ph-l">Built by ex-Google Engineers at <b>02Launch.com</b></span>
   <span class="ph-r">Maryland FAMLI employer report</span>
 </div>
-<div class="printfoot" aria-hidden="true">
-  <span>famliclock.com &middot; an estimate, not tax, legal or payroll advice</span>
-  <span>Rules checked against COMAR 09.42 on 29 August 2026</span>
-</div>
+<div class="printfoot" aria-hidden="true"><span><b>FAMLIClock.com</b> &middot; free tool by 02Launch.com</span></div>
 
 <footer class="foot">
   <p><b>This is an estimate, not tax, legal or payroll advice.</b> It is built from the
@@ -1035,7 +1169,11 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     }
     add('Register with FAMLI', null, 'Open now. No deadline, but everything else waits on it.');
     if (r.doi) {
-      add('Submit your Declaration of Intent', CONFIG.doi_deadline, 'The state closes the window on Sunday 15 November 2026. Friday 13 November is the last business day before it, so that is the date we plan to.');
+      add('Submit your Declaration of Intent', CONFIG.doi_deadline,
+        (toDay(CONFIG.doi_window_opens) > t
+          ? 'The window opens Tuesday 1 September 2026. '
+          : 'The window is open now. ')
+        + 'The state closes it on Sunday 15 November 2026. Friday 13 November is the last business day before it, so that is the date we plan to.');
       add('Submit early enough to survive a rejection', CONFIG.doi_resubmit_safe, 'Fifteen business days before the deadline. After this, your first attempt is your only attempt.');
     }
     add('Written notice to employees', r.notice.notice_by,
@@ -1282,7 +1420,7 @@ var D1 = 'Figures use the 2026 Social Security wage cap of '+CAP+'. SSA publishe
 var D2 = 'Under 15 employers escrow only the employee half, because that is all that would otherwise be due to the State. MDOL has not addressed this case directly, so check with FAMLI on (410) 525-4010 before you rely on it.';
 var D3 = 'The 15 business days for a FAMLI decision is set by regulation. The other stage durations are our planning estimates. No agency publishes them. Booking an insurance agent is the step most likely to run long.';
 var D4 = 'We cannot tell you what a private plan costs. Carriers set their own rates and may charge employers more than the State Plan. What we can tell you is that they cannot withhold more than 0.45% from your employees, and the annual application fee is $100 to $1,000.';
-var DEVEN = 'This assumes your Maryland salaries are broadly similar. If a few people earn well above the cap, the real figure is lower. The refinement below removes this assumption entirely.';
+var DEVEN = 'This figure is a ceiling. Spreading your payroll evenly across your headcount produces the largest amount you could owe, because anyone earning above the cap has their wages clipped there and drops out of the sum. Your real cost is this or lower, never higher. If nobody in your firm earns above the cap it is exact. The refinement below tells you how much lower.';
 
 /* ---------------------------------------------------------------- phase rail */
 function drawRail(){
@@ -1307,15 +1445,15 @@ var PHASE = drawRail();
 (function(){
   var h = {
     P1_runway:['What Maryland FAMLI costs you, and the date you cannot miss.',
-      '<b>No sign up</b> needed to use this tool. We do not store your numbers. If you want a private plan, the Declaration of Intent is due 15 November 2026 and the work behind it takes weeks.'],
+      '<b>Free, no sign up.</b> Your figures stay on this page unless you ask us to email you your dates. If you want a private plan, the Declaration of Intent is due 15 November 2026 and the work behind it takes weeks.'],
     P2_compressed:['The private plan window is closing. Here is what still fits.',
-      '<b>No sign up</b> needed to use this tool. We do not store your numbers. A cold start no longer fits at normal pace, so this asks where you already are and works forward from there.'],
+      '<b>Free, no sign up.</b> Your figures stay on this page unless you ask us to email you your dates. A cold start no longer fits at normal pace, so this asks where you already are and works forward from there.'],
     P3_notice:['Your employees need this notice in writing before January.',
-      '<b>No sign up</b> needed to use this tool. We do not store your numbers. Every Maryland employer owes a written notice one full pay period before the first 2027 withholding. This works out your date.'],
+      '<b>Free, no sign up.</b> Your figures stay on this page unless you ask us to email you your dates. Every Maryland employer owes a written notice one full pay period before the first 2027 withholding. This works out your date.'],
     P4_live:['Contributions are live. Here is your first payment and what it is.',
-      '<b>No sign up</b> needed to use this tool. We do not store your numbers. Your first report and payment covers Q1 wages and is due Friday 30 April 2027.'],
+      '<b>Free, no sign up.</b> Your figures stay on this page unless you ask us to email you your dates. Your first report and payment covers Q1 wages and is due Friday 30 April 2027.'],
     P5_steady:['Your Maryland FAMLI cost, quarter by quarter.',
-      '<b>No sign up</b> needed to use this tool. We do not store your numbers. Quarterly reports, the July notice, and the private plan application deadline, worked out for your business.']
+      '<b>Free, no sign up.</b> Your figures stay on this page unless you ask us to email you your dates. Quarterly reports, the July notice, and the private plan application deadline, worked out for your business.']
   }[PHASE.key];
   $('h1').textContent = h[0]; $('sub').innerHTML = h[1];
 })();
@@ -1573,8 +1711,8 @@ function refineHTML(r){
     + '</div>';
 
   h += '<button class="go" type="button" id="applyRef" style="margin-top:1rem">Update my figures</button>';
-  h += disc('Why we ask rather than assume',
-    'The even wages assumption is the largest error in this tool. For a firm with one very high earner it can overstate the cost by up to 70%. These two fields remove it. '
+  h += disc('How much lower your real figure could be',
+    'The number above is your ceiling, not an estimate that could go either way. Even wages give the largest possible taxable base, so every high earner you have pulls the real figure down and none of them can push it up. These two fields find the difference, which for a firm with one very high earner can be 70%. '
     + 'The numbers you type stay in this page and in the link you can copy below. Nothing is sent anywhere '
     + 'unless you ask us for date reminders further down, in which case your figures come with your email so '
     + 'our reply can be about your actual numbers.');
@@ -1672,8 +1810,10 @@ function doiHTML(r){
 
 /* ---------------------------------------------------------------- email capture
    Web3Forms. The access key is public by design and carries no account access.
-   Nothing typed into the calculator is transmitted. Only the address they volunteer,
-   the consent string they were shown, their size band and the phase. */
+   Fires only on an explicit click, with a valid address and the consent box ticked.
+   The payload carries the address, the versioned consent string, the figures they
+   entered, the derived result and the share URL, so a reply can be about their
+   actual numbers. The capture block on the page states this before they submit. */
 var W3_KEY = '582eb9f4-85fe-408c-8121-612973de4d87';
 var CONSENT_VERSION = 'CONSENT-v1.0';
 var CONSENT_TEXT = 'Email me before each of my Maryland FAMLI dates, and when the 2027 Social Security wage cap is confirmed in October.';
@@ -1691,7 +1831,7 @@ function coverHTML(r){
     +   '<div class="cv-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
     +   '<h2 class="cv-t">Maryland Family and Medical Leave Insurance</h2>'
     + '</div>'
-    + '<div class="cv-for">Prepared for <b>' + who + '</b></div>'
+    + '<div class="cv-for" data-clarity-mask="true">Prepared for <b>' + who + '</b></div>'
     + '<div class="cv-lead">'
     +   '<div class="lk">Full year 2027, total contribution</div>'
     +   '<div class="lv">' + money(r.annual_total_cents) + '</div>'
@@ -1711,31 +1851,75 @@ function coverHTML(r){
 }
 
 function closingHTML(){
-  return '<section class="closing">'
+  /* Content structure follows the FL register's closing page. Visual language
+     follows this report: hairline rule above each key, the report's own callout
+     for the offer, no borrowed furniture. Every claim below is either arithmetic
+     the engine performs or is cited in the body of the report. */
+  var TRUST_STRIP = false;
+  var h = '<section class="closing">'
     + '<div class="cl-mast">Built by ex-Google Engineers at <b>02Launch.com</b></div>'
     + '<div class="cl-body">'
-    +   '<div class="cl-k">Where this stops and we start</div>'
-    +   '<h2 class="cl-t">Everything above came from five numbers.</h2>'
-    +   '<p class="cl-p">Give the same engine your real payroll file and every figure sharpens. '
-    +   'The wage cap applies per person instead of assuming even wages. The out of state headcount field, '
-    +   'the blank one that reclassifies you and doubles your rate, gets checked before you file. '
-    +   'Several EINs read as one answer instead of four. And the rest of your compliance calendar '
-    +   'gets watched the same way this one deadline just was.</p>'
-    +   '<div class="cl-nk">What we do not do</div>'
-    +   '<ul class="cl-ul">'
-    +     '<li><b>We do not replace your payroll system.</b> Whatever you run stays the system of record. '
-    +     'We build alongside it and read from it.</li>'
-    +     '<li><b>We agree the data boundary before any work starts.</b> Nothing you hold is used to train anything, '
-    +     'and you decide what moves and what does not.</li>'
-    +     '<li><b>A person still signs the filing.</b> We take out the assembly work, not the judgement '
-    +     'and not the accountability. The review step stays yours.</li>'
-    +   '</ul>'
-    +   '<div class="cl-cta"><div class="cu">02launch.com/contact</div>'
-    +   '<div class="cs">Thirty minutes with the engineers who built this. No obligation and no pitch deck.</div></div>'
+
+    +   '<div class="cl-rk">How this report was produced</div>'
+    +   '<p class="cl-p">Every date here is arithmetic against published Maryland regulation, '
+    +   'and every figure is arithmetic against the numbers you entered. No model, no judgement. '
+    +   'One assumption sits inside the cost, named where it applies: even wages, which give the '
+    +   'largest taxable base you could have. The figure is a ceiling, not a guess.</p>'
+    +   '<p class="cl-p"><b>It also expires.</b> SSA confirms the 2027 Social Security wage cap in October '
+    +   'and every figure moves with it. A headcount crossing fifteen takes you from 0.45% to 0.9%. '
+    +   'From 2028 employer size is read from the prior year\'s four quarters, not today\'s payroll. '
+    +   'Keeping this current is repetition, and repetition is what gets dropped in the week payroll is due.</p>'
+
+    +   '<div class="cl-rk sp">Appendix A: about 02Launch.com</div>'
+
+    +   '<div class="cl-offer">'
+    +     '<div class="of-k">The offer</div>'
+    +     '<div class="of-t">The FAMLI Contribution Register</div>'
+    +     '<p class="of-p">Send us your payroll export. In 48 hours you get the 2027 contribution '
+    +     'per employee, the employer and employee split, your notice date on your own pay calendar, '
+    +     'and your quarterly report fields mapped ready for April.</p>'
+    +     '<div class="of-when">Delivered within 48 hours of our call.</div>'
+    +     '<div class="of-row">'
+    +       '<div class="of-btn">Contact us at hello@02launch.com</div>'
+    +       '<div class="of-alt">Or book 30 minutes directly:<br>'
+    +       '<b>calendly.com/ahmed-asif1/30min</b></div>'
+    +     '</div>'
+    +     '<div class="of-fine">We build 3 of these a week. Yours to keep whether or not you work '
+    +     'with us. '
+    +     'No contract and no access to your systems.</div>'
+    +   '</div>';
+
+  if (TRUST_STRIP) {
+    h += '<div class="cl-nots"><div>'
+      +   '<b>What we do not do.</b> We do not replace your payroll system, we agree the data '
+      +   'boundary before any work starts, and a person still signs the filing.'
+      + '</div></div>';
+  }
+
+  h +=    '<div class="cl-cols">'
+    +     '<div><div class="cl-nk">Who we are</div>'
+    +       '<p>02Launch is a <b>forward deployed</b> AI engineering group. Our ex-Google and '
+    +       'Microsoft AI engineers take your most time-consuming work off your plate. If you are '
+    +       'reading this, we will scope your first project free.</p></div>'
+    +     '<div><div class="cl-nk">Why there is no AI in this report</div>'
+    +       '<p>Every figure here has one correct answer and a model would only add doubt to it. '
+    +       'We put the AI where the work actually repeats: assembling the quarterly wage and hour '
+    +       'report four times a year, and keeping the deduction right when someone joins, leaves '
+    +       'or crosses the cap mid-year.</p></div>'
+    +   '</div>'
     + '</div>'
-    + '<div class="cl-foot">An estimate, not tax, legal or payroll advice. '
-    + 'Rules checked against COMAR 09.42 and the Maryland Division of Labor on 29 August 2026.</div>'
+
+    + '<div class="cl-foot"><b>02Launch.com</b> &middot; hello@02launch.com &middot; '
+    + 'Free tool at famliclock.com</div>'
+    /* Absorbs the old site footer, which used to print alone on its own sheet. */
+    + '<div class="cl-notice"><b>Notice.</b> An estimate, not tax, legal or payroll advice. It is '
+    + 'built from the Maryland regulations and the Division\'s own published pages, cited against '
+    + 'each figure above. Check anything you are going to rely on with FAMLI Customer Care on '
+    + '(410) 525-4010 or your own advisers before you act on it. Something here look wrong? Write '
+    + 'to hello@02launch.com and a dedicated engineer fixes it within 6 hours of you telling us. '
+    + 'Rules checked against the Division\'s published pages and COMAR 09.42 on 29 August 2026.</div>'
     + '</section>';
+  return h;
 }
 
 function reportHeadHTML(r){
@@ -1799,9 +1983,17 @@ function bindCapture(r){
       headers:{'Content-Type':'application/json','Accept':'application/json'},
       body: JSON.stringify({
         access_key: W3_KEY,
-        subject: 'FAMLI Clock reminder signup',
+        /* Subject is built so the inbox sorts itself. Private plan first, because
+           that is the highest intent signal on the page. */
+        subject: 'FAMLI'
+          + (r.doi ? ' [PRIVATE PLAN]' : '')
+          + ' · ' + (r.business_name || 'unnamed')
+          + ' · ' + r.md_employees + ' MD staff'
+          + ' · ' + money(r.annual_total_cents),
         from_name: 'FAMLI Clock',
         email: email,
+        replyto: email,
+        botcheck: '',
         consent_version: CONSENT_VERSION,
         consent_text: CONSENT_TEXT,
         business_name: r.business_name || '(not given)',
@@ -1813,6 +2005,24 @@ function bindCapture(r){
         annual_2027_total: money(r.annual_total_cents),
         phase: r.phase,
         considering_private_plan: r.doi ? 'yes' : 'no',
+        /* Raw integers alongside the formatted strings, so the export sorts and
+           sums without cleaning. Cents, not dollars, to stay integer. */
+        md_payroll_cents: r.payroll_cents,
+        annual_2027_total_cents: r.annual_total_cents,
+        /* Refinement fields. Present only if they chose to give them, which is
+           itself an engagement signal. */
+        high_earner_count: (st.hc == null ? '' : st.hc),
+        high_earner_wages: (st.hw == null ? '' : st.hw),
+        first_2027_pay_date: (st.fp || ''),
+        doi_progress: (st.dp || ''),
+        estimate_basis: r.base_mode,
+        /* The share URL reproduces their exact result. One click and we see
+           everything they saw. */
+        result_url: (function(){
+          try { var u = new URL(location.href); u.searchParams.delete('d'); return u.toString(); }
+          catch (e) { return location.href; }
+        })(),
+        referrer: document.referrer || '(direct)',
         submitted_at: new Date().toISOString()
       })
     }).then(function(res){ return res.json(); }).then(function(d){
@@ -1858,8 +2068,10 @@ function run(keepScroll){
 $('form').addEventListener('submit', function(ev){ ev.preventDefault(); run(false); });
 
 /* ------------------------------------------------------- shareable URL
-   The URL is the only place state lives. No localStorage, no sessionStorage,
-   no cookies. Copy the link and the result comes back exactly. */
+   The URL is the only place calculator state lives. The page itself sets no
+   storage and no cookies. Microsoft Clarity, loaded in the head, sets its own
+   analytics cookies; it is the only component on the page that does. Copy the
+   link and the result comes back exactly. */
 function writeURL(){
   var p = new URLSearchParams();
   p.set('md',$('md').value); p.set('ein',$('ein').value); p.set('pay',$('pay').value);
