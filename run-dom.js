@@ -300,12 +300,27 @@ check('closing sits after the results', (cov.compareDocumentPosition(clo) & 4) !
 check('cover names the business', cov.textContent.indexOf('Chesapeake Mills LLC') !== -1);
 check('cover carries the credential', cov.textContent.indexOf('ex-Google Engineers at 02Launch.com') !== -1);
 check('cover leads with the annual total', cov.textContent.indexOf('$28,800.00') !== -1);
-check('closing names the three limits',
-  clo.textContent.indexOf('do not replace your payroll system') !== -1 &&
-  clo.textContent.indexOf('data boundary before any work starts') !== -1 &&
-  clo.textContent.indexOf('person still signs the filing') !== -1);
-check('closing points at the working contact URL',
-  clo.textContent.indexOf('02launch.com/contact') !== -1);
+/* The closing page now mirrors the FL register: provenance, then the named
+   offer, then who we are. The three "what we do not do" limits moved behind the
+   TRUST_STRIP flag in closingHTML and are off by default, so they are no longer
+   asserted here. */
+check('closing states how the report was produced',
+  clo.textContent.indexOf('How this report was produced') !== -1 &&
+  clo.textContent.indexOf('No model, no judgement') !== -1);
+check('closing declares the one assumption and calls the figure a ceiling',
+  clo.textContent.indexOf('The figure is a ceiling') !== -1);
+check('closing carries its own decay, so nobody treats it as durable',
+  clo.textContent.indexOf('It also expires') !== -1);
+check('closing names the offer and its turnaround',
+  clo.textContent.indexOf('The FAMLI Contribution Register') !== -1 &&
+  clo.textContent.indexOf('within 48 hours') !== -1);
+check('closing publishes the real weekly limit',
+  clo.textContent.indexOf('We build 3 of these a week') !== -1);
+check('closing points at both a mail route and a booking route',
+  clo.textContent.indexOf('hello@02launch.com') !== -1 &&
+  clo.textContent.indexOf('calendly.com/ahmed-asif1/30min') !== -1);
+check('closing carries the legal notice',
+  clo.textContent.indexOf('not tax, legal or payroll advice') !== -1);
 check('both are hidden on screen',
   w21.getComputedStyle(cov).display === 'none' && w21.getComputedStyle(clo).display === 'none');
 
@@ -335,10 +350,64 @@ check('closing renders into its own slot, not #out',
   !!slot21 && slot21.contains(clo) && !w21.document.getElementById('out').contains(clo));
 check('closing prints after the legal footer, so it is the last sheet',
   !!foot21 && (foot21.compareDocumentPosition(clo) & 4) !== 0);
-check('closing limits are a list, concept A',
-  clo.querySelectorAll('.cl-ul li').length === 3);
-check('closing body is a single centred block',
-  !!clo.querySelector('.cl-body .cl-cta'));
+check('closing offer panel is present and intact',
+  !!clo.querySelector('.cl-offer .of-t') &&
+  !!clo.querySelector('.cl-offer .of-btn') &&
+  !!clo.querySelector('.cl-offer .of-fine'));
+check('closing carries the two column band',
+  clo.querySelectorAll('.cl-cols > div').length === 2);
+/* The site footer must stay on screen and be suppressed in print. jsdom does not
+   apply print media, so the print half is asserted against the stylesheet text
+   and the rendered result is measured in Chromium against the PDF instead. */
+check('site footer still renders on screen',
+  !!w21.document.querySelector('.foot'));
+check('site footer is in the print hide list, so it cannot claim its own sheet',
+  /\.limits,\.foot\{[\s\S]{0,40}display:none/.test(HTML));
+check('closing notice absorbs the basis content the site footer used to print',
+  clo.textContent.indexOf('(410) 525-4010') !== -1 &&
+  clo.textContent.indexOf('within 6 hours') !== -1 &&
+  clo.textContent.indexOf('COMAR 09.42 on 29 August 2026') !== -1);
+/* jsdom does not resolve var(), so the token is asserted rather than the
+   computed colour. The rendered colour is checked in Chromium. */
+check('on-pace states use the forest green token, not the teal accent',
+  /--ok:#14563B/.test(HTML) &&
+  /\.s-comfortable,\.s-on_track\{background:var\(--ok-soft\);color:var\(--ok\)\}/.test(HTML));
+/* Four severity tiers, and each must survive print. The blanket .state print rule
+   used to flatten all of them to a grey outline, so "Does not fit" printed exactly
+   like "On track". */
+check('severity ladder is four tiers, not three',
+  /\.s-tight\{background:var\(--flag-soft\)/.test(HTML) &&
+  /\.s-only_if_everything_goes_right\{background:var\(--warn-soft\)/.test(HTML) &&
+  /--warn:#C2410C/.test(HTML));
+check('every severity tier keeps its colour in print',
+  ['#14563B','#6E5200','#C2410C','#8C2F1B'].every(function(c){
+    return HTML.indexOf('color:' + c + ' !important') !== -1;
+  }));
+check('closing offer leads with what every Maryland employer owes',
+  clo.textContent.indexOf('notice date on your own pay calendar') !== -1 &&
+  clo.textContent.indexOf('quarterly report fields mapped') !== -1);
+/* Running footer. jsdom does not apply print media, so structure and stylesheet
+   are asserted here; the 11.1mm clearance on every sheet was measured in Chromium
+   across nine input scenarios. A running HEADER is deliberately absent: in Chrome
+   a fixed element positions against the page content box, never the margin, so it
+   lands on the first line of content. */
+check('running footer carries the site line and nothing else',
+  (function(){ var f = w21.document.querySelector('.printfoot');
+    return !!f && f.textContent.indexOf('FAMLIClock.com') !== -1
+                && f.textContent.indexOf('free tool by 02Launch.com') !== -1; })());
+check('running footer is fixed to the foot of every printed sheet',
+  /\.printfoot\{[\s\S]{0,120}position:fixed;\s*bottom:0/.test(HTML));
+check('running header stays off, it cannot clear the content box',
+  /\.printhead\{display:none !important\}/.test(HTML));
+check('cover and closing footers are suppressed so footers cannot stack',
+  /\.cv-foot,\.cl-foot\{display:none !important\}/.test(HTML));
+check('bottom page margin still reserves room for the footer',
+  /@page\{ margin:16mm 15mm 18mm; \}/.test(HTML));
+check('closing publishes the real weekly build limit',
+  clo.textContent.indexOf('We build 3 of these a week') !== -1);
+check('closing footer and notice sit outside the body block',
+  !!clo.querySelector('.cl-foot') && !!clo.querySelector('.cl-notice') &&
+  !clo.querySelector('.cl-body .cl-notice'));
 
 /* re-rendering must not stack two closing pages */
 fill(w21, { md: 41, ein: 41, pay: 3300000 });
