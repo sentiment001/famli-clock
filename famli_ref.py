@@ -395,9 +395,17 @@ def doi_block(i: Inputs) -> dict:
 def date_list(i: Inputs) -> list:
     t = i.today
     nd = notice_dates(i)
+    # Third element of each item is the note; an optional fourth is the kind. Undated
+    # rows are "open" (can be done now, no deadline) or "ongoing" (recurs, never has
+    # one date). Both carry days_remaining None and passed False.
     items = [
         ("Register with FAMLI", None,
-         "Registration is open. No approval step, no queue."),
+         "Registration is open. No approval step, no queue.", "open"),
+        ("Written notices that recur", None,
+         "At hire and once a year (LE 8.3-801(a)). Within 5 business days of a leave "
+         "request, or of you learning that leave may qualify (LE 8.3-801(b)(1)). "
+         "30 days before you change your FAMLI procedures or plan (COMAR 09.42.04.08A(4)). "
+         "The Division has not yet published the forms these notices must use.", "ongoing"),
         ("Written notice to employees before you withhold", nd["notice_by"], nd["note"]),
         ("Start withholding", CONFIG["contributions_start"], "First 2027 pay period."),
         ("First report and payment (Q1 wages)", next_business_day(CONFIG["q1_payment_due"]),
@@ -425,9 +433,10 @@ def date_list(i: Inputs) -> list:
             ("Private plan must be approved", CONFIG["epip_approval_by"],
              "If it is not, the escrow is remitted with interest and penalties."),
         ]
-    out = [{"label": l, "date": d, "note": n,
-            "days_remaining": (d - t).days if d else None,
-            "passed": bool(d and d < t)} for l, d, n in items]
+    out = [{"label": it[0], "date": it[1], "note": it[2],
+            "days_remaining": (it[1] - t).days if it[1] else None,
+            "passed": bool(it[1] and it[1] < t),
+            "kind": "dated" if it[1] else (it[3] if len(it) > 3 else "open")} for it in items]
     out.sort(key=lambda x: (x["date"] is not None, x["date"] or t))
     return out
 

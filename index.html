@@ -1172,12 +1172,20 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
   function dateList(r, today) {
     var t = toDay(today);
     var rows = [];
-    function add(label, dateStr, note) {
-      if (dateStr === null) { rows.push({ label: label, date: null, note: note, days: null, passed: false }); return; }
+    /* `kind` is 'dated' for a real date, 'open' for something with no deadline that
+       can be done now, and 'ongoing' for an obligation that recurs and never has a
+       single date. Undated rows carry days:null and passed:false, so they can never
+       be the next deadline and never strike through. */
+    function add(label, dateStr, note, kind) {
+      if (dateStr === null) { rows.push({ label: label, date: null, note: note, days: null, passed: false, kind: kind || 'open' }); return; }
       var n = toDay(dateStr);
-      rows.push({ label: label, date: dateStr, note: note, days: n - t, passed: n < t });
+      rows.push({ label: label, date: dateStr, note: note, days: n - t, passed: n < t, kind: 'dated' });
     }
     add('Register with FAMLI', null, 'Open now. No deadline, but everything else waits on it.');
+    add('Written notices that recur', null,
+      'At hire and once a year (LE 8.3-801(a)). Within 5 business days of a leave request, or of you learning that leave may qualify (LE 8.3-801(b)(1)). '
+      + '30 days before you change your FAMLI procedures or plan (COMAR 09.42.04.08A(4)). The Division has not yet published the forms these notices must use.',
+      'ongoing');
     if (r.doi) {
       add('Submit your Declaration of Intent', CONFIG.doi_deadline,
         (toDay(CONFIG.doi_window_opens) > t
@@ -1678,10 +1686,11 @@ function render(r){
   add('<div class="card"><h2>Your dates</h2><ul class="dates">'
     + r.dates.map(function(x){
         var cls = x.passed ? 'gone' : (firstFuture && x.date===firstFuture.date ? 'next' : '');
-        return '<li class="'+cls+'">'
-          + '<span class="dt">'+(x.date ? esc(longDate(x.date)) : 'Now') + '</span>'
+        var ongoing = x.kind==='ongoing';
+        return '<li class="'+cls+(ongoing?' ongoing':'')+'">'
+          + '<span class="dt">'+(x.date ? esc(longDate(x.date)) : (ongoing ? 'Ongoing' : 'Now')) + '</span>'
           + '<span class="lb">'+esc(x.label)+'<span class="nt">'+esc(x.note)+'</span></span>'
-          + '<span class="rm">'+(x.date ? (x.passed ? 'passed' : x.days+'d') : 'open')+'</span></li>';
+          + '<span class="rm">'+(x.date ? (x.passed ? 'passed' : x.days+'d') : (ongoing ? 'recurring' : 'open'))+'</span></li>';
       }).join('')
     + '</ul><p class="note">Dates that have gone are struck through, not hidden, so you can see what you may have missed. '
     + src('Notice obligations, LE 8.3-801',S.notices)+'</p></div>');

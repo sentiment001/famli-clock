@@ -120,6 +120,27 @@ check('every rendered "<year> Social Security" phrase names wage_cap_year ' + ca
   yearHits.join(' | '));
 check('rendered cap figure matches CONFIG', body1.indexOf(CAP0) !== -1);
 
+/* ---- 2c. the recurring notices row: a display row, never a deadline ---- */
+out.push('--- recurring notices row ---');
+var ongoingLi = w1.document.querySelector('#out .dates li.ongoing');
+check('recurring notices row renders in the date list', !!ongoingLi);
+check('its date cell reads Ongoing, not Now or a date',
+  !!ongoingLi && ongoingLi.querySelector('.dt').textContent === 'Ongoing');
+check('its remaining cell reads recurring, not a day count',
+  !!ongoingLi && ongoingLi.querySelector('.rm').textContent === 'recurring');
+check('it is never marked next or gone',
+  !!ongoingLi && !ongoingLi.classList.contains('next') && !ongoingLi.classList.contains('gone'));
+check('it names the four triggers with their sources',
+  !!ongoingLi && ['At hire', 'once a year', '5 business days', '30 days before', 'LE 8.3-801(b)(1)', 'COMAR 09.42.04.08A(4)']
+    .every(function (s) { return ongoingLi.textContent.indexOf(s) !== -1; }));
+check('the next deadline is still a dated row (1 Dec 2026 notice), unaffected by the undated row',
+  (function () { var n = w1.document.querySelector('#out .dates li.next');
+    return !!n && n.textContent.indexOf('1 Dec 2026') !== -1 && n.textContent.indexOf('Written notice to employees') !== -1; })());
+check('cover "Your next deadline" is the dated row, not the undated one',
+  (function () { var c = w1.document.querySelector('.cover'); if (!c) return false;
+    var tx = c.textContent; var i = tx.indexOf('Your next deadline');
+    return i !== -1 && tx.slice(i, i + 60).indexOf('1 Dec 2026') !== -1; })());
+
 /* ---- 3. flags ---- */
 out.push('--- flags ---');
 var w2 = load('?d=2026-08-29');

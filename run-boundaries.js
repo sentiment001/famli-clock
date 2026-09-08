@@ -76,7 +76,27 @@ var passedRows = late.dates.filter(function (x) { return x.passed; });
 check('some rows are marked passed on 15 Feb 2027', passedRows.length > 0, 'true');
 check('no row is silently dropped', late.dates.length >= 8, 'true');
 check('notice row still present after it has passed',
-  late.dates.some(function (x) { return /Written notice/.test(x.label); }), 'true');
+  late.dates.some(function (x) { return /Written notice to employees/.test(x.label); }), 'true');
+
+/* ---- 5b. the recurring notices row is undated and can never be the next deadline ---- */
+out.push('--- recurring notices row, undated on every date ---');
+['2026-08-29', '2026-10-20', '2026-12-01', '2027-02-15', '2027-06-01', '2028-02-01'].forEach(function (d) {
+  var r = F.compute({
+    md_employees: 30, ein_employees: 30, md_payroll: 2100000, pay_frequency: 'biweekly',
+    considering_private_plan: true, today: d
+  });
+  var row = r.dates.filter(function (x) { return x.kind === 'ongoing'; })[0];
+  var firstFuture = r.dates.filter(function (x) { return x.date && !x.passed; })[0];
+  var ok = !!row && row.date === null && row.days === null && row.passed === false
+    && /Written notices that recur/.test(row.label)
+    && (!firstFuture || firstFuture.label !== row.label)
+    && r.dates.indexOf(row) < r.dates.findIndex(function (x) { return x.date !== null; });
+  if (ok) { pass++; } else { fail++; }
+  out.push((ok ? 'PASS  ' : 'FAIL  ') + 'ongoing row on ' + d + ' is undated, sits before dated rows, is not next'
+    + (firstFuture ? ' (next is ' + firstFuture.label + ')' : ''));
+});
+check('ongoing row cites the 5 business day rule',
+  /5 business days/.test(late.dates.filter(function (x) { return x.kind === 'ongoing'; })[0].note), 'true');
 
 /* ---- 6. validation branches ---- */
 out.push('--- validation ---');
