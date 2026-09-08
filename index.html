@@ -916,6 +916,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     doi_official_deadline: '2026-11-15', // The state's published close. A Sunday, so nobody is on the phone.
     doi_nominal_deadline: '2026-11-15',
     doi_resubmit_safe: '2026-10-21',  // 15 business days before the deadline
+    doi_decision_business_days: 15,   // COMAR 09.42.03.10A(2): approve or deny within 15 business days of submittal
     doi_window_opens: '2026-09-01',
     contributions_start: '2027-01-01',
     safe_notice_date: '2026-12-01',
@@ -1132,6 +1133,17 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
       coldTotals.fast += s.fast; coldTotals.typical += s.typical; coldTotals.slow += s.slow;
     });
 
+    /* FAMLI decides within 15 business days of submittal (COMAR 09.42.03.10A(2)).
+       The count starts the business day after submission and excludes weekends
+       and the State holidays above. `decision_if_submitted_on_deadline` is the
+       latest the answer can land for a deadline-day submission; `submit_by_for_
+       decision_before_notice` walks back from the last business day before the
+       employer's notice date, so it moves with the exact-notice refinement. */
+    var dec = CONFIG.doi_decision_business_days;
+    var decisionOnDeadline = addBusinessDays(deadline, dec);
+    var noticeBy = input.notice_by ? toDay(input.notice_by) : toDay(CONFIG.safe_notice_date);
+    var submitForNotice = subBusinessDays(prevBusinessDay(noticeBy - 1), dec);
+
     var verdict = {};
     ['fast', 'typical', 'slow'].forEach(function (pace) {
       var earliest = open ? addBusinessDays(t, totals[pace]) : null;
@@ -1139,7 +1151,8 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
         earliest_submission: earliest === null ? null : fromDay(earliest),
         fits_deadline: earliest !== null && earliest <= deadline,
         fits_with_resubmit_buffer: earliest !== null && earliest <= safe,
-        last_cold_start: fromDay(subBusinessDays(deadline, coldTotals[pace]))
+        last_cold_start: fromDay(subBusinessDays(deadline, coldTotals[pace])),
+        decision_by: earliest === null ? null : fromDay(addBusinessDays(earliest, dec))
       };
     });
 
@@ -1162,6 +1175,11 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
       verdict: verdict,
       deadline: CONFIG.doi_deadline,
       resubmit_safe: CONFIG.doi_resubmit_safe,
+      decision_business_days: dec,
+      decision_if_submitted_on_deadline: fromDay(decisionOnDeadline),
+      submit_by_for_decision_before_notice: fromDay(submitForNotice),
+      notice_by: fromDay(noticeBy),
+      deadline_decision_after_notice: decisionOnDeadline > noticeBy,
       can_self_insure: input.md_employees >= CONFIG.self_insure_min_md_employees,
       epip_fee: epipFee(input.md_employees)
     };
@@ -1368,7 +1386,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     r.zero_payroll = payrollC === 0;
     r.notice = noticeDate(input);
     if (input.considering_private_plan) { r.doi = doiBlock({
-      md_employees: md, doi_progress: input.doi_progress
+      md_employees: md, doi_progress: input.doi_progress, notice_by: r.notice.notice_by
     }, today); }
     r.dates = dateList(r, today);
     return r;
@@ -1808,14 +1826,29 @@ function doiHTML(r){
         + '<li>FAMLI decides <span class="bd">15 business days, set by regulation</span></li></ol>';
     }
 
-    h += '<table class="pace"><thead><tr><th>Pace</th><th>Days left</th><th>Earliest you could submit</th><th>Fits?</th></tr></thead><tbody>'
+    h += '<table class="pace"><thead><tr><th>Pace</th><th>Days left</th><th>Earliest you could submit</th><th>Decision by</th><th>Fits?</th></tr></thead><tbody>'
       + ['fast','typical','slow'].map(function(k){
           var v = d.verdict[k];
-          return '<tr><td>'+k+'</td><td>'+d.totals_remaining[k]+'</td><td>'+(v.earliest_submission?esc(longDate(v.earliest_submission)):'n/a')+'</td><td>'
+          return '<tr><td>'+k+'</td><td>'+d.totals_remaining[k]+'</td><td>'+(v.earliest_submission?esc(longDate(v.earliest_submission)):'n/a')+'</td>'
+            + '<td>'+(v.decision_by?esc(longDate(v.decision_by)):'n/a')+'</td><td>'
             + (v.fits_with_resubmit_buffer ? 'yes, with room to resubmit' : (v.fits_deadline ? 'yes, no second chance' : 'no'))+'</td></tr>';
         }).join('')
       + '</tbody></table>'
       + '<p class="note">Submit by '+esc(longDate(d.resubmit_safe))+' and a rejected form can still be fixed and resubmitted. After that, your first attempt is your only attempt.</p>';
+
+    /* The decision clock, and what it means against the employer's own notice date.
+       Every date here is engine arithmetic: 15 business days after submission, and
+       the notice date shown elsewhere on the page. */
+    var submitPassed = F.toDay(d.submit_by_for_decision_before_notice) < F.toDay(TODAY);
+    h += '<p class="note">FAMLI has '+d.decision_business_days+' business days to decide '+src('COMAR 09.42.03.10A(2)',S.comar)+'. '
+      + 'Submit on '+esc(longDate(d.deadline))+' and the answer can arrive as late as '+esc(longDate(d.decision_if_submitted_on_deadline))
+      + (d.deadline_decision_after_notice
+          ? ', after your notice date of '+esc(longDate(d.notice_by))+'. '
+            + (submitPassed
+                ? 'The last day to submit and still have it in hand before your notice goes out, '+esc(longDate(d.submit_by_for_decision_before_notice))+', has passed. '
+                : 'To have it in hand before your notice goes out, submit by '+esc(longDate(d.submit_by_for_decision_before_notice))+'. ')
+          : ', before your notice date of '+esc(longDate(d.notice_by))+'. ')
+      + 'An approved Declaration takes effect on the first day of the next quarter, so a December approval still starts 1 January 2027 '+src('COMAR 09.42.03.10A(3)',S.comar)+'.</p>';
   } else {
     h += '<p>Contributions start 1 January 2027 either way, and your 2027 cash cost is the same. Plan for the State Plan now and apply for a private plan for 2028 when applications open in summer 2027. '+src('Private plans',S.privatePlans)+'</p>';
   }

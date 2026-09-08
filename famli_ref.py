@@ -79,6 +79,10 @@ PROGRESS = {
     "form_in_hand": 5,
 }
 
+# Mirrors the HOLIDAYS list in index.html (assumption A8, runs to Dec 2027). The four
+# 2027 dates marked "added" were missing here and surfaced the day the DOI decision
+# date first reached past 15 Feb 2027 (F09, slow pace). The 2026 first-half dates in
+# index.html are omitted because no computed date can land before 29 Aug 2026.
 HOLIDAYS = {
     date(2026, 9, 7):   "Labor Day",
     date(2026, 10, 12): "Columbus Day",
@@ -89,11 +93,15 @@ HOLIDAYS = {
     date(2026, 12, 25): "Christmas Day",
     date(2027, 1, 1):   "New Year's Day",
     date(2027, 1, 18):  "Martin Luther King Jr. Day",
+    date(2027, 2, 15):  "Presidents' Day",                    # added
     date(2027, 5, 31):  "Memorial Day",
+    date(2027, 6, 18):  "Juneteenth observed",                # added
     date(2027, 7, 5):   "Independence Day observed",
     date(2027, 9, 6):   "Labor Day",
+    date(2027, 10, 11): "Columbus Day",                       # added
     date(2027, 11, 11): "Veterans Day",
     date(2027, 11, 25): "Thanksgiving",
+    date(2027, 11, 26): "American Indian Heritage Day (MD)",  # added
     date(2027, 12, 24): "Christmas Day observed",
     date(2027, 12, 31): "New Year's Day observed",
 }
@@ -358,14 +366,24 @@ def doi_block(i: Inputs) -> dict:
 
     safe_submit = sub_business_days(deadline, decision)
 
+    # COMAR 09.42.03.10A(2): the Division decides within 15 business days of
+    # submittal. Counted from the business day after submission. The notice-driven
+    # date walks back from the last business day before the employer's own notice
+    # date, so it moves with the first-pay-date refinement.
+    notice_by = notice_dates(i)["notice_by"]
+    decision_on_deadline = add_business_days(deadline, decision)
+    submit_for_notice = sub_business_days(previous_business_day(notice_by - timedelta(days=1)), decision)
+
     verdict = {}
     for k in ("fast", "typical", "slow"):
+        earliest = add_business_days(today, totals[k]) if open_ else None
         verdict[k] = {
             "business_days_needed": totals[k],
-            "earliest_submission": add_business_days(today, totals[k]) if open_ else None,
+            "earliest_submission": earliest,
             "fits_deadline": open_ and bd_left >= totals[k],
             "fits_with_resubmit_buffer": open_ and bd_left >= totals[k] + decision,
             "last_cold_start": sub_business_days(deadline, full[k]),
+            "decision_by": add_business_days(earliest, decision) if earliest else None,
         }
 
     return {
@@ -381,6 +399,10 @@ def doi_block(i: Inputs) -> dict:
         "totals_full_path": full,
         "decision_business_days": decision,
         "safe_submit_by": safe_submit,
+        "decision_if_submitted_on_deadline": decision_on_deadline,
+        "submit_by_for_decision_before_notice": submit_for_notice,
+        "notice_by": notice_by,
+        "deadline_decision_after_notice": decision_on_deadline > notice_by,
         "verdict": verdict,
         "headline": _doi_headline(verdict, open_),
         "safe_path": backward(safe_submit, "typical"),

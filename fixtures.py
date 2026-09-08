@@ -123,11 +123,15 @@ def render():
                   f"bd_left={d['business_days_left']} headline={d['headline']}")
             print(f"  remaining bd fast/typical/slow = {d['totals_remaining']['fast']}/"
                   f"{d['totals_remaining']['typical']}/{d['totals_remaining']['slow']}")
+            print(f"  decision bd={d['decision_business_days']} "
+                  f"on_deadline={d['decision_if_submitted_on_deadline']} "
+                  f"submit_by_for_notice={d['submit_by_for_decision_before_notice']} "
+                  f"notice_by={d['notice_by']} after_notice={d['deadline_decision_after_notice']}")
             for k in ("fast", "typical", "slow"):
                 v = d["verdict"][k]
                 print(f"  {k:8s} earliest_submit={v['earliest_submission']} "
                       f"fits={v['fits_deadline']} fits_with_buffer={v['fits_with_resubmit_buffer']} "
-                      f"last_cold_start={v['last_cold_start']}")
+                      f"last_cold_start={v['last_cold_start']} decision_by={v['decision_by']}")
             print(f"  self_insure={d['can_self_insure']} epip_fee=${d['epip_fee']}")
 
 

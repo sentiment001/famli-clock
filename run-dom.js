@@ -216,6 +216,39 @@ check('agent booked moves the verdict to Tight', t9.indexOf('Tight') !== -1);
 check('DOI range is shown, not a point estimate', t9.indexOf('business days, typically') !== -1);
 check('escrow reality stated', t9.indexOf('does not save you money in 2027') !== -1);
 
+/* ---- 6b. DOI decision dates (COMAR 09.42.03.10A(2), 15 business days) ---- */
+out.push('--- DOI decision dates ---');
+check('pace table carries a Decision by column',
+  !!d9.querySelector('#out table.pace th') &&
+  [].some.call(d9.querySelectorAll('#out table.pace th'), function (th) { return th.textContent === 'Decision by'; }));
+check('deadline-day submission decides by Tue 8 Dec 2026', t9.indexOf('8 Dec 2026') !== -1);
+check('decision paragraph names the notice date it lands after (1 Dec 2026)',
+  t9.indexOf('after your notice date of Tue 1 Dec 2026') !== -1);
+check('submit-by date for an answer before the notice is Wed 4 Nov 2026',
+  t9.indexOf('submit by Wed 4 Nov 2026') !== -1);
+check('next-quarter effect is stated with its COMAR cite',
+  t9.indexOf('still starts 1 January 2027') !== -1 && t9.indexOf('COMAR 09.42.03.10A(3)') !== -1);
+check('agent booked pace row shows its own decision date (fast: Fri 13 Nov 2026)',
+  (function () { var rows = d9.querySelectorAll('#out table.pace tbody tr');
+    var fast = [].filter.call(rows, function (r) { return r.firstChild.textContent === 'fast'; })[0];
+    return !!fast && fast.textContent.indexOf('13 Nov 2026') !== -1; })());
+/* The submit-by date moves with the exact-notice refinement. First pay 8 Jan 2027,
+   biweekly, puts the notice at 24 Dec 2026, after the 8 Dec decision, so the
+   paragraph flips to "before your notice date" and offers no submit-by date. */
+var w9b = load('?d=2026-10-20&md=25&ein=25&pay=1750000&freq=biweekly&pp=1&fp=2027-01-08');
+var t9b = w9b.document.getElementById('out').textContent;
+check('with R2 set, the decision lands before the notice date (24 Dec 2026)',
+  t9b.indexOf('before your notice date of Thu 24 Dec 2026') !== -1 && t9b.indexOf('submit by Wed 4 Nov 2026') === -1);
+/* Read after 4 Nov, the page says the date has passed rather than advising a past date. */
+var w9c = load('?d=2026-11-10&md=25&ein=25&pay=1750000&freq=biweekly&pp=1&dp=agent_booked');
+var t9c = w9c.document.getElementById('out').textContent;
+check('after 4 Nov the page says the submit-by date has passed',
+  t9c.indexOf('Wed 4 Nov 2026, has passed') !== -1);
+/* Closed window: no decision paragraph, nothing to count. */
+var w9d = load('?d=2026-11-20&md=25&ein=25&pay=1750000&freq=biweekly&pp=1');
+check('closed window shows no decision clock',
+  w9d.document.getElementById('out').textContent.indexOf('business days to decide') === -1);
+
 /* ---- 7. shareable URL round trip ---- */
 out.push('--- shareable URL ---');
 var w10 = load('?d=2026-08-29');

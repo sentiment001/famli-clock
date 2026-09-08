@@ -135,12 +135,18 @@ function render(fid, name, input) {
       + ' bd_left=' + d.business_days_left + ' headline=' + d.headline);
     L.push('  remaining bd fast/typical/slow = ' + d.totals_remaining.fast + '/'
       + d.totals_remaining.typical + '/' + d.totals_remaining.slow);
+    L.push('  decision bd=' + d.decision_business_days
+      + ' on_deadline=' + d.decision_if_submitted_on_deadline
+      + ' submit_by_for_notice=' + d.submit_by_for_decision_before_notice
+      + ' notice_by=' + d.notice_by
+      + ' after_notice=' + py(d.deadline_decision_after_notice));
     ['fast', 'typical', 'slow'].forEach(function (k) {
       var v = d.verdict[k];
       L.push('  ' + pad(k, 8) + ' earliest_submit=' + (v.earliest_submission === null ? 'None' : v.earliest_submission)
         + ' fits=' + py(v.fits_deadline)
         + ' fits_with_buffer=' + py(v.fits_with_resubmit_buffer)
-        + ' last_cold_start=' + v.last_cold_start);
+        + ' last_cold_start=' + v.last_cold_start
+        + ' decision_by=' + (v.decision_by === null ? 'None' : v.decision_by));
     });
     L.push('  self_insure=' + py(d.can_self_insure) + ' epip_fee=$' + d.epip_fee);
   }
