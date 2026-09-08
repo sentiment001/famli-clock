@@ -18,9 +18,12 @@ from decimal import Decimal, ROUND_HALF_UP
 # ----------------------------------------------------------------------
 
 CONFIG = {
+    # The four wage cap values mirror CONFIG in index.html. run-fixtures.js reads
+    # this file as text and fails if the two disagree.
     "wage_cap": Decimal("184500"),
     "wage_cap_year": 2026,
     "wage_cap_confirmed": False,
+    "wage_cap_confirmed_on": None,      # date(YYYY, M, D) of the SSA announcement, once confirmed.
     "total_rate": Decimal("0.009"),
     "employee_share_max": Decimal("0.5"),
     "small_employer_threshold": 15,

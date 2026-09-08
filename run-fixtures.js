@@ -179,6 +179,26 @@ FIXTURES.forEach(function (fx) {
   }
 });
 
+/* ---- wage cap parity ----
+   The cap lives in two files. The engine's copy is what ships; famli_ref.py's copy
+   is what generated fixture_table.txt. If only one is changed in October the five
+   cap-bitten fixtures fail in a way that looks like an app bug. This reads the
+   Python file as text and says so directly. */
+lines.push('--- wage cap parity with famli_ref.py ---');
+var py = fs.readFileSync(require('path').join(__dirname, 'famli_ref.py'), 'utf8');
+function pyVal(re) { var mm = py.match(re); return mm ? mm[1] : null; }
+var parity = [
+  ['wage_cap', String(F.CONFIG.wage_cap), pyVal(/"wage_cap":\s*Decimal\("(\d+)"\)/)],
+  ['wage_cap_year', String(F.CONFIG.wage_cap_year), pyVal(/"wage_cap_year":\s*(\d{4})/)],
+  ['wage_cap_confirmed', String(!!F.CONFIG.wage_cap_confirmed),
+    (function (v) { return v === null ? null : String(v === 'True'); })(pyVal(/"wage_cap_confirmed":\s*(True|False)/))]
+];
+parity.forEach(function (p) {
+  if (p[2] !== null && p[1] === p[2]) { pass++; lines.push('PASS  parity ' + p[0] + ' = ' + p[1]); }
+  else { fail++; lines.push('FAIL  parity ' + p[0] + '  index.html=' + p[1] + '  famli_ref.py=' + p[2]); }
+});
+
 console.log(lines.join('\n'));
-console.log('\n' + pass + ' passed, ' + fail + ' failed, of ' + FIXTURES.length);
+console.log('\n' + pass + ' passed, ' + fail + ' failed, of ' + (FIXTURES.length + parity.length)
+  + ' (' + FIXTURES.length + ' fixtures, ' + parity.length + ' parity checks)');
 process.exit(fail ? 1 : 0);

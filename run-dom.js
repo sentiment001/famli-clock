@@ -66,16 +66,59 @@ out.push('--- phase-specific lead output ---');
 out.push('--- required result blocks ---');
 var w1 = load('?d=2026-08-29');
 var t1 = fill(w1, { md: 40, ein: 40, pay: 8400000 });
+/* The cap-dependent expectations are arithmetic on the engine's own CONFIG, so the
+   October cap change needs no edit here. 40 employees at $210,000 average are all
+   clipped to the cap: annual = 40 x cap x 0.9% = 36 x cap in cents, employer half
+   is 18 x cap. Q1 and the per-period figure are quoted from Q1, where the
+   year-to-date wages ($52,500 a head) sit under any plausible cap, so those two
+   stay literal. */
+var CAPC = w1.FAMLI.CONFIG.wage_cap;
+var CAP0 = '$' + String(CAPC).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+var mny = w1.FAMLI.money;
 [
-  ['annual total', '$66,420.00'], ['employer withhold', '$33,210.00'],
+  ['annual total', mny(36 * CAPC)], ['employer withhold', mny(18 * CAPC)],
   ['Q1 payment', '$18,900.00'], ['per period', '$2,907.69'],
   ['payment due date', '30 Apr 2027'], ['safe notice date', '1 Dec 2026'],
   ['withhold vs absorb', 'If you absorb'], ['cost of never withholding', 'deemed to have chosen to pay'],
   ['registration open now', 'Registration is open now'],
   ['not flat warning', 'does not hold all year'],
-  ['wage cap disclosure D1', '$184,500'],
+  ['wage cap disclosure D1', CAP0],
   ['date list', 'Your dates']
-].forEach(function (p) { check(p[0] + ' present', t1.indexOf(p[1]) !== -1); });
+].forEach(function (p) { check(p[0] + ' present (' + p[1] + ')', t1.indexOf(p[1]) !== -1); });
+
+/* ---- 2b. wage cap wording is built from CONFIG, never typed ---- */
+out.push('--- wage cap wording guards ---');
+var capY = w1.FAMLI.CONFIG.wage_cap_year;
+check('source carries no formatted cap literal ' + CAP0,
+  HTML.indexOf(CAP0) === -1);
+var rawCapHits = HTML.split(String(CAPC)).length - 1;
+check('the raw cap figure appears exactly once in the source, on the CONFIG line',
+  rawCapHits === 1 && /wage_cap:\s*\d+,/.test(HTML), 'hits=' + rawCapHits);
+check('source has no hard-coded "<year> Social Security" outside CONSENT_TEXT',
+  (HTML.match(/\b20\d\d Social Security/g) || []).length === 1 &&
+  /CONSENT_TEXT = '[^']*20\d\d Social Security/.test(HTML));
+check('source has no hard-coded "SSA confirms/publishes the <year>"',
+  !/SSA (confirms|publishes) the 20\d\d/.test(HTML));
+/* Rendered text, with the versioned consent label removed because it is frozen
+   at the year people agreed to and is not built from CONFIG. */
+var body1 = w1.document.body.textContent;
+var consentLabel = w1.document.querySelector('label[for=capOk]');
+if (consentLabel) body1 = body1.split(consentLabel.textContent).join('');
+/* "SSA confirms the 2027 Social Security wage cap" names next year on purpose, so
+   those phrases are checked first and removed before the current-year check. */
+var nextRe = /SSA (confirms|publishes) the (20\d\d)( Social Security)?/g;
+var nextHits = body1.match(nextRe) || [];
+check('every rendered "SSA confirms/publishes the <year>" names wage_cap_year + 1',
+  w1.FAMLI.CONFIG.wage_cap_confirmed
+    ? nextHits.length === 0
+    : nextHits.length >= 3 && nextHits.every(function (s) { return /20\d\d/.exec(s)[0] === String(capY + 1); }),
+  nextHits.join(' | '));
+var body1b = body1.replace(nextRe, '');
+var yearHits = body1b.match(/(20\d\d) Social Security (wage cap|taxable)/g) || [];
+check('every rendered "<year> Social Security" phrase names wage_cap_year ' + capY,
+  yearHits.length >= 3 && yearHits.every(function (s) { return s.indexOf(String(capY)) === 0; }),
+  yearHits.join(' | '));
+check('rendered cap figure matches CONFIG', body1.indexOf(CAP0) !== -1);
 
 /* ---- 3. flags ---- */
 out.push('--- flags ---');
@@ -113,7 +156,9 @@ d6.getElementById('hc').value = '1';
 d6.getElementById('hw').value = '1600000';
 d6.getElementById('applyRef').click();
 var t6 = d6.getElementById('out').textContent;
-check('R1 recomputes to the refined base $1,084,500', t6.indexOf('$1,084,500.00') !== -1);
+/* One earner clipped to the cap plus nine sharing $900,000: base = cap + 900,000. */
+var refinedBase = w6.FAMLI.money((w6.FAMLI.CONFIG.wage_cap + 900000) * 100);
+check('R1 recomputes to the refined base ' + refinedBase, t6.indexOf(refinedBase) !== -1);
 check('R1 says by how much it moved', t6.indexOf('lower') !== -1 && t6.indexOf('Updated.') !== -1);
 
 var w7 = load('?d=2026-08-29');

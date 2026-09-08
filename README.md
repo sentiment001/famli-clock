@@ -58,41 +58,48 @@ this list. That is a sending blocker, not a capture blocker.
 
 ## October, when SSA publishes the 2027 cap
 
-The number lives in **two** files. The copy around it lives in **six** places.
-Change all of them or the page contradicts itself.
+The cap is one setting in each of two files. Every sentence that names the cap, its
+year or "October" is built from that setting, so the copy cannot drift from the
+number. No string edits.
 
-### The number
+### Change four values in two files
 
-1. `index.html` line ~864, engine block: `wage_cap: 184500`. This is the only place the
-   figure appears. Every rendered number interpolates from it.
-2. `famli_ref.py` line 21: `"wage_cap": Decimal("184500")`. The reference engine has its
-   own copy. **Skip this and you get 5 fixture failures that look like app bugs and
-   are not.** While you are there, set `wage_cap_year` to 2027 and `wage_cap_confirmed`
-   to `True`. Neither is read today, but leaving them wrong misleads the next reader.
-3. Regenerate the 28 fixtures from `famli_ref.py`, overwrite `fixture_table.txt`, then
-   run `run-fixtures.js`. Regenerating against the old constant gives false failures.
+1. `index.html`, engine block, `CONFIG` at line ~899:
+   - `wage_cap`: the 2027 taxable maximum SSA publishes.
+   - `wage_cap_year`: `2027`.
+   - `wage_cap_confirmed`: `true`.
+   - `wage_cap_confirmed_on`: the SSA announcement date as `'YYYY-MM-DD'`.
+2. `famli_ref.py`, `CONFIG` at line ~21: the same four keys (`wage_cap` as a `Decimal`,
+   `wage_cap_confirmed` as `True`, `wage_cap_confirmed_on` as `date(YYYY, M, D)`).
 
-### The copy
+**Skip the second file and `run-fixtures.js` fails the parity check and 5 fixtures
+(F03, F17, F18, F19, F28) that look like app bugs and are not.** Skip the first and
+the parity check fails alone.
 
-The previous version of this file said to update the D1 wording only. That was wrong
-and would have left the page showing a 2027 figure under 2026 labelling. Six strings
-say "2026" or "publishes in October" and all of them need a pass:
+3. Regenerate the fixture table: `python3 fixtures.py > fixture_table.txt`.
+4. Regenerate `version.txt` (sha256, byte count and build stamp of `index.html`).
+5. Run all three harnesses. `run-dom.js` derives its cap-dependent expectations from
+   the engine's own `CONFIG`, so it needs no edits.
 
-| Where | Roughly |
-|---|---|
-| `index.html` | `wage_cap` comment, "SSA 2026 taxable max. PLACEHOLDER" |
-| `index.html` | `D1`, "Figures use the 2026 Social Security wage cap of..." |
-| `index.html` | The cap-bites note, "That is the 2026 Social Security taxable maximum..." |
-| `index.html` | `src('SSA 2026 taxable maximum', S.ssaCap)` source label |
-| `index.html` | `cv-note` on the print cover, "Figures use the 2026... SSA confirms the 2027 cap in October" |
-| `index.html` | The closing page, "SSA confirms the 2027 Social Security wage cap in October" |
+### What the setting drives
+
+Seven places used to say "2026" or "October" by hand: the `CONFIG` comment and six
+rendered sentences. `wage_cap_confirmed` now switches the six sentences from the
+placeholder wording ("SSA publishes the 2027 cap in October") to the confirmed wording
+("confirmed by SSA on ..."): `D1`, the cap note in "What it costs", the
+`src('SSA ... taxable maximum')` label, the print cover `cv-note`, the closing page,
+and the capture card sentence, which drops out once confirmed. All six live in the
+`CAPW` object near the top of the app script. The comment carries no year.
+
+`run-dom.js` fails if a formatted cap literal such as `184,500` survives anywhere in
+the source, if the raw figure appears anywhere but the `CONFIG` line, if any rendered
+"<year> Social Security" phrase disagrees with `wage_cap_year`, or if any rendered
+"SSA confirms/publishes the <year>" phrase disagrees with `wage_cap_year + 1` (or
+survives at all once confirmed).
 
 `CONSENT_TEXT` also references the October confirmation. Do not edit it. It is the
 consent string people already agreed to, and it is versioned. If it has to change,
-bump the version.
-
-Verify with: swap the constant, then confirm no literal `184,500` and no stray `2026`
-cap reference survives anywhere in the file.
+bump the version. The guards skip it for that reason.
 
 ## Print report
 
