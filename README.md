@@ -32,7 +32,7 @@ all. Nothing in the calculation depends on either.
 npm install jsdom
 node run-fixtures.js     # 28 fixtures plus 3 wage cap parity checks
 node run-boundaries.js   # 49 date, phase and undated-row checks
-node run-dom.js          # 156 render checks
+node run-dom.js          # 160 render checks
 python3 fixtures.py > /tmp/t && diff /tmp/t fixture_table.txt   # reference engine still matches the table
 ```
 
@@ -126,6 +126,18 @@ Two things that will bite whoever edits the print CSS:
   227mm with 35mm free and the block needs 43mm, so it could never pull back. Its
   content now lives in the closing page notice. Do not un-hide it without moving that
   content back.
+
+**Where new lines can go, measured in Chromium (Letter, 7 September 2026).** Sheet 3
+(What it costs, Withhold or absorb, First payment) ends 11.1mm above the running
+footer in the common layouts; one more note on the First payment card put its last
+line under the footer rule. The Private plan card reaches 240.9mm of the 245.4mm
+printable height for a small employer starting cold (escrow row, D2, five stages,
+cannot self insure); one more paragraph there split the card across two sheets and
+added a page. Neither can take another line. The date list card has 56mm to 147mm
+free on its own sheet in every layout tried, which is why the late payment line and
+the DOI decision sentences live on its rows. Its tightest case is 3 Maryland staff of
+403 with a private plan: 5.6mm free on sheet 4, no overlap; if it ever tips, the
+whole card moves to the next sheet rather than colliding.
 
 ## Analytics
 

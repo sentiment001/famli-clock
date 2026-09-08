@@ -125,11 +125,20 @@ out.push('--- rate ceiling and penalties ---');
 check('rate ceiling line is on the What it costs card with its statute link',
   t1.indexOf('caps it at 1.2% of wages') !== -1 &&
   [].some.call(w1.document.querySelectorAll('#out .src a'), function (a) { return /8\.3-601/.test(a.href); }));
-check('late payment interest line is on the First payment card',
-  t1.indexOf('1.5% a month or part of a month') !== -1);
-check('penalty and audit line cites LE 8.3-903',
-  t1.indexOf('up to twice the contributions') !== -1 &&
+/* The late payment line sits on the Q1 row of the date list, not on the First
+   payment card: measured in Chromium, that card ends 11.1mm above the running
+   footer on sheet 3 and a second note there collided with it. */
+var q1Row = [].filter.call(w1.document.querySelectorAll('#out .dates li'), function (li) {
+  return li.textContent.indexOf('First report and payment') !== -1; })[0];
+check('late payment interest line is on the Q1 row of the date list',
+  !!q1Row && q1Row.textContent.indexOf('1.5% a month or part of a month') !== -1);
+check('penalty and audit line is on the same row and the card links LE 8.3-903',
+  !!q1Row && q1Row.textContent.indexOf('up to twice the contributions') !== -1 &&
   [].some.call(w1.document.querySelectorAll('#out .src a'), function (a) { return /8\.3-903/.test(a.href); }));
+check('First payment card carries no second note, so sheet 3 keeps its footer clearance',
+  (function () { var c = [].filter.call(w1.document.querySelectorAll('#out .card'), function (x) {
+    return /First payment/.test(x.querySelector('h2').textContent); })[0];
+    return !!c && c.querySelectorAll('p.note').length === 1; })());
 check('no penalty figure is computed from the inputs',
   !/(interest|penalty)[^.]{0,80}\$\d/.test(t1));
 
@@ -235,12 +244,25 @@ check('pace table carries a Decision by column',
   !!d9.querySelector('#out table.pace th') &&
   [].some.call(d9.querySelectorAll('#out table.pace th'), function (th) { return th.textContent === 'Decision by'; }));
 check('deadline-day submission decides by Tue 8 Dec 2026', t9.indexOf('8 Dec 2026') !== -1);
-check('decision paragraph names the notice date it lands after (1 Dec 2026)',
-  t9.indexOf('after your notice date of Tue 1 Dec 2026') !== -1);
+/* The decision sentences live on the Declaration row of the date list, not on the
+   DOI card: measured in Chromium, that card reaches 240.9mm of a 245.4mm sheet for
+   a small employer starting cold, and a paragraph there split it across two sheets. */
+var doiRow = [].filter.call(d9.querySelectorAll('#out .dates li'), function (li) {
+  return li.textContent.indexOf('Submit your Declaration of Intent') !== -1; })[0];
+check('decision sentences sit on the Declaration row of the date list',
+  !!doiRow && doiRow.textContent.indexOf('business days to decide') !== -1);
+check('DOI card itself carries no decision paragraph, so it keeps its sheet',
+  (function () { var c = [].filter.call(d9.querySelectorAll('#out .card'), function (x) {
+    return /Private plan/.test(x.querySelector('h2').textContent); })[0];
+    return !!c && c.textContent.indexOf('business days to decide') === -1; })());
+check('decision text names the notice date it lands after (1 Dec 2026)',
+  !!doiRow && doiRow.textContent.indexOf('after your notice date of Tue 1 Dec 2026') !== -1);
 check('submit-by date for an answer before the notice is Wed 4 Nov 2026',
-  t9.indexOf('submit by Wed 4 Nov 2026') !== -1);
+  !!doiRow && doiRow.textContent.indexOf('submit by Wed 4 Nov 2026') !== -1);
 check('next-quarter effect is stated with its COMAR cite',
-  t9.indexOf('still starts 1 January 2027') !== -1 && t9.indexOf('COMAR 09.42.03.10A(3)') !== -1);
+  !!doiRow && doiRow.textContent.indexOf('still starts 1 January 2027') !== -1 && doiRow.textContent.indexOf('COMAR 09.42.03.10A(3)') !== -1);
+check('date list links the DOI decision regulation',
+  [].some.call(d9.querySelectorAll('#out .src a'), function (a) { return a.textContent.indexOf('DOI decision') !== -1; }));
 check('agent booked pace row shows its own decision date (fast: Fri 13 Nov 2026)',
   (function () { var rows = d9.querySelectorAll('#out table.pace tbody tr');
     var fast = [].filter.call(rows, function (r) { return r.firstChild.textContent === 'fast'; })[0];

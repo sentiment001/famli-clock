@@ -431,7 +431,10 @@ def date_list(i: Inputs) -> list:
         ("Written notice to employees before you withhold", nd["notice_by"], nd["note"]),
         ("Start withholding", CONFIG["contributions_start"], "First 2027 pay period."),
         ("First report and payment (Q1 wages)", next_business_day(CONFIG["q1_payment_due"]),
-         "Covers January to March 2027."),
+         "Covers January to March 2027. Pay late and interest runs at 1.5% a month or part "
+         "of a month on the unpaid amount (COMAR 09.42.02.09A). The Secretary may also assess "
+         "a penalty of up to twice the contributions and order an audit of your next fiscal "
+         "year (LE 8.3-903)."),
         ("Six-month notice before benefits", CONFIG["six_month_notice_by"],
          "3 Jul 2027 is a Saturday. The next-business-day rule covers payments, not "
          "notices, so treat Friday 2 Jul as the date."),
@@ -443,9 +446,27 @@ def date_list(i: Inputs) -> list:
         ("Benefits begin", CONFIG["benefits_begin"], "Your employees can claim."),
     ]
     if i.considering_private_plan:
+        d = doi_block(i)
+        doi_note = "15 Nov 2026 is a Sunday. Friday 13 Nov is the last business day."
+        if d["window_open"]:
+            # The decision clock lives on this row, mirroring index.html. See the
+            # comment there for the print measurement that put it here.
+            sb = d["submit_by_for_decision_before_notice"]
+            doi_note += (f" FAMLI has {d['decision_business_days']} business days to decide "
+                         f"(COMAR 09.42.03.10A(2)). Submit on {d['deadline_business']} and the "
+                         f"answer can arrive as late as {d['decision_if_submitted_on_deadline']}")
+            if d["deadline_decision_after_notice"]:
+                doi_note += f", after your notice date of {d['notice_by']}. "
+                doi_note += (f"The last day to submit and still have it in hand before your notice "
+                             f"goes out, {sb}, has passed." if sb < t else
+                             f"To have it in hand before your notice goes out, submit by {sb}.")
+            else:
+                doi_note += f", before your notice date of {d['notice_by']}."
+            doi_note += (" An approved Declaration takes effect on the first day of the next "
+                         "quarter, so a December approval still starts 1 January 2027 "
+                         "(COMAR 09.42.03.10A(3)).")
         items += [
-            ("Submit your Declaration of Intent", CONFIG["doi_deadline_business"],
-             "15 Nov 2026 is a Sunday. Friday 13 Nov is the last business day."),
+            ("Submit your Declaration of Intent", CONFIG["doi_deadline_business"], doi_note),
             ("Submit by here to survive a rejection",
              sub_business_days(CONFIG["doi_deadline_business"], CONFIG["cp_doi_decision"]),
              "FAMLI has 15 business days to decide. Submit by this date and a rejected "

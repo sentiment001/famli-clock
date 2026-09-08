@@ -1206,11 +1206,27 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
       + '30 days before you change your FAMLI procedures or plan (COMAR 09.42.04.08A(4)). The Division has not yet published the forms these notices must use.',
       'ongoing');
     if (r.doi) {
-      add('Submit your Declaration of Intent', CONFIG.doi_deadline,
-        (toDay(CONFIG.doi_window_opens) > t
+      var doiNote = (toDay(CONFIG.doi_window_opens) > t
           ? 'The window opens Tuesday 1 September 2026. '
           : 'The window is open now. ')
-        + 'The state closes it on Sunday 15 November 2026. Friday 13 November is the last business day before it, so that is the date we plan to.');
+        + 'The state closes it on Sunday 15 November 2026. Friday 13 November is the last business day before it, so that is the date we plan to.';
+      /* The decision clock lives on this row, not on the DOI card. Measured in
+         Chromium: the DOI card already reaches 240.9mm of a 245.4mm sheet for a
+         small employer starting cold, so a paragraph there splits the card across
+         two sheets. This card has room on every scenario. */
+      if (r.doi.window_open) {
+        var dd = r.doi;
+        doiNote += ' FAMLI has ' + dd.decision_business_days + ' business days to decide (COMAR 09.42.03.10A(2)). '
+          + 'Submit on ' + longDate(dd.deadline) + ' and the answer can arrive as late as ' + longDate(dd.decision_if_submitted_on_deadline)
+          + (dd.deadline_decision_after_notice
+              ? ', after your notice date of ' + longDate(dd.notice_by) + '. '
+                + (toDay(dd.submit_by_for_decision_before_notice) < t
+                    ? 'The last day to submit and still have it in hand before your notice goes out, ' + longDate(dd.submit_by_for_decision_before_notice) + ', has passed.'
+                    : 'To have it in hand before your notice goes out, submit by ' + longDate(dd.submit_by_for_decision_before_notice) + '.')
+              : ', before your notice date of ' + longDate(dd.notice_by) + '.')
+          + ' An approved Declaration takes effect on the first day of the next quarter, so a December approval still starts 1 January 2027 (COMAR 09.42.03.10A(3)).';
+      }
+      add('Submit your Declaration of Intent', CONFIG.doi_deadline, doiNote);
       add('Submit early enough to survive a rejection', CONFIG.doi_resubmit_safe, 'Fifteen business days before the deadline. After this, your first attempt is your only attempt.');
     }
     add('Written notice to employees', r.notice.notice_by,
@@ -1218,7 +1234,12 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
           ? 'One full pay period before your first 2027 pay date.'
           : 'Safe for every pay frequency. Add your first 2027 pay date above for your exact date.');
     add('Start withholding', CONFIG.contributions_start, 'Contributions begin on wages paid from this date.');
-    add('First report and payment (Q1 wages)', CONFIG.q1_payment_due, 'Quarterly from here.');
+    /* The late payment line sits here rather than on the First payment card. Measured
+       in Chromium: that card ends 11.1mm above the running footer on sheet 3 and a
+       second note there collides with it. */
+    add('First report and payment (Q1 wages)', CONFIG.q1_payment_due,
+      'Quarterly from here. Pay late and interest runs at 1.5% a month or part of a month on the unpaid amount (COMAR 09.42.02.09A). '
+      + 'The Secretary may also assess a penalty of up to twice the contributions and order an audit of your next fiscal year (LE 8.3-903).');
     add('Six month pre benefit notice', fromDay(prevBusinessDay(toDay(CONFIG.july_notice_nominal))),
         '3 July 2027 falls on a Saturday. Notices get no next business day relief, so it moves earlier.');
     if (r.doi) {
@@ -1679,9 +1700,7 @@ function render(r){
     /* ---- first payment ---- */
     add('<div class="card"><h2>First payment</h2>'
       + '<div class="row big"><span class="k">Q1 2027 wages, due '+esc(longDate(C.q1_payment_due))+'</span><span class="v">'+money(r.q1_payment_cents)+'</span></div>'
-      + '<p class="note">Reports and payments are quarterly. Where a payment date falls at a weekend it moves to the next business day; notice dates do not get that relief and move earlier instead. '+src('COMAR 09.42.02.08E',S.comar)+'</p>'
-      + '<p class="note">Pay late and interest runs at 1.5% a month or part of a month on the unpaid amount '+src('COMAR 09.42.02.09A',S.comar)+'. '
-      + 'The Secretary may also assess a penalty of up to twice the contributions and order an audit of your next fiscal year '+src('LE 8.3-903',S.penalties)+'.</p></div>');
+      + '<p class="note">Reports and payments are quarterly. Where a payment date falls at a weekend it moves to the next business day; notice dates do not get that relief and move earlier instead. '+src('COMAR 09.42.02.08E',S.comar)+'</p></div>');
   }
 
   /* ---- flags ---- */
@@ -1715,7 +1734,11 @@ function render(r){
           + '<span class="rm">'+(x.date ? (x.passed ? 'passed' : x.days+'d') : (ongoing ? 'recurring' : 'open'))+'</span></li>';
       }).join('')
     + '</ul><p class="note">Dates that have gone are struck through, not hidden, so you can see what you may have missed. '
-    + src('Notice obligations, LE 8.3-801',S.notices)+'</p></div>');
+    + src('Notice obligations, LE 8.3-801',S.notices)+' '
+    + src('Late payment interest, COMAR 09.42.02.09',S.comar)+' '
+    + src('Penalties, LE 8.3-903',S.penalties)
+    + (r.doi ? ' '+src('DOI decision, COMAR 09.42.03.10',S.comar) : '')
+    + '</p></div>');
 
   /* ---- DOI ---- */
   if (r.doi) add(doiHTML(r));
@@ -1839,20 +1862,6 @@ function doiHTML(r){
         }).join('')
       + '</tbody></table>'
       + '<p class="note">Submit by '+esc(longDate(d.resubmit_safe))+' and a rejected form can still be fixed and resubmitted. After that, your first attempt is your only attempt.</p>';
-
-    /* The decision clock, and what it means against the employer's own notice date.
-       Every date here is engine arithmetic: 15 business days after submission, and
-       the notice date shown elsewhere on the page. */
-    var submitPassed = F.toDay(d.submit_by_for_decision_before_notice) < F.toDay(TODAY);
-    h += '<p class="note">FAMLI has '+d.decision_business_days+' business days to decide '+src('COMAR 09.42.03.10A(2)',S.comar)+'. '
-      + 'Submit on '+esc(longDate(d.deadline))+' and the answer can arrive as late as '+esc(longDate(d.decision_if_submitted_on_deadline))
-      + (d.deadline_decision_after_notice
-          ? ', after your notice date of '+esc(longDate(d.notice_by))+'. '
-            + (submitPassed
-                ? 'The last day to submit and still have it in hand before your notice goes out, '+esc(longDate(d.submit_by_for_decision_before_notice))+', has passed. '
-                : 'To have it in hand before your notice goes out, submit by '+esc(longDate(d.submit_by_for_decision_before_notice))+'. ')
-          : ', before your notice date of '+esc(longDate(d.notice_by))+'. ')
-      + 'An approved Declaration takes effect on the first day of the next quarter, so a December approval still starts 1 January 2027 '+src('COMAR 09.42.03.10A(3)',S.comar)+'.</p>';
   } else {
     h += '<p>Contributions start 1 January 2027 either way, and your 2027 cash cost is the same. Plan for the State Plan now and apply for a private plan for 2028 when applications open in summer 2027. '+src('Private plans',S.privatePlans)+'</p>';
   }
