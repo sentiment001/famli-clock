@@ -1,0 +1,3 @@
+# Local test tooling. Never published (see .vercelignore) and never committed.
+node_modules/
+__pycache__/

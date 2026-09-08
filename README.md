@@ -13,8 +13,8 @@ variables, no external files to go missing.
 | `fixtures.py` | The 28 fixture definitions. |
 | `famli_ref.py` | Independent reference engine. Written from the spec without reading `index.html`. |
 | `load-engine.js` | Pulls the engine out of `index.html` so tests run on shipped bytes. |
-| `run-fixtures.js` | The 28 spec fixtures, diffed against `fixture_table.txt`. |
-| `run-boundaries.js` | Phase edges, notice versus payment direction, holiday and countdown guards. |
+| `run-fixtures.js` | The 28 spec fixtures, diffed against `fixture_table.txt`, plus the wage cap parity check against `famli_ref.py`. |
+| `run-boundaries.js` | Phase edges, notice versus payment direction, holiday and countdown guards, the undated rows. |
 | `run-dom.js` | Renders the real page in jsdom and asserts the outputs are on screen. |
 | `vercel.json` | Headers and a short cache, so the October wage cap change propagates. |
 
@@ -30,13 +30,23 @@ all. Nothing in the calculation depends on either.
 
 ```
 npm install jsdom
-node run-fixtures.js     # 28 fixtures
-node run-boundaries.js   # 42 date and phase checks
-node run-dom.js          # 120 render checks
+node run-fixtures.js     # 28 fixtures plus 3 wage cap parity checks
+node run-boundaries.js   # 49 date, phase and undated-row checks
+node run-dom.js          # 156 render checks
+python3 fixtures.py > /tmp/t && diff /tmp/t fixture_table.txt   # reference engine still matches the table
 ```
 
-All three read `index.html` directly. There is no separate engine file that can drift
-out of step with the page.
+All three JS harnesses read `index.html` directly. There is no separate engine file
+that can drift out of step with the page. The fourth line proves the committed table
+is what `famli_ref.py` produces today; regenerate it with
+`python3 fixtures.py > fixture_table.txt` whenever the engine's output shape changes,
+and audit the diff so only the fixtures you meant to move have moved.
+
+Regenerate `version.txt` on every commit that touches `index.html`:
+
+```
+printf 'sha256 %s\nbytes  %s\nbuilt  %s\n' "$(sha256sum index.html | cut -d' ' -f1)" "$(wc -c < index.html)" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > version.txt
+```
 
 ## Email capture
 
@@ -132,9 +142,36 @@ The one value Balanced would capture is the business name, so it carries
 
 ## Known limitation carried forward
 
-A11. The 2028 branch determines employer size from the prior year's four quarters, but
-the payment and notice dates are still the 2027 constants. It does not bite this cycle.
-It bites whoever picks this up next year.
+A11. The 2028 branch (`contribution_year >= 2028` with `prior_year_quarterly_headcount`,
+`index.html` engine block, the `size band, per quarter` section) determines employer
+size from the prior year's four quarters, but every date it returns is still a 2027
+constant: Q1 payment 30 Apr 2027, notice 1 Dec 2026, the July notice, EPIP and DOI
+dates. Fixture F27 locks this in; its date lines read `2027-04-30` and `2026-12-01`
+under `year=2028`. The branch is unreachable from the form because `readForm()` never
+sends `contribution_year` or `prior_year_quarterly_headcount`, so no visitor can see
+it. Leave it unreachable until the 2028 constants exist: the Q1 2028 payment date, the
+2028 rate the Secretary must set by 1 November 2027 (LE 8.3-601(d)(1)), and the 2028
+wage cap. Wiring it up before then would put 2027 dates under a 2028 heading.
+
+The mid-year headcount crossing (`quarterly_ein_headcount`, fixtures F07 and F28) is
+in the same position: engine done, form does not ask. Deferred until after the October
+cap update.
+
+## DOI submission status
+
+The Division's private plan page (paidleave.maryland.gov/employers/understand-your-plan/,
+read 7 September 2026) states the window is 1 September to 15 November 2026 and that
+the Authorized Officer submits the DOI by uploading the Proof of Private Plan
+Consultation and attesting inside the FAMLI account at account.paidleave.maryland.gov.
+The same page says FAMLI notifies the outcome "within 15 business days", matching
+COMAR 09.42.03.10A(2), which the DOI card now counts. The page carries no "now open"
+notice and the portal sits behind Login.gov, so the upload step has not been seen from
+this repo. Someone with a registered account should sign in and confirm before the
+13 November plan is relied on.
+
+Two things the page leans on that no primary source states: that a rejected DOI can be
+resubmitted before 15 November (the "survive a rejection" row and the resubmit buffer),
+and that the 15 business days start the business day after submittal.
 
 ## Date override for QA
 

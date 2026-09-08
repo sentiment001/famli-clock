@@ -120,6 +120,19 @@ check('every rendered "<year> Social Security" phrase names wage_cap_year ' + ca
   yearHits.join(' | '));
 check('rendered cap figure matches CONFIG', body1.indexOf(CAP0) !== -1);
 
+/* ---- 2d. rate ceiling and penalties: one line each, text only, no arithmetic ---- */
+out.push('--- rate ceiling and penalties ---');
+check('rate ceiling line is on the What it costs card with its statute link',
+  t1.indexOf('caps it at 1.2% of wages') !== -1 &&
+  [].some.call(w1.document.querySelectorAll('#out .src a'), function (a) { return /8\.3-601/.test(a.href); }));
+check('late payment interest line is on the First payment card',
+  t1.indexOf('1.5% a month or part of a month') !== -1);
+check('penalty and audit line cites LE 8.3-903',
+  t1.indexOf('up to twice the contributions') !== -1 &&
+  [].some.call(w1.document.querySelectorAll('#out .src a'), function (a) { return /8\.3-903/.test(a.href); }));
+check('no penalty figure is computed from the inputs',
+  !/(interest|penalty)[^.]{0,80}\$\d/.test(t1));
+
 /* ---- 2c. the recurring notices row: a display row, never a deadline ---- */
 out.push('--- recurring notices row ---');
 var ongoingLi = w1.document.querySelector('#out .dates li.ongoing');

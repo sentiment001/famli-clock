@@ -988,6 +988,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     privateFaq:   'https://paidleave.maryland.gov/files/famli-faqs-private-plans-april-2026.pdf',
     ssaCap:       'https://www.ssa.gov/faqs/en/questions/KA-02387.html',
     notices:      'https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-801',
+    rate:         'https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-601',
     penalties:    'https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903'
   };
 
@@ -1643,7 +1644,8 @@ function render(r){
           return '<tr><td>Q'+q.quarter+'</td><td>'+(q.rate_bp/100).toFixed(2)+'%</td><td>'+money(q.base_cents)+'</td><td>'+money(q.due_cents)+'</td></tr>';
         }).join('')
       + '</tbody></table>'
-      + '<p class="note">Rate '+src('0.9% total for 2027',S.contributions)+'. Wages counted stop at the Social Security cap per person per year '+src('COMAR 09.42.02.04A',S.comar)+'. Cap figure '+src(CAPW.srcLabel,S.ssaCap)+'.</p>'
+      + '<p class="note">Rate '+src('0.9% total for 2027',S.contributions)+'. Wages counted stop at the Social Security cap per person per year '+src('COMAR 09.42.02.04A',S.comar)+'. Cap figure '+src(CAPW.srcLabel,S.ssaCap)+'. '
+        + 'The Secretary sets each later year\u2019s rate by 1 November and the law caps it at 1.2% of wages '+src('LE 8.3-601',S.rate)+'.</p>'
       + disc('What could move these numbers', esc(D1) + (r.base_mode==='even' ? '</p><p>'+esc(DEVEN) : ''))
       + '</div>');
 
@@ -1677,7 +1679,9 @@ function render(r){
     /* ---- first payment ---- */
     add('<div class="card"><h2>First payment</h2>'
       + '<div class="row big"><span class="k">Q1 2027 wages, due '+esc(longDate(C.q1_payment_due))+'</span><span class="v">'+money(r.q1_payment_cents)+'</span></div>'
-      + '<p class="note">Reports and payments are quarterly. Where a payment date falls at a weekend it moves to the next business day; notice dates do not get that relief and move earlier instead. '+src('COMAR 09.42.02.08E',S.comar)+'</p></div>');
+      + '<p class="note">Reports and payments are quarterly. Where a payment date falls at a weekend it moves to the next business day; notice dates do not get that relief and move earlier instead. '+src('COMAR 09.42.02.08E',S.comar)+'</p>'
+      + '<p class="note">Pay late and interest runs at 1.5% a month or part of a month on the unpaid amount '+src('COMAR 09.42.02.09A',S.comar)+'. '
+      + 'The Secretary may also assess a penalty of up to twice the contributions and order an audit of your next fiscal year '+src('LE 8.3-903',S.penalties)+'.</p></div>');
   }
 
   /* ---- flags ---- */
