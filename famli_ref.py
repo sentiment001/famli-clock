@@ -426,7 +426,8 @@ def date_list(i: Inputs) -> list:
         ("Written notices that recur", None,
          "At hire and once a year (LE 8.3-801(a)). Within 5 business days of a leave "
          "request, or of you learning that leave may qualify (LE 8.3-801(b)(1)). "
-         "30 days before you change your FAMLI procedures or plan (COMAR 09.42.04.08A(4)). "
+         "30 days before a change to your FAMLI procedures or plan takes effect "
+         "(COMAR 09.42.04.08A(1)(d)). "
          "The Division has not yet published the forms these notices must use.", "ongoing"),
         ("Written notice to employees before you withhold", nd["notice_by"], nd["note"]),
         ("Start withholding", CONFIG["contributions_start"], "First 2027 pay period."),

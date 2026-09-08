@@ -668,6 +668,25 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     font-size:8pt;letter-spacing:.14em;color:#12181D !important;
     font-weight:800;margin-bottom:2.4mm;
   }
+  /* The date list is the one card that is a genuine list, and it is the only one
+     that grows without bound: private plan adds four rows, and the Q1 and
+     Declaration rows carry long notes. Held as an unbreakable block it reached
+     206mm and left 1.4mm above the running footer in the worst layout measured
+     (3 Maryland staff of 403, private plan), which one webfont metric would turn
+     into a collision. It may break between rows instead. Each .dates li keeps
+     break-inside:avoid, so a row never splits, and the heading stays with the
+     first row. Every other card is short and bounded and still moves whole. */
+  .card.datescard{break-inside:auto; page-break-inside:auto}
+  .card.datescard h2{break-after:avoid; page-break-after:avoid}
+  /* With the private plan rows the card is tall enough to fill a sheet to the
+     bottom, and the running footer is fixed to the bottom of the content box, so
+     it lands on the last line. Deepening the @page bottom margin does not help:
+     the footer moves up with the box and the text reflows to fill it, which is
+     what the 18mm note above records. Starting the card on its own sheet is the
+     only lever that holds, and it is applied only when those rows are present:
+     measured floor 11.1mm on every layout, at the cost of one extra sheet on one
+     of the ten swept. Reports without a private plan are untouched. */
+  .card.datescard.startsheet{break-before:page; page-break-before:always}
   .lead{border-top:2pt solid #C2410C !important}
   .lead .eyebrow{color:#C2410C;font-size:7.6pt;margin-bottom:1.6mm}
   .lead .task{font-family:var(--display);font-size:14.5pt;line-height:1.18;margin-bottom:1.4mm}
@@ -1203,7 +1222,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
     add('Register with FAMLI', null, 'Open now. No deadline, but everything else waits on it.');
     add('Written notices that recur', null,
       'At hire and once a year (LE 8.3-801(a)). Within 5 business days of a leave request, or of you learning that leave may qualify (LE 8.3-801(b)(1)). '
-      + '30 days before you change your FAMLI procedures or plan (COMAR 09.42.04.08A(4)). The Division has not yet published the forms these notices must use.',
+      + '30 days before a change to your FAMLI procedures or plan takes effect (COMAR 09.42.04.08A(1)(d)). The Division has not yet published the forms these notices must use.',
       'ongoing');
     if (r.doi) {
       var doiNote = (toDay(CONFIG.doi_window_opens) > t
@@ -1724,7 +1743,7 @@ function render(r){
 
   /* ---- dates ---- */
   var firstFuture = r.dates.filter(function(x){ return x.date && !x.passed; })[0];
-  add('<div class="card"><h2>Your dates</h2><ul class="dates">'
+  add('<div class="card datescard'+(r.doi?' startsheet':'')+'"><h2>Your dates</h2><ul class="dates">'
     + r.dates.map(function(x){
         var cls = x.passed ? 'gone' : (firstFuture && x.date===firstFuture.date ? 'next' : '');
         var ongoing = x.kind==='ongoing';
@@ -1734,10 +1753,10 @@ function render(r){
           + '<span class="rm">'+(x.date ? (x.passed ? 'passed' : x.days+'d') : (ongoing ? 'recurring' : 'open'))+'</span></li>';
       }).join('')
     + '</ul><p class="note">Dates that have gone are struck through, not hidden, so you can see what you may have missed. '
-    + src('Notice obligations, LE 8.3-801',S.notices)+' '
-    + src('Late payment interest, COMAR 09.42.02.09',S.comar)+' '
-    + src('Penalties, LE 8.3-903',S.penalties)
-    + (r.doi ? ' '+src('DOI decision, COMAR 09.42.03.10',S.comar) : '')
+    + 'Sources: '+src('LE 8.3-801',S.notices)+' '
+    + src('COMAR 09.42.02.09',S.comar)+' '
+    + src('LE 8.3-903',S.penalties)
+    + (r.doi ? ' '+src('COMAR 09.42.03.10',S.comar) : '')
     + '</p></div>');
 
   /* ---- DOI ---- */

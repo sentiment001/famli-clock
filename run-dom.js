@@ -153,7 +153,8 @@ check('its remaining cell reads recurring, not a day count',
 check('it is never marked next or gone',
   !!ongoingLi && !ongoingLi.classList.contains('next') && !ongoingLi.classList.contains('gone'));
 check('it names the four triggers with their sources',
-  !!ongoingLi && ['At hire', 'once a year', '5 business days', '30 days before', 'LE 8.3-801(b)(1)', 'COMAR 09.42.04.08A(4)']
+  !!ongoingLi && ['At hire', 'once a year', '5 business days', '30 days before a change', 'takes effect',
+                  'LE 8.3-801(a)', 'LE 8.3-801(b)(1)', 'COMAR 09.42.04.08A(1)(d)']
     .every(function (s) { return ongoingLi.textContent.indexOf(s) !== -1; }));
 check('the next deadline is still a dated row (1 Dec 2026 notice), unaffected by the undated row',
   (function () { var n = w1.document.querySelector('#out .dates li.next');
@@ -261,8 +262,17 @@ check('submit-by date for an answer before the notice is Wed 4 Nov 2026',
   !!doiRow && doiRow.textContent.indexOf('submit by Wed 4 Nov 2026') !== -1);
 check('next-quarter effect is stated with its COMAR cite',
   !!doiRow && doiRow.textContent.indexOf('still starts 1 January 2027') !== -1 && doiRow.textContent.indexOf('COMAR 09.42.03.10A(3)') !== -1);
+/* Print safety: the date list is the one card that can fill a sheet, and the running
+   footer is fixed to the bottom of the content box. It may break between rows, and on
+   a private plan report it starts its own sheet. Measured in Chromium, floor 11.1mm. */
+check('date list card may break between rows in print',
+  /\.card\.datescard\{break-inside:auto/.test(HTML));
+check('date list starts its own sheet only on a private plan report',
+  /\.card\.datescard\.startsheet\{break-before:page/.test(HTML) &&
+  d9.querySelector('#out .datescard').classList.contains('startsheet') &&
+  !w1.document.querySelector('#out .datescard').classList.contains('startsheet'));
 check('date list links the DOI decision regulation',
-  [].some.call(d9.querySelectorAll('#out .src a'), function (a) { return a.textContent.indexOf('DOI decision') !== -1; }));
+  [].some.call(d9.querySelectorAll('#out .datescard .src a'), function (a) { return a.textContent === 'COMAR 09.42.03.10'; }));
 check('agent booked pace row shows its own decision date (fast: Fri 13 Nov 2026)',
   (function () { var rows = d9.querySelectorAll('#out table.pace tbody tr');
     var fast = [].filter.call(rows, function (r) { return r.firstChild.textContent === 'fast'; })[0];

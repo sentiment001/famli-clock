@@ -32,7 +32,7 @@ all. Nothing in the calculation depends on either.
 npm install --no-save jsdom     # --no-save: the repo carries no package.json and never will
 node run-fixtures.js     # 28 fixtures plus 4 wage cap parity checks
 node run-boundaries.js   # 58 date, phase, undated-row and decision-clock checks
-node run-dom.js          # 160 render checks
+node run-dom.js          # 162 render checks
 python3 fixtures.py > /tmp/t && diff /tmp/t fixture_table.txt   # reference engine still matches the table
 ```
 
@@ -137,10 +137,23 @@ line under the footer rule. The Private plan card reaches 240.9mm of the 245.4mm
 printable height for a small employer starting cold (escrow row, D2, five stages,
 cannot self insure); one more paragraph there split the card across two sheets and
 added a page. Neither can take another line. The date list card has 56mm to 147mm
-free on its own sheet in every layout tried, which is why the late payment line and
-the DOI decision sentences live on its rows. Its tightest case is 3 Maryland staff of
-403 with a private plan: 5.6mm free on sheet 4, no overlap; if it ever tips, the
-whole card moves to the next sheet rather than colliding.
+free on its own sheet in most layouts, which is why the late payment line and the DOI
+decision sentences live on its rows.
+
+The date list is also the one card that can fill a sheet, so it carries two print
+rules of its own. It may break between rows (`break-inside:auto`; each `.dates li`
+still avoids breaking, so a row never splits), and on a private plan report, where
+four extra rows and the DOI decision note make it tallest, it starts its own sheet
+(`.startsheet`, applied in the render only when `r.doi` is set).
+
+Do not reach for the `@page` bottom margin to buy clearance. It does not work: the
+running footer is `position:fixed` to the bottom of the *content* box, so deepening
+the margin moves the footer up with it and the text reflows to fill. Swept across ten
+layouts, 18mm gives a 1.4mm worst case, 20mm gives -0.8mm and 22mm gives -2.6mm, both
+overlaps. Starting the card on its own sheet is the lever that holds: floor 11.1mm on
+every layout, the same floor the report had before these rows existed, at the cost of
+one extra sheet on one of the ten (3 Maryland staff of 403 with a private plan, 6 to
+7). Reports without a private plan are unchanged at 5 sheets.
 
 ## Analytics
 
