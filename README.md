@@ -29,9 +29,9 @@ all. Nothing in the calculation depends on either.
 ## Run the tests
 
 ```
-npm install jsdom
-node run-fixtures.js     # 28 fixtures plus 3 wage cap parity checks
-node run-boundaries.js   # 49 date, phase and undated-row checks
+npm install --no-save jsdom     # --no-save: the repo carries no package.json and never will
+node run-fixtures.js     # 28 fixtures plus 4 wage cap parity checks
+node run-boundaries.js   # 58 date, phase, undated-row and decision-clock checks
 node run-dom.js          # 160 render checks
 python3 fixtures.py > /tmp/t && diff /tmp/t fixture_table.txt   # reference engine still matches the table
 ```
@@ -82,9 +82,12 @@ number. No string edits.
 2. `famli_ref.py`, `CONFIG` at line ~21: the same four keys (`wage_cap` as a `Decimal`,
    `wage_cap_confirmed` as `True`, `wage_cap_confirmed_on` as `date(YYYY, M, D)`).
 
-**Skip the second file and `run-fixtures.js` fails the parity check and 5 fixtures
-(F03, F17, F18, F19, F28) that look like app bugs and are not.** Skip the first and
-the parity check fails alone.
+**Skip either file and `run-fixtures.js` fails the parity check, and the five
+cap-bitten fixtures (F03, F17, F18, F19, F28) fail as well whenever the table and the
+engine were generated from different caps: skip `famli_ref.py` and the old table
+disagrees with the new engine; skip `index.html` but regenerate the table and the new
+table disagrees with the old engine.** Those five look like app bugs and are not; the
+parity line names the file that was missed.
 
 3. Regenerate the fixture table: `python3 fixtures.py > fixture_table.txt`.
 4. Regenerate `version.txt` (sha256, byte count and build stamp of `index.html`).

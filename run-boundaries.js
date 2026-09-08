@@ -98,6 +98,34 @@ out.push('--- recurring notices row, undated on every date ---');
 check('ongoing row cites the 5 business day rule',
   /5 business days/.test(late.dates.filter(function (x) { return x.kind === 'ongoing'; })[0].note), 'true');
 
+/* ---- 5c. DOI decision clock against the notice date, including the equal day ---- */
+out.push('--- DOI decision date versus notice date ---');
+function doiFor(freq, firstPay, today) {
+  return F.compute({
+    md_employees: 25, ein_employees: 25, md_payroll: 1750000, pay_frequency: freq,
+    considering_private_plan: true, today: today || '2026-10-20', first_2027_pay_date: firstPay || null
+  });
+}
+var dflt = doiFor('biweekly', null);
+check('13 Nov submission decides by Tue 8 Dec 2026', dflt.doi.decision_if_submitted_on_deadline, '2026-12-08');
+check('default notice 1 Dec: decision lands after it', dflt.doi.deadline_decision_after_notice, 'true');
+check('default notice 1 Dec: submit by Wed 4 Nov for an answer first', dflt.doi.submit_by_for_decision_before_notice, '2026-11-04');
+/* Monthly, first 2027 pay 7 Jan: notice = 7 Jan minus 30 days = Tue 8 Dec, the same day
+   the deadline decision lands. Equal counts as after: an answer that arrives the day
+   the notice goes out is not in hand first. */
+var eq = doiFor('monthly', '2027-01-07');
+check('equal day: notice date is Tue 8 Dec 2026', eq.notice.notice_by, '2026-12-08');
+check('equal day: decision on the notice day counts as after', eq.doi.deadline_decision_after_notice, 'true');
+check('equal day: submit by Thu 12 Nov for an answer before the notice', eq.doi.submit_by_for_decision_before_notice, '2026-11-12');
+check('equal day: row note takes the after branch',
+  /after your notice date of Tue 8 Dec 2026\. To have it in hand before your notice goes out, submit by Thu 12 Nov 2026\./.test(
+    eq.dates.filter(function (x) { return /Declaration of Intent/.test(x.label); })[0].note), 'true');
+/* Biweekly, first pay 8 Jan: notice Thu 24 Dec, after the 8 Dec decision. */
+var later = doiFor('biweekly', '2027-01-08');
+check('notice 24 Dec: decision lands before it', later.doi.deadline_decision_after_notice, 'false');
+check('window closed: decision fields still computed, per-pace decision_by null',
+  doiFor('biweekly', null, '2026-11-20').doi.verdict.typical.decision_by, 'null');
+
 /* ---- 6. validation branches ---- */
 out.push('--- validation ---');
 var bad = F.compute({ md_employees: 10, ein_employees: 4, md_payroll: 500000, pay_frequency: 'monthly', considering_private_plan: false, today: '2026-08-29' });

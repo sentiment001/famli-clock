@@ -191,13 +191,23 @@ FIXTURES.forEach(function (fx) {
    cap-bitten fixtures fail in a way that looks like an app bug. This reads the
    Python file as text and says so directly. */
 lines.push('--- wage cap parity with famli_ref.py ---');
-var py = fs.readFileSync(require('path').join(__dirname, 'famli_ref.py'), 'utf8');
-function pyVal(re) { var mm = py.match(re); return mm ? mm[1] : null; }
+var pySrc = fs.readFileSync(require('path').join(__dirname, 'famli_ref.py'), 'utf8');
+function pyVal(re) { var mm = pySrc.match(re); return mm ? mm[1] : null; }
 var parity = [
   ['wage_cap', String(F.CONFIG.wage_cap), pyVal(/"wage_cap":\s*Decimal\("(\d+)"\)/)],
   ['wage_cap_year', String(F.CONFIG.wage_cap_year), pyVal(/"wage_cap_year":\s*(\d{4})/)],
   ['wage_cap_confirmed', String(!!F.CONFIG.wage_cap_confirmed),
-    (function (v) { return v === null ? null : String(v === 'True'); })(pyVal(/"wage_cap_confirmed":\s*(True|False)/))]
+    (function (v) { return v === null ? null : String(v === 'True'); })(pyVal(/"wage_cap_confirmed":\s*(True|False)/))],
+  /* null in JS and None in Python compare as 'None'; a JS 'YYYY-MM-DD' string and a
+     Python date(YYYY, M, D) compare as the ISO string. */
+  ['wage_cap_confirmed_on',
+    F.CONFIG.wage_cap_confirmed_on == null ? 'None' : String(F.CONFIG.wage_cap_confirmed_on),
+    (function () {
+      var mm = pySrc.match(/"wage_cap_confirmed_on":\s*(None|date\(\s*(\d{4}),\s*(\d{1,2}),\s*(\d{1,2})\s*\))/);
+      if (!mm) return null;
+      if (mm[1] === 'None') return 'None';
+      return mm[2] + '-' + ('0' + mm[3]).slice(-2) + '-' + ('0' + mm[4]).slice(-2);
+    })()]
 ];
 parity.forEach(function (p) {
   if (p[2] !== null && p[1] === p[2]) { pass++; lines.push('PASS  parity ' + p[0] + ' = ' + p[1]); }

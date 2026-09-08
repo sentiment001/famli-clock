@@ -402,7 +402,7 @@ def doi_block(i: Inputs) -> dict:
         "decision_if_submitted_on_deadline": decision_on_deadline,
         "submit_by_for_decision_before_notice": submit_for_notice,
         "notice_by": notice_by,
-        "deadline_decision_after_notice": decision_on_deadline > notice_by,
+        "deadline_decision_after_notice": decision_on_deadline >= notice_by,  # equal day counts as after
         "verdict": verdict,
         "headline": _doi_headline(verdict, open_),
         "safe_path": backward(safe_submit, "typical"),

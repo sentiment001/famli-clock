@@ -1180,7 +1180,7 @@ ol.stages .bd{color:var(--ink3);font-size:.8rem;white-space:nowrap}
       decision_if_submitted_on_deadline: fromDay(decisionOnDeadline),
       submit_by_for_decision_before_notice: fromDay(submitForNotice),
       notice_by: fromDay(noticeBy),
-      deadline_decision_after_notice: decisionOnDeadline > noticeBy,
+      deadline_decision_after_notice: decisionOnDeadline >= noticeBy,   // equal day counts as after: the answer cannot be in hand before a notice sent that morning
       can_self_insure: input.md_employees >= CONFIG.self_insure_min_md_employees,
       epip_fee: epipFee(input.md_employees)
     };
