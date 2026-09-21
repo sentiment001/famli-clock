@@ -8,3 +8,7 @@ run-boundaries.js
 run-dom.js
 node_modules
 package-lock.json
+
+# SEO build: the generator, the QA harnesses, the fact register and the QA
+# screenshots. Kept in the repo so the pages can be rebuilt, never published.
+seo

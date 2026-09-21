@@ -1,0 +1,262 @@
+/* famli_pages.css
+   Styles for the nine content pages on famliclock.com.
+
+   The first block is lifted verbatim from the inline <style> in index.html:
+   the :root tokens, the reset, body, .wrap, links, headings, .card, .note,
+   .src, .flag, table.pace, details.disc, .cta, .bookwrap, .foot.
+   That duplication is deliberate. The content pages carry no inline stylesheet,
+   and without :root every var(--ink) resolves to nothing, which renders the
+   call-to-action button invisible. The values are identical, so index.html
+   loading this file as well changes nothing there.
+
+   IF THE INLINE STYLESHEET IN index.html CHANGES, RE-EXTRACT THIS BLOCK.
+
+   The second block, below the BASE ENDS marker, is new and belongs only to
+   the content pages. */
+
+/* ----------------------------------------------------------- BASE BEGINS */
+:root{
+  --ink:#14202A; --ink2:#4A5D6C; --ink3:#6E8090;
+  --paper:#F2F4F3; --card:#FFFFFF; --rule:#D2D9DA; --rule2:#E6EBEB;
+  --accent:#0E5A5E; --accent-soft:#DCEAEA;
+  --ok:#14563B; --ok-soft:#E7F1EA;
+  --warn:#C2410C; --warn-soft:#FBEADF;
+  --due:#8C2F1B; --due-soft:#F6E7E2;
+  --flag:#6E5200; --flag-soft:#F7F0DA;
+  --pass:#8A97A0;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --sp:1rem;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.5;
+  font-variant-numeric:tabular-nums; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.1rem 5rem}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible{
+  outline:2.5px solid var(--accent); outline-offset:2px; border-radius:2px;
+}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-0.01em}
+p{margin:0 0 .7rem}
+.mast{padding:1rem 0 .4rem}
+.mark{
+  font-family:var(--body); font-weight:700; font-size:.7rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink2);
+}
+h1{
+  font-family:var(--display); font-size:clamp(1.55rem,6vw,2.35rem); line-height:1.12;
+  font-weight:600; letter-spacing:-0.02em; margin-bottom:.42rem;
+}
+.sub{color:var(--ink2);font-size:.93rem;line-height:1.45;margin-bottom:.95rem}
+.card{
+  background:var(--card); border:1px solid var(--rule); border-radius:6px;
+  padding:.95rem 1rem; margin-bottom:1rem;
+  box-shadow:0 1px 2px rgba(20,32,42,.05);
+}
+.card h2{
+  font-size:.72rem; text-transform:uppercase; letter-spacing:.13em;
+  color:var(--ink3); font-weight:700; margin-bottom:.6rem;
+}
+.row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--rule2);font-size:.94rem}
+.row:last-child{border-bottom:0}
+.row .k{color:var(--ink2)}
+.row .v{font-weight:700;text-align:right;white-space:nowrap}
+.row.big .v{font-size:1.1rem}
+.flag{
+  background:var(--flag-soft); border-left:3px solid var(--flag); border-radius:0 4px 4px 0;
+  padding:.6rem .75rem; margin:.7rem 0 0; font-size:.87rem; line-height:1.5;
+}
+.flag b{display:block;margin-bottom:.2rem}
+.flag.warn{background:var(--warn-soft);border-left-color:var(--warn)}
+.note{font-size:.84rem;color:var(--ink2);margin-top:.7rem}
+details.disc{margin-top:.75rem;border-top:1px solid var(--rule2);padding-top:.55rem}
+details.disc summary{
+  cursor:pointer;font-size:.82rem;font-weight:700;color:var(--accent);
+  display:flex;gap:.3rem;align-items:baseline;list-style:none;
+}
+details.disc summary::-webkit-details-marker{display:none}
+details.disc summary::before{content:'+';font-weight:700;color:var(--accent);width:.8rem}
+details.disc[open] summary::before{content:'\2212'}
+details.disc p{font-size:.83rem;color:var(--ink2);margin:.5rem 0 0;line-height:1.5}
+.src{font-size:.72rem;font-weight:500}
+.src a{color:var(--ink3);text-decoration:underline;text-underline-offset:2px}
+.src a:hover{color:var(--accent)}
+table.pace{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:.6rem}
+table.pace th,table.pace td{text-align:right;padding:.42rem .3rem;border-bottom:1px solid var(--rule2)}
+table.pace th:first-child,table.pace td:first-child{text-align:left}
+table.pace th{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);font-weight:700}
+.cta{background:var(--ink);color:#fff;border:0}
+.cta h2{color:#8FB3B5}
+.cta p{color:#C6D2D6;font-size:.92rem}
+.cta a{color:#8FD5D8}
+.cta ul{margin:.15rem 0 1.05rem;padding-left:1.1rem}
+.cta li{color:#C6D2D6;font-size:.9rem;margin-bottom:.45rem;line-height:1.5}
+.cta li:last-child{margin-bottom:0}
+.cta li b{color:#fff;font-weight:600}
+.cta .fine{font-size:.8rem;color:#8FB3B5;line-height:1.55}
+.bookwrap{
+  position:relative; display:inline-block; padding:2px; border-radius:8px;
+  background:#1D3B41; overflow:hidden; isolation:isolate;
+}
+.bookwrap::before{
+  content:''; position:absolute; z-index:0;
+  top:50%; left:50%; width:300%; aspect-ratio:1/1;
+  transform:translate(-50%,-50%);
+  background:conic-gradient(from 0deg,
+    transparent 0 70%,
+    rgba(255,255,255,.12) 81%,
+    rgba(255,255,255,.6) 88%,
+    #ffffff 91%,
+    rgba(255,255,255,.6) 94%,
+    rgba(255,255,255,.12) 98%,
+    transparent 100%);
+  animation:beam 4.4s linear infinite; pointer-events:none;
+}
+@keyframes beam{to{transform:translate(-50%,-50%) rotate(1turn)}}
+.cta a.book{
+  position:relative; z-index:1;
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:linear-gradient(135deg,#A3E7EA 0%,#68C4C8 100%); color:#0B2027;
+  font-weight:700; font-size:.95rem; padding:.78rem 1.3rem; border-radius:6px;
+  text-decoration:none;
+  box-shadow:0 1px 2px rgba(0,0,0,.24), 0 6px 18px rgba(143,213,216,.16);
+  transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.cta a.book:hover{
+  filter:brightness(1.05); transform:translateY(-1px); color:#0B2027;
+  box-shadow:0 2px 5px rgba(0,0,0,.26), 0 10px 26px rgba(143,213,216,.26);
+}
+.cta a.book:active{transform:translateY(0)}
+.cta a.book .arr{transition:transform .22s ease}
+.cta a.book:hover .arr{transform:translateX(4px)}
+.foot{font-size:.79rem;color:var(--ink3);line-height:1.6;padding-top:.6rem}
+.foot a{color:var(--ink2)}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+/* ------------------------------------------------------------- BASE ENDS */
+
+/* ---------------------------------------------------------- nav (new) --- */
+.topbar{
+  border-bottom:1px solid var(--rule); padding:.55rem 0 .6rem; margin-bottom:.2rem;
+  display:flex; flex-wrap:wrap; gap:.25rem .9rem; align-items:baseline;
+}
+.topbar .home{
+  font-weight:700; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink2); text-decoration:none; margin-right:.3rem;
+}
+.topbar .home:hover{color:var(--accent)}
+.topbar a.nl{font-size:.79rem;color:var(--ink2);text-decoration:none}
+.topbar a.nl:hover{color:var(--accent);text-decoration:underline}
+.topbar a.nl[aria-current="page"]{color:var(--ink);font-weight:700}
+
+/* --------------------------------------------------- run-the-tool card -- */
+.toolcard{
+  border:1px solid var(--accent); background:var(--accent-soft);
+  border-radius:6px; padding:.85rem 1rem; margin-bottom:1.1rem;
+}
+.toolcard p{margin:0 0 .6rem;font-size:.9rem;color:#0B3B3E;line-height:1.5}
+.toolcard p:last-child{margin-bottom:0}
+.toolcard a.run{
+  display:inline-flex; align-items:center; gap:.45rem;
+  background:var(--accent); color:#fff; font-weight:700; font-size:.92rem;
+  padding:.62rem 1.05rem; border-radius:5px; text-decoration:none;
+  box-shadow:0 1px 2px rgba(20,32,42,.18);
+  transition:transform .14s ease, filter .2s ease;
+}
+.toolcard a.run:hover{filter:brightness(1.08);transform:translateY(-1px);color:#fff}
+.toolcard a.run:active{transform:translateY(0)}
+.toolcard .arr{transition:transform .22s ease}
+.toolcard a.run:hover .arr{transform:translateX(3px)}
+
+/* -------------------------------------------------------- prose (new) --- */
+.prose{font-size:1rem;line-height:1.62}
+.prose h2{
+  font-family:var(--display); font-size:1.32rem; line-height:1.2;
+  margin:1.9rem 0 .55rem; letter-spacing:-0.015em; color:var(--ink);
+  text-transform:none;
+}
+.prose h3{font-size:1.02rem;margin:1.25rem 0 .35rem;font-weight:700}
+.prose p{margin:0 0 .85rem;color:var(--ink)}
+.prose ul,.prose ol{margin:0 0 .9rem;padding-left:1.15rem}
+.prose li{margin-bottom:.4rem;line-height:1.58}
+.prose blockquote{
+  margin:.2rem 0 .95rem; padding:.55rem .85rem;
+  border-left:3px solid var(--accent); background:#fff;
+  font-size:.92rem; line-height:1.55; color:var(--ink2); border-radius:0 4px 4px 0;
+}
+.prose blockquote p:last-child{margin-bottom:0}
+.lede{font-size:1.06rem;line-height:1.55;color:var(--ink);font-weight:500;margin-bottom:.9rem}
+.disambig{
+  font-size:.83rem; color:var(--ink2); line-height:1.5;
+  border-left:3px solid var(--rule); padding:.15rem 0 .15rem .7rem; margin:0 0 1.1rem;
+}
+
+/* ------------------------------------------------------ data tables ----- */
+.tbl{width:100%;border-collapse:collapse;font-size:.89rem;margin:.3rem 0 1rem;background:#fff}
+.tbl caption{
+  caption-side:top;text-align:left;font-size:.7rem;font-weight:700;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink3);padding:0 0 .4rem;
+}
+.tbl th,.tbl td{padding:.5rem .55rem;border:1px solid var(--rule2);vertical-align:top;line-height:1.45}
+.tbl thead th{
+  background:var(--accent-soft); color:#0B3B3E; font-weight:700;
+  font-size:.74rem; text-transform:uppercase; letter-spacing:.07em;
+}
+.tbl tbody th{text-align:left;font-weight:600;background:#FAFBFB}
+.tbl td.num,.tbl th.num{text-align:right;white-space:nowrap}
+/* A value cell holding a sentence rather than a figure. Without this the
+   nowrap rule above makes one long row as wide as its text and the whole
+   page gains a horizontal scrollbar at phone width. Measured, not guessed. */
+.tbl td.txt{text-align:left;white-space:normal}
+.wex .tblwrap{margin-bottom:.7rem}
+.wex .tblwrap:last-of-type{margin-bottom:.7rem}
+.tbl tr.total td,.tbl tr.total th{font-weight:700;background:#FAFBFB}
+.tblwrap{overflow-x:auto;margin-bottom:1rem}
+.tblwrap .tbl{margin-bottom:0}
+
+/* ------------------------------------------------------ worked example -- */
+.wex{border:1px solid var(--rule);border-radius:6px;background:#fff;padding:.9rem 1rem;margin:0 0 1rem}
+.wex h3{font-size:.95rem;margin:0 0 .5rem;font-weight:700}
+.wex .tbl{margin-bottom:.7rem}
+.wex .basis{font-size:.78rem;color:var(--ink3);line-height:1.5;margin:0}
+
+/* ------------------------------------------------------------- FAQ ------ */
+.faq h3{font-size:1rem;margin:1.1rem 0 .3rem;font-weight:700}
+.faq h3:first-of-type{margin-top:.2rem}
+.faq p{font-size:.94rem;margin-bottom:.6rem;color:var(--ink2)}
+.faq p b{color:var(--ink)}
+
+/* ------------------------------------------------------- source list ---- */
+.sources ol{margin:0;padding-left:1.2rem}
+.sources li{font-size:.83rem;color:var(--ink2);margin-bottom:.4rem;line-height:1.5}
+.sources li a{word-break:break-word}
+.verified{
+  font-size:.78rem;color:var(--ink3);margin:.9rem 0 0;padding-top:.7rem;
+  border-top:1px solid var(--rule2);line-height:1.55;
+}
+
+/* ------------------------------------------------------- related -------- */
+.related ul{margin:0;padding-left:1.1rem}
+.related li{font-size:.9rem;margin-bottom:.45rem;line-height:1.5;color:var(--ink2)}
+.related li a{font-weight:600}
+
+/* ------------------------------------------------------- footer map ----- */
+.footmap{margin-top:1.6rem;padding-top:1rem;border-top:1px solid var(--rule2)}
+.footmap .fmcap{
+  font-size:.66rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:.55rem;
+}
+.footmap ul{display:flex;flex-wrap:wrap;gap:.35rem .9rem;margin:0;padding:0;list-style:none}
+.footmap li{font-size:.8rem}
+.footmap a{color:var(--ink2);text-decoration:none}
+.footmap a:hover{color:var(--accent);text-decoration:underline}
+
+@media (max-width:520px){
+  .tbl{font-size:.83rem}
+  .tbl th,.tbl td{padding:.42rem .4rem}
+  .topbar{gap:.2rem .7rem}
+  .topbar a.nl{font-size:.75rem}
+}

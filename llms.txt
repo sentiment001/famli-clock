@@ -1,0 +1,85 @@
+# famliclock.com
+
+> A free calculator for Maryland employers. It works out the Maryland FAMLI (Family
+> and Medical Leave Insurance) contribution for 2027, the date the written notice to
+> employees is due, and whether the remaining time still fits a private plan
+> Declaration of Intent. Five inputs, no sign up, and a printable report.
+
+Maryland FAMLI is administered by the Maryland Department of Labor, FAMLI Division.
+Colorado runs a separate paid leave program with the same name; nothing on this site
+applies to Colorado.
+
+Built and maintained by 02Launch (https://02launch.com), an AI engineering firm.
+Rates and dates last verified against primary sources on 21 September 2026.
+
+## What the calculator computes that published guidance does not
+
+- The written notice date. The rule is "at least 1 pay period prior to the
+  commencement" of withholding (COMAR 09.42.02.05D), so the deadline is derived from
+  each employer's payroll frequency and first 2027 pay date. It is not a fixed
+  calendar date and no agency publishes a per-employer answer.
+- Whether the remaining stages of a private plan Declaration of Intent still fit
+  before the window closes, at three different paces.
+- The cost of leaving the out-of-state headcount field blank on the quarterly wage
+  report, which reclassifies a small employer from 0.45% to 0.9%.
+
+## Key facts, each traceable to a cited paragraph
+
+- Contributions are due on wages paid from 1 January 2027 at a total rate of 0.9
+  percent of wages up to the Social Security wage base, split evenly between employer
+  and employee at 0.45 percent each.
+- Employers with fewer than 15 employees, counted across all states under one federal
+  EIN, remit only 50 percent of the total rate. The employee share is still withheld.
+  (COMAR 09.42.02.06A and .06D)
+- Written notice to employees is due at least one full pay period before withholding
+  commences, so the date depends on the employer's payroll schedule.
+  (COMAR 09.42.02.05D)
+- An employer that fails to make the deduction is considered to have elected to pay
+  the employee's portion for each pay period missed, and cannot recover it.
+  (COMAR 09.42.02.07A)
+- Employers intending to use a private plan submit a Declaration of Intent to the
+  FAMLI Division between 1 September and 15 November 2026. FAMLI decides within 15
+  business days. (COMAR 09.42.03.10A(2))
+- An approved private plan does not reduce the 2027 cash cost. The same contributions
+  are collected and held in escrow rather than remitted. (COMAR 09.42.03.10A(1)(d))
+- The first quarterly wage report and contribution payment, covering January to March
+  2027, is due 30 April 2027.
+- Benefits become available in January 2028. 2027 is a collection year with no claims.
+- The Secretary of Labor sets each later year's rate by 1 November of the preceding
+  year, and the statute caps it at 1.2 percent. (LE 8.3-601)
+
+## Pages
+
+- [Calculator](https://www.famliclock.com/)
+- [Rate](https://www.famliclock.com/contribution-rate-2027)
+- [Under 15 staff](https://www.famliclock.com/small-employer)
+- [Out-of-state staff](https://www.famliclock.com/out-of-state-employees)
+- [Employee notice](https://www.famliclock.com/employee-notice)
+- [Private plan](https://www.famliclock.com/private-plan-declaration-of-intent)
+- [Deadlines](https://www.famliclock.com/deadlines-2027)
+- [Registration](https://www.famliclock.com/registration)
+- [Payroll providers](https://www.famliclock.com/payroll-providers)
+
+## Primary sources cited across the site
+
+- Maryland Department of Labor, FAMLI: https://paidleave.maryland.gov/
+- Make contributions: https://paidleave.maryland.gov/employers/make-contributions/
+- Employer registration: https://paidleave.maryland.gov/employers/understand-employer-registration/
+- Private plans and the Declaration of Intent: https://paidleave.maryland.gov/employers/understand-your-plan/
+- COMAR Title 09, Subtitle 42: https://regs.maryland.gov/us/md/exec/comar/09.42/index.full.html
+- Labor and Employment Article 8.3-601, rate: https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-601
+- Labor and Employment Article 8.3-801, notices: https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-801
+- Labor and Employment Article 8.3-903, penalties: https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903
+- Social Security taxable maximum: https://www.ssa.gov/faqs/en/questions/KA-02387.html
+
+## Limits, stated plainly
+
+- It estimates. Figures come from the numbers typed in and the published rates, not
+  from payroll records.
+- It is not a filing. Nothing reaches Maryland. Employers still register, report and
+  pay through the FAMLI portal themselves.
+- It cannot get a private plan approved. It says what the Declaration of Intent
+  involves and whether the time still fits. FAMLI decides.
+- The 2027 Social Security wage cap has not been published yet. Until SSA publishes it
+  in October 2026 the calculator uses the 2026 figure of $184,500 as a stand-in and
+  labels it as one.
