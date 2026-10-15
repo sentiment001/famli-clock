@@ -58,6 +58,21 @@ def basis(meta, verified="21 September 2026"):
             "could owe. These are estimates, not a filing." % (meta["wage_cap_year"], cap, verified))
 
 
+def cap_fig(meta):
+    """The cap as printed, from the engine's CONFIG via examples.json."""
+    return "$" + "{:,}".format(int(meta["wage_cap"]))
+
+
+def cap_on(meta, weekday=False):
+    """The date SSA published the cap, from the engine's CONFIG via examples.json.
+    '2026-10-14' -> '14 October 2026', or 'Wed 14 Oct 2026' with weekday=True."""
+    import datetime
+    d = datetime.date.fromisoformat(meta["wage_cap_confirmed_on"])
+    if weekday:
+        return "%s %d %s %d" % (d.strftime("%a"), d.day, d.strftime("%b"), d.year)
+    return "%d %s %d" % (d.day, d.strftime("%B"), d.year)
+
+
 def basis_nocap(verified="21 September 2026"):
     """Provenance line for worked examples where no employee is anywhere near the
     cap, so the figures do not move when the cap does. Used on index.html, whose
@@ -90,10 +105,8 @@ payment.</p>
 Security wage base each calendar year</b>, per employee. %(src_04A)s The cap is per person
 per year, not per employer, so an employee earning above it simply stops accruing
 contributions once their year-to-date Maryland wages cross the line.</p>
-<p>The Social Security taxable maximum for 2026 is <b>$184,500</b>. %(src_ssa)s The Social
-Security Administration publishes the 2027 figure in October 2026, and every number on this
-site changes the day it lands. Until then the calculator uses the 2026 cap as a stand-in and
-says so on the page.</p>
+<p>The Social Security taxable maximum for %(cap_year)d is <b>%(cap)s</b>. The Social Security
+Administration published it on %(cap_on)s. %(src_ssa)s Every figure on this site uses it.</p>
 <p>Independent contractors are not employees for this purpose and their payments are not
 subject to contributions.</p>
 
@@ -134,7 +147,10 @@ same contributions are collected and held in escrow instead of remitted. See the
 """ % {
         "src_rate": src("Maryland Department of Labor, make contributions", S["contributions"]),
         "src_04A": src("COMAR 09.42.02.04A", S["comar"]),
-        "src_ssa": src("SSA 2026 taxable maximum", S["ssaCap"]),
+        "src_ssa": src("SSA %d taxable maximum" % ex["_meta"]["wage_cap_year"], S["ssaCap"]),
+        "cap_year": ex["_meta"]["wage_cap_year"],
+        "cap": cap_fig(ex["_meta"]),
+        "cap_on": cap_on(ex["_meta"]),
         "src_le601": src("LE 8.3-601", S["rate"]),
         "src_05B": src("COMAR 09.42.02.05B", S["comar"]),
         "src_07A": src("COMAR 09.42.02.07A", S["comar"]),
@@ -149,7 +165,7 @@ same contributions are collected and held in escrow instead of remitted. See the
             [("Band", "Small employer, under 15", False),
              ("Rate applied", "0.45%", False),
              ("Employer share, full year 2027", money(E1["annual_employer"]), False),
-             ("Employee share, full year 2027", money(E1["annual_employee"]), False),
+             ("Employee share, full year 2027, from pay or paid by you", money(E1["annual_employee"]), False),
              ("Total, full year 2027", money(E1["annual_total"]), True),
              ("Per pay period, total", money(E1["per_period_total"]), False),
              ("First payment, Q1 wages, due 30 April 2027", money(E1["q1_payment"]), False)],
@@ -163,7 +179,7 @@ same contributions are collected and held in escrow instead of remitted. See the
             [("Band", "Standard, 15 or more", False),
              ("Rate applied", "0.90%", False),
              ("Employer share, full year 2027", money(E2["annual_employer"]), False),
-             ("Employee share, full year 2027", money(E2["annual_employee"]), False),
+             ("Employee share, full year 2027, from pay or paid by you", money(E2["annual_employee"]), False),
              ("Total, full year 2027", money(E2["annual_total"]), True),
              ("Per pay period, total", money(E2["per_period_total"]), False),
              ("Cost of absorbing the employee half instead", money(E2["absorb_delta"]) + " more a year", False),
@@ -197,11 +213,12 @@ same contributions are collected and held in escrow instead of remitted. See the
              "per year."),
             ("Is there a cap on Maryland FAMLI contributions?",
              "Yes. Wages are subject to contributions only up to the Social Security wage base "
-             "each calendar year, per employee. The 2026 figure is $184,500 and the Social "
-             "Security Administration publishes the 2027 figure in October 2026.",
+             "each calendar year, per employee. For %d the cap is %s, which the Social Security "
+             "Administration published on %s." % (ex["_meta"]["wage_cap_year"], cap_fig(ex["_meta"]),
+                                                   cap_on(ex["_meta"])),
              "Yes. Wages count only up to the Social Security wage base each calendar year, per "
-             "employee. The 2026 figure is <b>$184,500</b>; SSA publishes the 2027 figure in "
-             "October 2026."),
+             "employee. For %d the cap is <b>%s</b>, which SSA published on %s."
+             % (ex["_meta"]["wage_cap_year"], cap_fig(ex["_meta"]), cap_on(ex["_meta"]))),
             ("Can the Maryland FAMLI rate go up?",
              "Yes. The Secretary of Labor sets the rate and the statute caps it at 1.2 percent of "
              "wages. The rate for each later year must be set by 1 November of the preceding "
@@ -237,8 +254,8 @@ same contributions are collected and held in escrow instead of remitted. See the
             "<b>Your actual payroll file, not a typed estimate.</b> Every employee read "
             "individually, so the wage cap lands per person and the number you hand your CFO is "
             "the real one.",
-            "<b>The October rate and cap change, applied for you.</b> SSA publishes the 2027 cap "
-            "in October and the Secretary sets the 2028 rate by 1 November 2027. Both move every "
+            "<b>Next year's rate and cap change, applied for you.</b> The Secretary sets the 2028 "
+            "rate by 1 November 2027 and SSA resets the wage cap every October. Both move every "
             "figure you filed.",
             "<b>The rest of the calendar, not just this deadline.</b> FAMLI is one line on a "
             "compliance calendar you keep by hand. The same build watches the others and tells "
@@ -253,8 +270,9 @@ same contributions are collected and held in escrow instead of remitted. See the
 total rate of contribution</b>. %(src_06D)s In 2027 that means 0.45 percent rather than 0.9
 percent.</p>
 <p>The half that disappears is the employer half. The employee half does not. You still
-withhold 0.45 percent from your staff and you still remit it to the Maryland Department of
-Labor every quarter. What changes is that you are not asked to match it.</p>
+remit 0.45 percent to the Maryland Department of Labor every quarter. You can take it out of
+your staff's pay or cover some or all of it yourself. %(src_05B)s What changes is that you are
+not asked to match it.</p>
 <p>Put plainly: a small employer can legally pass its entire FAMLI obligation to its
 employees, and pay nothing from its own funds. A 15-person employer cannot.</p>
 
@@ -309,6 +327,7 @@ half becomes yours for that pay period, permanently. %(src_07A)s</li>
 </ul>
 """ % {
         "src_06D": src("COMAR 09.42.02.06D", S["comar"]),
+        "src_05B": src("COMAR 09.42.02.05B", S["comar"]),
         "src_06A": src("COMAR 09.42.02.06A", S["comar"]),
         "src_contrib": src("Maryland Department of Labor", S["contributions"]),
         "src_sole": src("COMAR 09.42.01.01B(21)(b)", S["comar"]),
@@ -323,9 +342,9 @@ half becomes yours for that pay period, permanently. %(src_07A)s</li>
             [("Band", "Small employer, under 15", False),
              ("Rate applied", "0.45%, half the full rate", False),
              ("<b>Employer share, full year 2027</b>", "<b>" + money(E1["annual_employer"]) + "</b>", False),
-             ("Employee share, full year 2027", money(E1["annual_employee"]), False),
+             ("Employee share, full year 2027, from pay or paid by you", money(E1["annual_employee"]), False),
              ("Total remitted for 2027", money(E1["annual_total"]), True),
-             ("Withheld per pay period, per the whole firm", money(E1["per_period_employee"]), False),
+             ("Employee share per pay period, whole firm", money(E1["per_period_employee"]), False),
              ("Written notice due, if no first 2027 pay date is given", "1 December 2026", False),
              ("First payment, Q1 wages", money(E1["q1_payment"]) + ", due 30 April 2027", False)],
             basis(ex["_meta"])),
@@ -334,16 +353,16 @@ half becomes yours for that pay period, permanently. %(src_07A)s</li>
     pages.append(dict(
         path="/small-employer",
         title="Maryland FAMLI for Employers Under 15 Staff: What Changes",
-        description=("Employers with fewer than 15 employees pay no Maryland FAMLI employer share, "
-                     "but still withhold and remit the employee half. How headcount is counted "
-                     "across all states, and what still applies."),
-        og_desc=("Under 15 staff? No employer share, but you still withhold and remit 0.45%. The "
-                 "headcount counts every state under one EIN, and that catches people out."),
+        description=("Under 15 employees? No Maryland FAMLI employer share. You still owe the 0.45% "
+                     "employee share, and can take it from pay or cover it yourself."),
+        og_desc=("Under 15 staff? No employer share. You still owe the 0.45% employee share, from "
+                 "pay or your own funds. The headcount counts every state under one EIN, and that "
+                 "catches people out."),
         h1="Maryland FAMLI for employers with fewer than 15 employees",
         lede=("An employer with fewer than 15 employees pays <b>no employer share</b> of Maryland "
-              "FAMLI. It still withholds the 0.45 percent employee share and still remits it every "
-              "quarter. The 15 is counted across every state under one federal EIN, not just "
-              "Maryland."),
+              "FAMLI. It still owes the 0.45 percent employee share every quarter, and can take it "
+              "out of pay or cover it itself. The 15 is counted across every state under one "
+              "federal EIN, not just Maryland."),
         breadcrumb_name="Employers under 15 staff",
         tool_text=("Enter your Maryland headcount and your total headcount under one EIN. The "
                    "calculator applies the right band and shows what each side pays."),
@@ -351,10 +370,11 @@ half becomes yours for that pay period, permanently. %(src_07A)s</li>
         faq=[
             ("Do employers with fewer than 15 employees pay Maryland FAMLI?",
              "They remit only 50 percent of the total rate, which is the employee half. The "
-             "employer share is zero. The employee share is still withheld and still remitted to "
-             "the Maryland Department of Labor each quarter.",
+             "employer share is zero. The employer can take the employee half out of pay or cover "
+             "it itself. Any pay period it does not deduct, that share is the employer's to pay.",
              "They remit only half the total rate, which is the employee half. The employer share "
-             "is <b>zero</b>. The employee share is still withheld and still remitted each quarter."),
+             "is <b>zero</b>. The employer can take the employee half out of pay or cover it "
+             "itself. Any pay period it does not deduct, that share is the employer's to pay."),
             ("How is the 15-employee threshold counted for Maryland FAMLI?",
              "By total headcount under the same federal EIN, counting employees inside and outside "
              "Maryland. Independent contractors are excluded. A firm with 8 employees in Maryland "

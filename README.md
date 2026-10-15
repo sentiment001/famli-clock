@@ -52,7 +52,8 @@ printf 'sha256 %s\nbytes  %s\nbuilt  %s\n' "$(sha256sum index.html | cut -d' ' -
 
 **It is built and it is live.** Web3Forms, access key in `index.html`, delivery to
 mash@hirecmo.io. It fires only on an explicit click with a valid address and the
-consent box ticked, and it carries a versioned consent string (`CONSENT-v1.0`).
+consent box ticked, and it carries a versioned consent string (`CONSENT-v1.1` from 14 October 2026; v1.0 also
+promised an email when the 2027 wage cap was confirmed).
 
 The payload sends the address, the consent string, the figures entered, the derived
 result, any refinement values, and the share URL that reproduces their exact result.
@@ -67,6 +68,9 @@ Still outstanding: the CAN-SPAM postal address for the commercial mail that goes
 this list. That is a sending blocker, not a capture blocker.
 
 ## October, when SSA publishes the 2027 cap
+
+Done for 2027 on 14 October 2026: SSA published $192,300 that day. Next run: October 2027,
+for the 2028 cap. The steps below and `seo/PUSH_ORDER.md` section 6 still apply.
 
 The cap is one setting in each of two files. Every sentence that names the cap, its
 year or "October" is built from that setting, so the copy cannot drift from the

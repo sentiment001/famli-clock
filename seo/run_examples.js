@@ -43,7 +43,8 @@ var CASES = {
 };
 
 var out = {_meta: {engine: htmlPath + ' #famli-engine', today: TODAY,
-                   wage_cap: null, wage_cap_year: null, wage_cap_confirmed: null}};
+                   wage_cap: null, wage_cap_year: null, wage_cap_confirmed: null,
+                   wage_cap_confirmed_on: null}};
 
 Object.keys(CASES).forEach(function (k) {
   var r = F.compute(CASES[k]);
@@ -51,6 +52,7 @@ Object.keys(CASES).forEach(function (k) {
     out._meta.wage_cap = r.config.wage_cap;
     out._meta.wage_cap_year = r.config.wage_cap_year;
     out._meta.wage_cap_confirmed = r.config.wage_cap_confirmed;
+    out._meta.wage_cap_confirmed_on = r.config.wage_cap_confirmed_on || null;
   }
   function n(v) { return v == null ? null : v; }
   out[k] = {

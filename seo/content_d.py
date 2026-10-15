@@ -329,7 +329,7 @@ October. That is an engagement. The register is not.</p>
             "<b>Built from what you already have.</b> A client list and a payroll export is enough. "
             "We do not need access to your systems to build the first one.",
             "<b>Then it recomputes itself.</b> Quarterly band changes flagged, and everything "
-            "repriced the day SSA publishes the wage cap in October. That part is an engagement; "
+            "repriced the day SSA resets the wage cap each October. That part is an engagement; "
             "the register is not.",
         ],
     ))

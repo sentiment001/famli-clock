@@ -2,7 +2,7 @@
 """Content for /private-plan-declaration-of-intent and /deadlines-2027."""
 
 from build import S, src, money, money0
-from content_a import wex, basis
+from content_a import wex, basis, cap_on
 
 
 def build(ex):
@@ -210,10 +210,10 @@ list rather than in a date slot.</p>
 <td>Required at one Maryland employee. Nothing else can happen until it is done.</td></tr>
 <tr><th>Tue 1 Sep to Sun 15 Nov 2026</th><td>Declaration of Intent, private plans only</td>
 <td>Friday 13 November is the last business day before the close.</td></tr>
+<tr><th>%(ssa_day)s</th><td>SSA published the %(cap_year)d Social Security wage cap</td>
+<td>Not a duty. Every figure on this site uses it from that day.</td></tr>
 <tr><th>Wed 21 Oct 2026</th><td>Submit the Declaration early enough to survive a rejection</td>
 <td>15 business days before the deadline, which is FAMLI's decision window.</td></tr>
-<tr><th>October 2026</th><td>SSA publishes the 2027 Social Security wage cap</td>
-<td>Not a duty. Every contribution figure changes when it lands.</td></tr>
 <tr><th>December 2026, employer-specific</th><td>Written notice to employees before withholding</td>
 <td>At least one full pay period before your first 2027 pay date. Your date depends on your
 payroll frequency.</td></tr>
@@ -279,6 +279,8 @@ questions change from &ldquo;what does this cost&rdquo; to &ldquo;how do I handl
 <h2>A worked example, so the dates carry a number</h2>
 %(wex1)s
 """ % {
+        "ssa_day": cap_on(ex["_meta"], weekday=True),
+        "cap_year": ex["_meta"]["wage_cap_year"],
         "src_08": src("COMAR 09.42.02.08", S["comar"]),
         "src_08E": src("COMAR 09.42.02.08E", S["comar"]),
         "src_09A": src("COMAR 09.42.02.09A", S["comar"]),

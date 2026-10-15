@@ -24,7 +24,19 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 SITE = "https://www.famliclock.com"
 VERIFIED = "21 September 2026"
-BUILD_DATE = "2026-09-21"
+BUILD_DATE = "2026-10-14"
+# Pages whose content did not change in the latest build keep their old date, so
+# dateModified and the sitemap's lastmod stay honest. Remove a page from this list
+# the next time its content changes.
+PAGE_MODIFIED = {
+    "/employee-notice": "2026-09-21",
+    "/private-plan-declaration-of-intent": "2026-09-21",
+    "/registration": "2026-09-21",
+}
+
+
+def modified(path):
+    return PAGE_MODIFIED.get(path, BUILD_DATE)
 CALENDLY = "https://calendly.com/ahmed-asif1/30min"
 
 # --------------------------------------------------------------- sources ---
@@ -37,7 +49,7 @@ S = {
     "privatePlans": "https://paidleave.maryland.gov/employers/understand-your-plan/",
     "consultForm":  "https://paidleave.maryland.gov/files/proof-of-private-plan-consultation.pdf",
     "privateFaq":   "https://paidleave.maryland.gov/files/famli-faqs-private-plans-april-2026.pdf",
-    "ssaCap":       "https://www.ssa.gov/faqs/en/questions/KA-02387.html",
+    "ssaCap":       "https://www.ssa.gov/oact/cola/cbb.html",
     "notices":      "https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-801",
     "rate":         "https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-601",
     "penalties":    "https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903",
@@ -232,7 +244,7 @@ def page(path, title, description, h1, lede, body, faq_pairs, sources,
                       "areaServed": {"@type": "State", "name": "Maryland"}},
             "publisher": {"@type": "Organization", "name": "02Launch",
                           "url": "https://02launch.com"},
-            "dateModified": BUILD_DATE,
+            "dateModified": modified(path),
         },
         breadcrumb(path, breadcrumb_name or h1),
     ]
@@ -351,7 +363,7 @@ def sitemap():
             "    <lastmod>%s</lastmod>\n"
             "    <changefreq>monthly</changefreq>\n"
             "    <priority>%s</priority>\n"
-            "  </url>" % (SITE, "" if href == "/" else href, BUILD_DATE, prio[href]))
+            "  </url>" % (SITE, "" if href == "/" else href, modified(href), prio[href]))
     # The homepage loc has to end in a slash to match its canonical.
     rows[0] = rows[0].replace("<loc>%s</loc>" % SITE, "<loc>%s/</loc>" % SITE)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -420,7 +432,7 @@ Sitemap: %s/sitemap.xml
 
 
 # ------------------------------------------------------------- llms.txt ---
-def llms_txt():
+def llms_txt(meta):
     return """# famliclock.com
 
 > A free calculator for Maryland employers. It works out the Maryland FAMLI (Family
@@ -452,8 +464,8 @@ Rates and dates last verified against primary sources on %(verified)s.
   percent of wages up to the Social Security wage base, split evenly between employer
   and employee at 0.45 percent each.
 - Employers with fewer than 15 employees, counted across all states under one federal
-  EIN, remit only 50 percent of the total rate. The employee share is still withheld.
-  (COMAR 09.42.02.06A and .06D)
+  EIN, remit only 50 percent of the total rate. They still owe the employee share and
+  can withhold it from pay or pay it themselves. (COMAR 09.42.02.05B, .06A and .06D)
 - Written notice to employees is due at least one full pay period before withholding
   commences, so the date depends on the employer's payroll schedule.
   (COMAR 09.42.02.05D)
@@ -495,10 +507,12 @@ Rates and dates last verified against primary sources on %(verified)s.
   pay through the FAMLI portal themselves.
 - It cannot get a private plan approved. It says what the Declaration of Intent
   involves and whether the time still fits. FAMLI decides.
-- The 2027 Social Security wage cap has not been published yet. Until SSA publishes it
-  in October 2026 the calculator uses the 2026 figure of $184,500 as a stand-in and
-  labels it as one.
+- Figures use the %(cap_year)d Social Security wage cap of %(cap)s, published by SSA
+  on %(cap_on)s.
 """ % {
+        "cap_year": meta["wage_cap_year"],
+        "cap": "$" + "{:,}".format(int(meta["wage_cap"])),
+        "cap_on": __import__("content_a").cap_on(meta),
         "verified": VERIFIED,
         "pages": "\n".join(
             "- [%s](%s%s)" % (label, SITE, "/" if href == "/" else href)
@@ -561,7 +575,7 @@ def main():
 
     for name, text in (("sitemap.xml", sitemap()),
                        ("robots.txt", robots()),
-                       ("llms.txt", llms_txt())):
+                       ("llms.txt", llms_txt(ex["_meta"]))):
         with open(os.path.join(out, name), "w") as f:
             f.write(text)
         written.append((name, len(text)))

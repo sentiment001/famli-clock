@@ -111,7 +111,8 @@ def build_ld():
                  "acceptedAnswer": {"@type": "Answer", "text":
                      "0.90 percent of covered wages, split evenly between employer and employee "
                      "at 0.45 percent each. Employers with fewer than 15 employees pay no "
-                     "employer share but still withhold and remit the employee share."}},
+                     "employer share. They still owe the employee share, and can take it out of "
+                     "pay or cover it themselves."}},
                 {"@type": "Question",
                  "name": "When is the Maryland FAMLI Declaration of Intent due?",
                  "acceptedAnswer": {"@type": "Answer", "text":
@@ -150,9 +151,8 @@ def build_ld():
                  "name": "Is there a wage cap on Maryland FAMLI contributions?",
                  "acceptedAnswer": {"@type": "Answer", "text":
                      "Yes. Wages are subject to contributions only up to the Social Security wage "
-                     "base each calendar year, per employee. The 2026 figure is 184,500 US "
-                     "dollars and the Social Security Administration publishes the 2027 figure in "
-                     "October 2026."}},
+                     "base each calendar year, per employee. The calculator uses the 2027 figure, "
+                     "which the Social Security Administration published on 14 October 2026."}},
                 {"@type": "Question",
                  "name": "Does a private FAMLI plan reduce what a Maryland employer pays in 2027?",
                  "acceptedAnswer": {"@type": "Answer", "text":
@@ -178,8 +178,8 @@ def content_block(ex):
 and it blocks everything else.</td></tr>
 <tr><th>1 Sep to 15 Nov 2026</th><td>Declaration of Intent, private plans only. Friday 13
 November is the last business day before the close.</td></tr>
-<tr><th>October 2026</th><td>The Social Security Administration sets the wage base for the
-contribution year. Every figure on this page moves when it lands.</td></tr>
+<tr><th>14 October 2026</th><td>The Social Security Administration set the 2027 wage base.
+The calculator uses it.</td></tr>
 <tr><th>December 2026, your own date</th><td>Written notice to employees, at least one full
 pay period before your first 2027 withholding.</td></tr>
 <tr><th>1 January 2027</th><td>Withholding starts, on wages paid from this date.</td></tr>
@@ -201,7 +201,8 @@ a Saturday and notices move earlier.</td></tr>
 wages</b> from 1 January 2027, split evenly between employer and employee at 0.45 percent
 each, on wages up to the Social Security wage base per employee per year. %(src_contrib)s
 Employers with <b>fewer than 15 employees</b>, counted across every state under one federal
-EIN, pay no employer share at all, but still withhold and remit the employee half.
+EIN, pay no employer share. They still owe the employee half, and can take it out of pay or
+cover it themselves. %(src_05B)s
 %(src_06D)s</p>
 <p>The program is administered by the <b>Maryland Department of Labor, FAMLI Division</b>.
 Contributions run for a full year before anyone can claim anything: benefits begin in January
@@ -279,6 +280,7 @@ and a dedicated engineer fixes it within 6 hours.</p></div>
 %(footmap)s
 """ % {
         "src_contrib": src("Maryland Department of Labor", S["contributions"]),
+        "src_05B": src("COMAR 09.42.02.05B", S["comar"]),
         "src_06D": src("COMAR 09.42.02.06D", S["comar"]),
         "src_05D": src("COMAR 09.42.02.05D", S["comar"]),
         "src_08E": src("COMAR 09.42.02.08E", S["comar"]),
@@ -296,7 +298,7 @@ and a dedicated engineer fixes it within 6 hours.</p></div>
             [("Band", "Small employer, under 15", False),
              ("Rate applied", "0.45%", False),
              ("Employer share, full year 2027", money(E1["annual_employer"]), False),
-             ("Employee share, full year 2027", money(E1["annual_employee"]), False),
+             ("Employee share, full year 2027, from pay or paid by you", money(E1["annual_employee"]), False),
              ("Total for 2027", money(E1["annual_total"]), True),
              ("Written notice due, safe default", "1 December 2026", False),
              ("First payment, Q1 wages, due 30 April 2027", money(E1["q1_payment"]), False)],
@@ -310,7 +312,7 @@ and a dedicated engineer fixes it within 6 hours.</p></div>
             [("Band", "Standard, 15 or more", False),
              ("Rate applied", "0.90%", False),
              ("Employer share, full year 2027", money(E2["annual_employer"]), False),
-             ("Employee share, full year 2027", money(E2["annual_employee"]), False),
+             ("Employee share, full year 2027, from pay or paid by you", money(E2["annual_employee"]), False),
              ("Total for 2027", money(E2["annual_total"]), True),
              ("Cost of absorbing the employee half instead",
               money(E2["absorb_delta"]) + " more a year", False),

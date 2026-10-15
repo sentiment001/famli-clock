@@ -94,9 +94,10 @@ check('source carries no formatted cap literal ' + CAP0,
 var rawCapHits = HTML.split(String(CAPC)).length - 1;
 check('the raw cap figure appears exactly once in the source, on the CONFIG line',
   rawCapHits === 1 && /wage_cap:\s*\d+,/.test(HTML), 'hits=' + rawCapHits);
-check('source has no hard-coded "<year> Social Security" outside CONSENT_TEXT',
-  (HTML.match(/\b20\d\d Social Security/g) || []).length === 1 &&
-  /CONSENT_TEXT = '[^']*20\d\d Social Security/.test(HTML));
+// Tightened 14 October 2026: CONSENT_TEXT no longer names a year (CONSENT-v1.1), so the
+// source may carry no hard-coded "<year> Social Security" at all.
+check('source has no hard-coded "<year> Social Security" anywhere, CONSENT_TEXT included',
+  (HTML.match(/\b20\d\d Social Security/g) || []).length === 0);
 check('source has no hard-coded "SSA confirms/publishes the <year>"',
   !/SSA (confirms|publishes) the 20\d\d/.test(HTML));
 /* Rendered text, with the versioned consent label removed because it is frozen

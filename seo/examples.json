@@ -1,10 +1,11 @@
 {
  "_meta": {
-  "engine": "/tmp/claude-0/-home-claude/088c8357-3b7d-5a37-aed0-6dacc6f9126f/scratchpad/repo/index.html #famli-engine",
+  "engine": "index.html #famli-engine",
   "today": "2026-09-21",
-  "wage_cap": 184500,
-  "wage_cap_year": 2026,
-  "wage_cap_confirmed": false
+  "wage_cap": 192300,
+  "wage_cap_year": 2027,
+  "wage_cap_confirmed": true,
+  "wage_cap_confirmed_on": "2026-10-14"
  },
  "E1_small": {
   "input": {

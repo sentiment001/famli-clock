@@ -30,7 +30,7 @@ patched `index.html`.
 | S7 | LE §8.3-601, contribution rate | https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-601 |
 | S8 | LE §8.3-801, notices | https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-801 |
 | S9 | LE §8.3-903, penalties | https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903 |
-| S10 | SSA taxable maximum | https://www.ssa.gov/faqs/en/questions/KA-02387.html |
+| S10 | SSA contribution and benefit base (taxable maximum), 2027 row | https://www.ssa.gov/oact/cola/cbb.html |
 | S11 | `index.html` `CONFIG`, this repo | engine block, line ~917 |
 
 ---
@@ -64,12 +64,18 @@ Verbatim: *"All wages paid by each employer to an employee for performing qualif
 are subject to contributions up to the amount of the social security wage base each calendar
 year."*
 
-Per employee, per calendar year. The 2026 Social Security taxable maximum is **$184,500**
-(S10 verbatim: *"In 2026, the maximum amount of earnings on which you must pay Social Security
-tax is $184,500."*). **The 2027 figure is not published.** SSA publishes it in October 2026.
+Per employee, per calendar year. The 2027 Social Security taxable maximum is **$192,300**
+(S10 verbatim, read 14 October 2026: *"For earnings in 2027, this base is $192,300."* The
+table's 2027 row reads 192,300). SSA published it on **14 October 2026**, with the 2027 COLA.
+`CONFIG` carries `wage_cap: 192300`, `wage_cap_year: 2027`, `wage_cap_confirmed: true`,
+`wage_cap_confirmed_on: '2026-10-14'`. The 2026 figure it replaced was $184,500; it stays in
+this record only.
+
+Per-employee maximum contribution for 2027: 0.9% of $192,300 is $1,730.70 (standard
+employers); 0.45% is $865.35 (the employee half, and the whole bill for an employer under 15).
 
 **Handling rule, and it is load-bearing.** `run-dom.js` fails the build if the formatted
-literal `$184,500` survives anywhere in `index.html`, or if a hard-coded `<year> Social
+cap literal (`$192,300` from 14 October 2026) survives anywhere in `index.html`, or if a hard-coded `<year> Social
 Security` phrase appears outside `CONSENT_TEXT`, because a literal goes stale the day SSA
 publishes. The SEO pages follow the same discipline by a different route: they are generated,
 and the cap is read out of the engine's own `CONFIG` through `examples.json`, never typed.
@@ -87,8 +93,12 @@ of contribution if the employer size … is below 15."*
 S2 verbatim: *"Employers with fewer than 15 total employees, counting both Maryland and
 out-of-state employees are only responsible for remitting 50% of the contribution rate."*
 
-- The half that disappears is the **employer** half. The employee half is still withheld and
-  still remitted.
+- The half that disappears is the **employer** half. The employee half is still **remitted**.
+  Withholding it from pay is the employer's choice (F1, COMAR 09.42.02.05B and .05C), and a
+  skipped deduction is the employer's own cost (F5). Never write that a small employer "still
+  withholds" or "must withhold". Corrected 14 October 2026: this line used to say "still
+  withheld and still remitted", and the site copied it onto three pages. `qa.py` now fails on
+  that phrasing.
 - Headcount is **EIN-wide, all states**. Independent contractors excluded.
 - **Below** 15. Exactly 15 is the standard band.
 - 2027: recalculated quarter by quarter, changes apply forward only. From 2028: prior year's
@@ -277,7 +287,8 @@ if any page is missing it.
 Listed so a future session does not treat a gap as an oversight.
 
 1. **A 2028 contribution rate.** The Secretary sets it by 1 November 2027. Unknowable.
-2. **A 2027 Social Security wage cap.** Unpublished until October 2026.
+2. **A 2028 Social Security wage cap.** SSA sets it in October 2027. (The 2027 cap, $192,300,
+   was published 14 October 2026 and is live; see F2.)
 3. **Notice language.** MDOL's templates are not out. Drafting one for readers would be
    guessing at format for no benefit.
 4. **What a private plan costs.** Carriers set their own rates. Only the fee schedule and the

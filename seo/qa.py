@@ -212,8 +212,9 @@ def main():
     # --------------------------------------------------------- the cap literal
     check("index.html carries no formatted cap literal",
           cap_literal not in pages["/"], cap_literal)
-    check("index.html has no hard-coded '<year> Social Security' outside CONSENT_TEXT",
-          len(re.findall(r"\b20\d\d Social Security", pages["/"])) == 1)
+    # Tightened 14 October 2026: CONSENT_TEXT no longer names a year (CONSENT-v1.1).
+    check("index.html has no hard-coded '<year> Social Security', CONSENT_TEXT included",
+          len(re.findall(r"\b20\d\d Social Security", pages["/"])) == 0)
     check("index.html has no hard-coded 'SSA publishes/confirms the <year>'",
           not re.search(r"SSA (confirms|publishes) the 20\d\d", pages["/"]))
     for path, fname in expected:
@@ -266,6 +267,16 @@ def main():
         check("llms.txt lists %s" % p, (SITE + ("/" if p == "/" else p)) in lt)
     check("llms.txt states the Colorado distinction", "Colorado runs a separate" in lt)
     check("llms.txt has no unrendered markers", "%(" not in lt)
+
+    # ------------------------------------------- withholding is optional
+    # Added 14 October 2026. COMAR 09.42.02.05B: an employer "may withhold" the employee
+    # half; 05C: it "may elect to pay" it. The site once told small employers they "still
+    # withhold", the exact error our own correction playbook (FAMLI-5) flags elsewhere.
+    WRONG = re.compile(r"still withh(old|eld)|must withhold|still withholds", re.I)
+    for path, fname in expected:
+        hits = WRONG.findall(re.sub(r"<[^>]+>", " ", pages[path]))
+        check("%s: never says withholding is required" % fname, not hits, str(hits))
+    check("llms.txt: never says withholding is required", not WRONG.search(lt))
 
     print("\n%d checks, %d failed" % (CHECKS[0], len(FAILURES)))
     if FAILURES:
