@@ -434,7 +434,7 @@ def main():
     # 5. nav above the masthead
     html = replace_once(
         html, '<header class="mast">',
-        nav_html("/").replace('class="topbar"', 'class="topbar noprint"')
+        nav_html("/", brand=False).replace('class="topbar"', 'class="topbar noprint"')
         + '\n<header class="mast">', "nav insert")
 
     # 6. static h1

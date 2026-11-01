@@ -102,13 +102,19 @@ payment.</p>
 
 <h2>What wages the rate applies to</h2>
 <p>All wages paid for qualified employment are subject to contributions <b>up to the Social
-Security wage base each calendar year</b>, per employee. %(src_04A)s The cap is per person
-per year, not per employer, so an employee earning above it simply stops accruing
-contributions once their year-to-date Maryland wages cross the line.</p>
+Security wage base each calendar year</b>, per employee. %(src_04A)s The Department works the
+cap out separately for each job an employee holds. %(src_q19)s So someone you pay above it stops
+accruing contributions with you once their year-to-date wages from you cross the line, whatever
+they earn anywhere else.</p>
 <p>The Social Security taxable maximum for %(cap_year)d is <b>%(cap)s</b>. The Social Security
 Administration published it on %(cap_on)s. %(src_ssa)s Every figure on this site uses it.</p>
 <p>Independent contractors are not employees for this purpose and their payments are not
 subject to contributions.</p>
+
+<h2>There is no 2026 rate</h2>
+<p>Contributions start on wages paid from 1 January 2027, at 0.9 percent. Nothing was collected
+in 2026, so there is no 2026 rate to look up. %(src_faq1)s From 2027 on, the Department
+announces the next year's rate each November.</p>
 
 <h2>Who sets the rate, and when it can change</h2>
 <p>The Secretary of Labor sets the rate. The statute caps it at <b>1.2 percent</b> of wages
@@ -147,6 +153,8 @@ same contributions are collected and held in escrow instead of remitted. See the
 """ % {
         "src_rate": src("Maryland Department of Labor, make contributions", S["contributions"]),
         "src_04A": src("COMAR 09.42.02.04A", S["comar"]),
+        "src_q19": src("FAMLI contributions FAQ, question 19", S["contribFaq"]),
+        "src_faq1": src("FAMLI contributions FAQ, question 1", S["contribFaq"]),
         "src_ssa": src("SSA %d taxable maximum" % ex["_meta"]["wage_cap_year"], S["ssaCap"]),
         "cap_year": ex["_meta"]["wage_cap_year"],
         "cap": cap_fig(ex["_meta"]),
@@ -189,13 +197,13 @@ same contributions are collected and held in escrow instead of remitted. See the
 
     pages.append(dict(
         path="/contribution-rate-2027",
-        title="Maryland FAMLI Contribution Rate 2027: 0.9%, the Split, the Wage Cap",
-        description=("The Maryland FAMLI contribution rate for 2027 is 0.9% of wages up to the "
-                     "Social Security cap, split 0.45% employer and 0.45% employee. Worked "
-                     "examples, the wage cap rule, and who sets the rate."),
-        og_desc=("Maryland FAMLI 2027: 0.9% total, 0.45% each side, capped at the Social Security "
-                 "wage base. Two worked examples and the rule behind each figure."),
-        h1="Maryland FAMLI contribution rate for 2027",
+        title="Maryland Paid Family Leave (FAMLI) Contribution Rate 2027",
+        description=("Maryland paid family leave (FAMLI) contribution rate 2027: 0.9% of wages "
+                     "up to the Social Security cap, 0.45% each side. No 2026 rate. Worked "
+                     "examples."),
+        og_desc=("Maryland paid family leave (FAMLI) for 2027: 0.9% total, 0.45% each side, "
+                 "capped at the Social Security wage base. There is no 2026 rate."),
+        h1="Maryland Paid Family Leave (FAMLI) contribution rate 2027",
         lede=("The Maryland FAMLI contribution rate for 2027 is <b>0.9 percent</b> of covered "
               "wages up to the Social Security wage base, split evenly between employer and "
               "employee at 0.45 percent each, on wages paid from 1 January 2027."),
@@ -237,6 +245,7 @@ same contributions are collected and held in escrow instead of remitted. See the
         ],
         sources=[
             ("Maryland Department of Labor, Make Contributions", S["contributions"]),
+            ("FAMLI contributions FAQ, April 2026", S["contribFaq"]),
             ("COMAR 09.42.02, contributions", S["comar"]),
             ("Labor and Employment Article &sect;8.3-601, rate setting", S["rate"]),
             ("Social Security Administration, taxable maximum", S["ssaCap"]),

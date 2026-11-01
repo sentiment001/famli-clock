@@ -165,3 +165,25 @@ calculator".
 fixed statutory date, it is employer-specific" was carried in project memory as a correction.
 The paragraph behind it is COMAR 09.42.02.05D, quoted verbatim on `/employee-notice`, and
 1 December is labelled throughout as the calculator's safe default rather than a deadline.
+
+## 31 October 2026 additions (SEO handoff 30 Oct, Job 1)
+
+| URL | Primary target | Semrush US volume |
+|---|---|---|
+| `/maryland-paid-family-leave` | maryland paid family leave | 720 |
+| `/sick-and-safe-leave-vs-famli` | maryland sick and safe leave | 390 |
+| `/social-security-wage-base-2027` | social security wage base 2027 | 20, rising |
+| `/contribution-rate-2027` retitled | maryland paid family leave rate changes 2026 2027 | 720 |
+
+- New pages live in `content_e.py`. They are in `MORE` in `build.py`: footer map, sitemap and
+  `llms.txt`, not the top nav (already nine links).
+- `qa.py` `ALT_NAMED`: these four pages lead with another name for the program, so their title
+  and H1 need "Maryland" before "FAMLI" instead of the literal "Maryland FAMLI". Titles 60
+  characters or fewer, descriptions 155 or fewer. Every other page keeps the original rules.
+- `build.PAGE_VERIFIED` gives each page its own last-verified date. Only move one after
+  re-reading that page's sources.
+- The homepage nav has no "FAMLI Clock . Maryland" brand link (`nav_html("/", brand=False)`):
+  the masthead prints the name one line below. Content pages keep it.
+- `run_examples.js` gained four cases where the wage base bites (`W_*`). The original twelve
+  are unchanged.
+- Correction: the cap is per job (FACTS_REGISTER F17).

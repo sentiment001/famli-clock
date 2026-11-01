@@ -24,15 +24,34 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 SITE = "https://www.famliclock.com"
 VERIFIED = "21 September 2026"
-BUILD_DATE = "2026-10-14"
+BUILD_DATE = "2026-10-31"
 # Pages whose content did not change in the latest build keep their old date, so
 # dateModified and the sitemap's lastmod stay honest. Remove a page from this list
-# the next time its content changes.
+# the next time its content changes. (31 October 2026: the footer map gained three
+# links on every page. That is navigation, not content, so it moves no date.)
 PAGE_MODIFIED = {
+    "/": "2026-10-14",
+    "/small-employer": "2026-10-14",
+    "/out-of-state-employees": "2026-10-14",
+    "/deadlines-2027": "2026-10-14",
+    "/payroll-providers": "2026-10-14",
     "/employee-notice": "2026-09-21",
     "/private-plan-declaration-of-intent": "2026-09-21",
     "/registration": "2026-09-21",
 }
+
+# The date each page's rules were last checked against its sources. Defaults to
+# VERIFIED. A page is listed here only when its own sources were read on a later
+# day; never move a page's date without re-reading what it cites.
+PAGE_VERIFIED = {
+    "/maryland-paid-family-leave": "31 October 2026",
+    "/sick-and-safe-leave-vs-famli": "31 October 2026",
+    "/social-security-wage-base-2027": "31 October 2026",
+}
+
+
+def verified(path):
+    return PAGE_VERIFIED.get(path, VERIFIED)
 
 
 def modified(path):
@@ -55,6 +74,13 @@ S = {
     "penalties":    "https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903",
     "employers":    "https://paidleave.maryland.gov/employers/",
     "home":         "https://paidleave.maryland.gov/",
+    # Added 31 October 2026 for the three new pages.
+    "faq":          "https://paidleave.maryland.gov/files/famli-faqs-april-2026.pdf",
+    "contribFaq":   "https://paidleave.maryland.gov/files/famli-faqs-contributions-april-2026.pdf",
+    "ssaFact":      "https://www.ssa.gov/cola/factsheets/2027.html",
+    "hwfaLaw":      "https://mgaleg.maryland.gov/2025RS/Statute_Web/gle/3-1304.pdf",
+    "hwfaFaq":      "https://labor.maryland.gov/paidleave/paidleavefaqs.shtml",
+    "hwfaPoster":   "https://labor.maryland.gov/paidleave/paidleaveposter.shtml",
 }
 
 # ------------------------------------------------------------------ nav ----
@@ -70,6 +96,18 @@ NAV = [
     ("/registration",                      "Registration"),
     ("/payroll-providers",                 "Payroll providers"),
 ]
+
+# Pages that are in the footer map, the sitemap and llms.txt but NOT the top nav.
+# Added 31 October 2026. The top nav already carries nine links and wraps to three
+# rows at 390px, so these go in the footer map only (SEO handoff 30 Oct, rule 8).
+MORE = [
+    ("/maryland-paid-family-leave",        "Paid family leave guide"),
+    ("/sick-and-safe-leave-vs-famli",      "Sick and safe leave vs FAMLI"),
+    ("/social-security-wage-base-2027",    "Wage base 2027"),
+]
+
+# Every page on the site, in footer-map order.
+PAGES = NAV + MORE
 
 DISAMBIG = (
     "This page is about <b>Maryland</b> FAMLI, administered by the Maryland Department of "
@@ -123,9 +161,14 @@ CLARITY = """<script>
 </script>"""
 
 
-def nav_html(current):
-    out = ['<nav class="topbar" aria-label="FAMLI Clock pages">',
-           '<a class="home" href="/">FAMLI Clock &middot; Maryland</a>']
+def nav_html(current, brand=True):
+    """brand=False drops the "FAMLI Clock . Maryland" link. Used on the homepage
+    only (31 October 2026): its masthead already prints the same name one line below,
+    and "Calculator" already links home. Content pages have no masthead line, so they
+    keep the brand link as their only visible site name."""
+    out = ['<nav class="topbar" aria-label="FAMLI Clock pages">']
+    if brand:
+        out.append('<a class="home" href="/">FAMLI Clock &middot; Maryland</a>')
     for href, label in NAV:
         cur = ' aria-current="page"' if href == current else ""
         out.append('<a class="nl" href="%s"%s>%s</a>' % (href, cur, label))
@@ -135,7 +178,7 @@ def nav_html(current):
 
 def footmap_html(current):
     items = "".join(
-        '<li><a href="%s">%s</a></li>' % (h, l) for h, l in NAV if h != current)
+        '<li><a href="%s">%s</a></li>' % (h, l) for h, l in PAGES if h != current)
     return ('<div class="footmap"><div class="fmcap">More on Maryland FAMLI</div>'
             '<ul>%s</ul></div>' % items)
 
@@ -162,7 +205,7 @@ def cta_html(bullets, intro):
         '</div>' % (intro, lis, CALENDLY))
 
 
-def sources_html(items):
+def sources_html(items, checked=VERIFIED):
     lis = "".join(
         '<li>%s: <a href="%s" target="_blank" rel="noopener">%s</a></li>'
         % (label, url, url) for label, url in items)
@@ -172,7 +215,7 @@ def sources_html(items):
             'right and this page is wrong; tell us at '
             '<a href="mailto:hello@02launch.com?subject=FAMLI%%20Clock%%3A%%20this%%20looks%%20wrong">'
             'hello@02launch.com</a> and a dedicated engineer fixes it within 6 hours.</p></div>'
-            % (lis, VERIFIED))
+            % (lis, checked))
 
 
 def related_html(items):
@@ -332,7 +375,7 @@ def page(path, title, description, h1, lede, body, faq_pairs, sources,
         "tool": toolcard_html(tool_text),
         "body": body,
         "faq": faq_html,
-        "sources": sources_html(sources),
+        "sources": sources_html(sources, verified(path)),
         "related": related_html(related),
         "cta": cta_html(cta_bullets, cta_intro),
         "footer": FOOTER,
@@ -354,9 +397,12 @@ def sitemap():
         "/out-of-state-employees": "0.7",
         "/registration": "0.7",
         "/payroll-providers": "0.7",
+        "/maryland-paid-family-leave": "0.8",
+        "/sick-and-safe-leave-vs-famli": "0.7",
+        "/social-security-wage-base-2027": "0.7",
     }
     rows = []
-    for href, _label in NAV:
+    for href, _label in PAGES:
         rows.append(
             "  <url>\n"
             "    <loc>%s%s</loc>\n"
@@ -463,6 +509,8 @@ Rates and dates last verified against primary sources on %(verified)s.
 - Contributions are due on wages paid from 1 January 2027 at a total rate of 0.9
   percent of wages up to the Social Security wage base, split evenly between employer
   and employee at 0.45 percent each.
+- The wage base cap is applied separately to each job an employee holds, per calendar
+  year. (COMAR 09.42.02.04A; FAMLI contributions FAQ, April 2026, question 19)
 - Employers with fewer than 15 employees, counted across all states under one federal
   EIN, remit only 50 percent of the total rate. They still owe the employee share and
   can withhold it from pay or pay it themselves. (COMAR 09.42.02.05B, .06A and .06D)
@@ -516,7 +564,7 @@ Rates and dates last verified against primary sources on %(verified)s.
         "verified": VERIFIED,
         "pages": "\n".join(
             "- [%s](%s%s)" % (label, SITE, "/" if href == "/" else href)
-            for href, label in NAV),
+            for href, label in PAGES),
         "contributions": S["contributions"],
         "registration": S["registration"],
         "privatePlans": S["privatePlans"],
@@ -538,17 +586,17 @@ def main():
 
     ex = load_examples()
 
-    import content_a, content_b, content_c, content_d
+    import content_a, content_b, content_c, content_d, content_e
     specs = []
-    for mod in (content_a, content_b, content_c, content_d):
+    for mod in (content_a, content_b, content_c, content_d, content_e):
         specs.extend(mod.build(ex))
 
-    paths = [p for p, _l in NAV if p != "/"]
+    paths = [p for p, _l in PAGES if p != "/"]
     got = [s["path"] for s in specs]
     missing = [p for p in paths if p not in got]
     extra = [p for p in got if p not in paths]
     assert not missing, "content modules did not produce: %s" % missing
-    assert not extra, "content modules produced pages not in NAV: %s" % extra
+    assert not extra, "content modules produced pages not in PAGES: %s" % extra
     assert len(set(got)) == len(got), "duplicate page path"
 
     written = []

@@ -39,7 +39,14 @@ var CASES = {
   N_biweekly:    {md_employees:20, ein_employees:20, md_payroll:1300000, pay_frequency:'biweekly',    considering_private_plan:false, today:TODAY, first_2027_pay_date:'2027-01-08'},
   N_semi:        {md_employees:20, ein_employees:20, md_payroll:1300000, pay_frequency:'semimonthly', considering_private_plan:false, today:TODAY, first_2027_pay_date:'2027-01-15'},
   N_monthly:     {md_employees:20, ein_employees:20, md_payroll:1300000, pay_frequency:'monthly',     considering_private_plan:false, today:TODAY, first_2027_pay_date:'2027-01-29'},
-  N_default:     {md_employees:20, ein_employees:20, md_payroll:1300000, pay_frequency:'biweekly',    considering_private_plan:false, today:TODAY}
+  N_default:     {md_employees:20, ein_employees:20, md_payroll:1300000, pay_frequency:'biweekly',    considering_private_plan:false, today:TODAY},
+  /* Added 31 October 2026 for /social-security-wage-base-2027. Cases where the
+     Social Security wage base actually bites, so the page can quote the per-employee
+     maximum and a firm-level example straight from the engine, never by hand. */
+  W_cap_std:     {md_employees:1,  ein_employees:20, md_payroll:250000,  pay_frequency:'monthly',     considering_private_plan:false, today:TODAY, high_earner_count:1, high_earner_wages:250000},
+  W_cap_small:   {md_employees:1,  ein_employees:10, md_payroll:250000,  pay_frequency:'monthly',     considering_private_plan:false, today:TODAY, high_earner_count:1, high_earner_wages:250000},
+  W_firm_even:   {md_employees:20, ein_employees:20, md_payroll:2400000, pay_frequency:'biweekly',    considering_private_plan:false, today:TODAY},
+  W_firm_capped: {md_employees:20, ein_employees:20, md_payroll:2400000, pay_frequency:'biweekly',    considering_private_plan:false, today:TODAY, high_earner_count:2, high_earner_wages:600000}
 };
 
 var out = {_meta: {engine: htmlPath + ' #famli-engine', today: TODAY,

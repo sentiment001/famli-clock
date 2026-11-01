@@ -32,6 +32,12 @@ patched `index.html`.
 | S9 | LE §8.3-903, penalties | https://mgaleg.maryland.gov/mgawebsite/laws/StatuteText?article=gle&section=8.3-903 |
 | S10 | SSA contribution and benefit base (taxable maximum), 2027 row | https://www.ssa.gov/oact/cola/cbb.html |
 | S11 | `index.html` `CONFIG`, this repo | engine block, line ~917 |
+| S12 | FAMLI FAQs, April 2026 (general, 154 questions) | https://paidleave.maryland.gov/files/famli-faqs-april-2026.pdf |
+| S13 | FAMLI contributions FAQ, April 2026 | https://paidleave.maryland.gov/files/famli-faqs-contributions-april-2026.pdf |
+| S14 | SSA 2027 COLA fact sheet | https://www.ssa.gov/cola/factsheets/2027.html |
+| S15 | LE §3-1304, earned sick and safe leave (2025RS statute text) | https://mgaleg.maryland.gov/2025RS/Statute_Web/gle/3-1304.pdf |
+| S16 | MD Labor, Healthy Working Families Act FAQs | https://labor.maryland.gov/paidleave/paidleavefaqs.shtml |
+| S17 | MD Labor, sick and safe leave employee notice | https://labor.maryland.gov/paidleave/paidleaveposter.shtml |
 
 ---
 
@@ -282,19 +288,104 @@ if any page is missing it.
 
 ---
 
+## Added 31 October 2026 (SEO handoff 30 Oct, Job 1)
+
+All read on 31 October 2026 from the sources named. Every row below is **full**: read in
+the primary source itself, not a search snippet.
+
+## F17. The wage cap is per job. CORRECTION.
+
+**Source:** S13 verbatim, question 19: *"The cap on wages is determined separately for each
+job."* (Same text as S12 question 39.) Consistent with COMAR 09.42.02.04A, *"All wages paid by
+each employer to an employee"* (F2).
+
+`/contribution-rate-2027` said from 21 September to 31 October 2026: *"The cap is per person per
+year, not per employer"*. That was wrong for anyone with two jobs, and it was fixed in
+`content_a.py` on 31 October 2026. `llms.txt` now states the per-job rule.
+
+## F18. Program names, dates and benefits (hub page)
+
+**Source:** S12.
+
+- Q1: up to 12 weeks, up to $1,000 a week; *"often referred to as 'paid family and medical
+  leave' or simply 'paid leave'"*.
+- Q8, Q10, Q12: contributions from 1 January 2027; benefits January 2028; the 2025 delay bill.
+- Q16: notices one pay period before deductions, July 2027, at hire, yearly, on request.
+- Q21, Q24: 0.9%, 0.45% each side; withholding optional; employers may pay the full amount.
+- Q26: size counts employees within and outside Maryland, quarterly until a full year of reports.
+- Q31, Q37: wages as defined for UI (LE §8.3-101(r)); gross wages reported.
+- Q33, Q35: FAMLI website, not BEACON; first payment 30 April 2027.
+- Q40: no recovery of a missed deduction from a later pay cycle, except an employee who earned
+  too little that cycle (up to 6 pay periods).
+- Q53: localization examples (lives MD works VA: not covered; lives PA works MD: covered).
+- Q55: a family employing a nanny is an employer.
+- Q64: 680 hours in Maryland in the 4 reported quarters before claim or leave, whichever is
+  earlier; hours from more than one employer count.
+- Q69, Q71, Q72: qualifying reasons; leave within the first year after birth or placement,
+  including births before benefits start; both parents at once.
+- Q92, Q93: up to 90% of wages, $1,000 a week maximum. (No claim is made about indexing.)
+- Q96: 12 weeks; up to 24 when own serious health condition and a new child fall in the same year.
+- Q105, Q106: job held, health benefits maintained.
+
+## F19. Sick and safe leave, and how it meets FAMLI
+
+**Sources:** S15 verbatim, S16, S17, S12.
+
+- LE §3-1304(a)(1): 15 or more employees, paid at the normal rate; 14 or fewer, at least unpaid.
+- §3-1304(a)(2): average monthly employees in the immediately preceding year, all employee
+  types counted. S16 II.3: *"The Commissioner will consider only those employees employed in
+  Maryland."* (The Commissioner's reading, attributed as such on the page.)
+- §3-1304(b), (c): 1 hour per 30 worked; employer need not allow more than 40 earned a year,
+  64 used a year, 64 accrued at any time, or use in the first 106 calendar days; carryover 40
+  (§3-1304(g)). The 2023 bill to make it 120 days (HB 1015) is not in the 2025RS text.
+- S16 I.1, I.4, I.7: in force 11 February 2018; primary work location Maryland; exemptions
+  including employees who regularly work under 12 hours a week.
+- S16 III.12: a statement of used and available leave each pay period.
+- S16 IV.3: uses, including maternity or paternity leave and domestic violence, sexual assault
+  or stalking.
+- S17: no adverse action for exercising the right.
+- S12 Q15 (colds vs serious illness), Q70 (domestic violence is not a FAMLI qualifying event),
+  Q113, Q116 to Q122 (FMLA runs concurrently; employers can't require PTO; can require unpaid
+  leave; accrued leave may top up to 100% with the employee's agreement; employee may choose
+  not to claim; AFPL can be required concurrently and counts toward the 12 weeks).
+
+## F20. The Social Security wage base page
+
+**Sources:** S10, S14, S13, F2.
+
+- S10: 2027 base $192,300; OASDI 6.2% each; *"After 1993, there has been no limitation on
+  HI-taxable earnings"*, 1.45% each; the 1937 to 2027 table. Rows 2017 to 2026 are stored in
+  `content_e.SSA_CBB`; the 2027 row is read from CONFIG. The table prints amounts **without a
+  dollar sign**, as SSA's own table does after its first row, so the cap-literal guard in
+  `qa.py` still fails on any stray `$1xx,xxx` figure. `qa.py` checks every row against
+  `SSA_CBB` and the engine.
+- S14: Maximum Taxable Earnings (OASDI) $192,300 for 2027; Medicare (HI) no limit.
+- Per-employee maxima, from the engine (`W_cap_std`, `W_cap_small` in `run_examples.js`):
+  $1,730.70 at 0.9% ($865.35 each side); $865.35 at 0.45%. `qa.py` also recomputes cap x rate
+  independently and fails if the engine and the arithmetic disagree.
+
+Mutation-tested 31 October 2026: a stale cap typed onto the page, a mistyped SSA row, a bogus
+engine figure, and "must withhold" on a new page each fail `qa.py`.
+
+---
+
 ## Things deliberately NOT published
 
 Listed so a future session does not treat a gap as an oversight.
 
 1. **A 2028 contribution rate.** The Secretary sets it by 1 November 2027. Unknowable.
 2. **A 2028 Social Security wage cap.** SSA sets it in October 2027. (The 2027 cap, $192,300,
-   was published 14 October 2026 and is live; see F2.)
+   was published 14 October 2026 and is live; see F2. Earlier years appear only in SSA's own
+   history table on `/social-security-wage-base-2027`; see F20.)
 3. **Notice language.** MDOL's templates are not out. Drafting one for readers would be
    guessing at format for no benefit.
 4. **What a private plan costs.** Carriers set their own rates. Only the fee schedule and the
    0.45% withholding ceiling are knowable.
-5. **Anything about employee claims, eligibility or benefit amounts.** The employee side
-   starts in 2028 and is the Department's job. Building it now would send the wrong traffic.
+5. **Anything about employee claims, eligibility or benefit amounts.** Reversed in part on
+   31 October 2026 by the SEO handoff of 30 October (approved by Mash):
+   `/maryland-paid-family-leave` now carries one section on benefits and a short box for
+   parental leave searches, all from S12 (F18). There is still no employee-side page and no
+   claims guidance.
 6. **A Colorado comparison page.** Would attract exactly the traffic the disambiguation line
    exists to repel.
 7. **Any penalty figure for a missed notice.** The contributions chapter states none. The

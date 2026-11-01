@@ -1258,5 +1258,487 @@
     "kind": "dated"
    }
   ]
+ },
+ "W_cap_std": {
+  "input": {
+   "md_employees": 1,
+   "ein_employees": 20,
+   "md_payroll": 250000,
+   "pay_frequency": "monthly",
+   "considering_private_plan": false,
+   "today": "2026-09-21",
+   "high_earner_count": 1,
+   "high_earner_wages": 250000
+  },
+  "in_scope": true,
+  "reason": null,
+  "band": "standard",
+  "rate_bp": 90,
+  "periods_per_year": 12,
+  "base_cents": 19230000,
+  "base_mode": "refined",
+  "cap_bites": true,
+  "avg_wage_cents": 25000000,
+  "annual_total": 173070,
+  "annual_employer": 86535,
+  "annual_employee": 86535,
+  "absorb_annual_employer": 173070,
+  "absorb_delta": 86535,
+  "per_period_total": 18750,
+  "per_period_employer": 9375,
+  "per_period_employee": 9375,
+  "flat_across_year": false,
+  "q1_payment": 56250,
+  "q1_payment_due": "2027-04-30",
+  "quarters": [
+   {
+    "quarter": 1,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 6250000,
+    "base_qc": 25000000,
+    "due_cents": 56250,
+    "employer_cents": 28125,
+    "employee_cents": 28125
+   },
+   {
+    "quarter": 2,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 6250000,
+    "base_qc": 25000000,
+    "due_cents": 56250,
+    "employer_cents": 28125,
+    "employee_cents": 28125
+   },
+   {
+    "quarter": 3,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 6250000,
+    "base_qc": 25000000,
+    "due_cents": 56250,
+    "employer_cents": 28125,
+    "employee_cents": 28125
+   },
+   {
+    "quarter": 4,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 480000,
+    "base_qc": 1920000,
+    "due_cents": 4320,
+    "employer_cents": 2160,
+    "employee_cents": 2160
+   }
+  ],
+  "cost_of_never_withholding": 86535,
+  "cost_per_missed_pay_period": 9375,
+  "cost_of_unreported_out_of_state": 0,
+  "small_by_md_but_not_by_ein": true,
+  "must_report_out_of_state": false,
+  "notice": {
+   "mode": "safe_default",
+   "notice_by": "2026-12-01",
+   "first_pay": null
+  },
+  "dates": [
+   {
+    "label": "Register with FAMLI",
+    "date": null,
+    "kind": "open"
+   },
+   {
+    "label": "Written notices that recur",
+    "date": null,
+    "kind": "ongoing"
+   },
+   {
+    "label": "Written notice to employees",
+    "date": "2026-12-01",
+    "kind": "dated"
+   },
+   {
+    "label": "Start withholding",
+    "date": "2027-01-01",
+    "kind": "dated"
+   },
+   {
+    "label": "First report and payment (Q1 wages)",
+    "date": "2027-04-30",
+    "kind": "dated"
+   },
+   {
+    "label": "Six month pre benefit notice",
+    "date": "2027-07-02",
+    "kind": "dated"
+   },
+   {
+    "label": "Benefits begin",
+    "date": "2028-01-03",
+    "kind": "dated"
+   }
+  ]
+ },
+ "W_cap_small": {
+  "input": {
+   "md_employees": 1,
+   "ein_employees": 10,
+   "md_payroll": 250000,
+   "pay_frequency": "monthly",
+   "considering_private_plan": false,
+   "today": "2026-09-21",
+   "high_earner_count": 1,
+   "high_earner_wages": 250000
+  },
+  "in_scope": true,
+  "reason": null,
+  "band": "small",
+  "rate_bp": 45,
+  "periods_per_year": 12,
+  "base_cents": 19230000,
+  "base_mode": "refined",
+  "cap_bites": true,
+  "avg_wage_cents": 25000000,
+  "annual_total": 86535,
+  "annual_employer": 0,
+  "annual_employee": 86535,
+  "absorb_annual_employer": 86535,
+  "absorb_delta": 86535,
+  "per_period_total": 9375,
+  "per_period_employer": 0,
+  "per_period_employee": 9375,
+  "flat_across_year": false,
+  "q1_payment": 28125,
+  "q1_payment_due": "2027-04-30",
+  "quarters": [
+   {
+    "quarter": 1,
+    "band": "small",
+    "rate_bp": 45,
+    "base_cents": 6250000,
+    "base_qc": 25000000,
+    "due_cents": 28125,
+    "employer_cents": 0,
+    "employee_cents": 28125
+   },
+   {
+    "quarter": 2,
+    "band": "small",
+    "rate_bp": 45,
+    "base_cents": 6250000,
+    "base_qc": 25000000,
+    "due_cents": 28125,
+    "employer_cents": 0,
+    "employee_cents": 28125
+   },
+   {
+    "quarter": 3,
+    "band": "small",
+    "rate_bp": 45,
+    "base_cents": 6250000,
+    "base_qc": 25000000,
+    "due_cents": 28125,
+    "employer_cents": 0,
+    "employee_cents": 28125
+   },
+   {
+    "quarter": 4,
+    "band": "small",
+    "rate_bp": 45,
+    "base_cents": 480000,
+    "base_qc": 1920000,
+    "due_cents": 2160,
+    "employer_cents": 0,
+    "employee_cents": 2160
+   }
+  ],
+  "cost_of_never_withholding": 86535,
+  "cost_per_missed_pay_period": 9375,
+  "cost_of_unreported_out_of_state": 86535,
+  "small_by_md_but_not_by_ein": false,
+  "must_report_out_of_state": true,
+  "notice": {
+   "mode": "safe_default",
+   "notice_by": "2026-12-01",
+   "first_pay": null
+  },
+  "dates": [
+   {
+    "label": "Register with FAMLI",
+    "date": null,
+    "kind": "open"
+   },
+   {
+    "label": "Written notices that recur",
+    "date": null,
+    "kind": "ongoing"
+   },
+   {
+    "label": "Written notice to employees",
+    "date": "2026-12-01",
+    "kind": "dated"
+   },
+   {
+    "label": "Start withholding",
+    "date": "2027-01-01",
+    "kind": "dated"
+   },
+   {
+    "label": "First report and payment (Q1 wages)",
+    "date": "2027-04-30",
+    "kind": "dated"
+   },
+   {
+    "label": "Six month pre benefit notice",
+    "date": "2027-07-02",
+    "kind": "dated"
+   },
+   {
+    "label": "Benefits begin",
+    "date": "2028-01-03",
+    "kind": "dated"
+   }
+  ]
+ },
+ "W_firm_even": {
+  "input": {
+   "md_employees": 20,
+   "ein_employees": 20,
+   "md_payroll": 2400000,
+   "pay_frequency": "biweekly",
+   "considering_private_plan": false,
+   "today": "2026-09-21"
+  },
+  "in_scope": true,
+  "reason": null,
+  "band": "standard",
+  "rate_bp": 90,
+  "periods_per_year": 26,
+  "base_cents": 240000000,
+  "base_mode": "even",
+  "cap_bites": false,
+  "avg_wage_cents": 12000000,
+  "annual_total": 2160000,
+  "annual_employer": 1080000,
+  "annual_employee": 1080000,
+  "absorb_annual_employer": 2160000,
+  "absorb_delta": 1080000,
+  "per_period_total": 83077,
+  "per_period_employer": 41538,
+  "per_period_employee": 41538,
+  "flat_across_year": true,
+  "q1_payment": 540000,
+  "q1_payment_due": "2027-04-30",
+  "quarters": [
+   {
+    "quarter": 1,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 60000000,
+    "base_qc": 240000000,
+    "due_cents": 540000,
+    "employer_cents": 270000,
+    "employee_cents": 270000
+   },
+   {
+    "quarter": 2,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 60000000,
+    "base_qc": 240000000,
+    "due_cents": 540000,
+    "employer_cents": 270000,
+    "employee_cents": 270000
+   },
+   {
+    "quarter": 3,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 60000000,
+    "base_qc": 240000000,
+    "due_cents": 540000,
+    "employer_cents": 270000,
+    "employee_cents": 270000
+   },
+   {
+    "quarter": 4,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 60000000,
+    "base_qc": 240000000,
+    "due_cents": 540000,
+    "employer_cents": 270000,
+    "employee_cents": 270000
+   }
+  ],
+  "cost_of_never_withholding": 1080000,
+  "cost_per_missed_pay_period": 41538,
+  "cost_of_unreported_out_of_state": 0,
+  "small_by_md_but_not_by_ein": false,
+  "must_report_out_of_state": false,
+  "notice": {
+   "mode": "safe_default",
+   "notice_by": "2026-12-01",
+   "first_pay": null
+  },
+  "dates": [
+   {
+    "label": "Register with FAMLI",
+    "date": null,
+    "kind": "open"
+   },
+   {
+    "label": "Written notices that recur",
+    "date": null,
+    "kind": "ongoing"
+   },
+   {
+    "label": "Written notice to employees",
+    "date": "2026-12-01",
+    "kind": "dated"
+   },
+   {
+    "label": "Start withholding",
+    "date": "2027-01-01",
+    "kind": "dated"
+   },
+   {
+    "label": "First report and payment (Q1 wages)",
+    "date": "2027-04-30",
+    "kind": "dated"
+   },
+   {
+    "label": "Six month pre benefit notice",
+    "date": "2027-07-02",
+    "kind": "dated"
+   },
+   {
+    "label": "Benefits begin",
+    "date": "2028-01-03",
+    "kind": "dated"
+   }
+  ]
+ },
+ "W_firm_capped": {
+  "input": {
+   "md_employees": 20,
+   "ein_employees": 20,
+   "md_payroll": 2400000,
+   "pay_frequency": "biweekly",
+   "considering_private_plan": false,
+   "today": "2026-09-21",
+   "high_earner_count": 2,
+   "high_earner_wages": 600000
+  },
+  "in_scope": true,
+  "reason": null,
+  "band": "standard",
+  "rate_bp": 90,
+  "periods_per_year": 26,
+  "base_cents": 218460000,
+  "base_mode": "refined",
+  "cap_bites": true,
+  "avg_wage_cents": 12000000,
+  "annual_total": 1966140,
+  "annual_employer": 983070,
+  "annual_employee": 983070,
+  "absorb_annual_employer": 1966140,
+  "absorb_delta": 983070,
+  "per_period_total": 83077,
+  "per_period_employer": 41538,
+  "per_period_employee": 41538,
+  "flat_across_year": false,
+  "q1_payment": 540000,
+  "q1_payment_due": "2027-04-30",
+  "quarters": [
+   {
+    "quarter": 1,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 60000000,
+    "base_qc": 240000000,
+    "due_cents": 540000,
+    "employer_cents": 270000,
+    "employee_cents": 270000
+   },
+   {
+    "quarter": 2,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 60000000,
+    "base_qc": 240000000,
+    "due_cents": 540000,
+    "employer_cents": 270000,
+    "employee_cents": 270000
+   },
+   {
+    "quarter": 3,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 53460000,
+    "base_qc": 213840000,
+    "due_cents": 481140,
+    "employer_cents": 240570,
+    "employee_cents": 240570
+   },
+   {
+    "quarter": 4,
+    "band": "standard",
+    "rate_bp": 90,
+    "base_cents": 45000000,
+    "base_qc": 180000000,
+    "due_cents": 405000,
+    "employer_cents": 202500,
+    "employee_cents": 202500
+   }
+  ],
+  "cost_of_never_withholding": 983070,
+  "cost_per_missed_pay_period": 41538,
+  "cost_of_unreported_out_of_state": 0,
+  "small_by_md_but_not_by_ein": false,
+  "must_report_out_of_state": false,
+  "notice": {
+   "mode": "safe_default",
+   "notice_by": "2026-12-01",
+   "first_pay": null
+  },
+  "dates": [
+   {
+    "label": "Register with FAMLI",
+    "date": null,
+    "kind": "open"
+   },
+   {
+    "label": "Written notices that recur",
+    "date": null,
+    "kind": "ongoing"
+   },
+   {
+    "label": "Written notice to employees",
+    "date": "2026-12-01",
+    "kind": "dated"
+   },
+   {
+    "label": "Start withholding",
+    "date": "2027-01-01",
+    "kind": "dated"
+   },
+   {
+    "label": "First report and payment (Q1 wages)",
+    "date": "2027-04-30",
+    "kind": "dated"
+   },
+   {
+    "label": "Six month pre benefit notice",
+    "date": "2027-07-02",
+    "kind": "dated"
+   },
+   {
+    "label": "Benefits begin",
+    "date": "2028-01-03",
+    "kind": "dated"
+   }
+  ]
  }
 }

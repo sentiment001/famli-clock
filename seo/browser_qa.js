@@ -22,7 +22,14 @@ const SITE_DIR = path.resolve(process.argv[2] || path.join(__dirname, '..', 'sit
 const WIDTHS = [1280, 1024, 768, 390];
 const PAGES = ['/', '/contribution-rate-2027', '/small-employer', '/out-of-state-employees',
   '/employee-notice', '/private-plan-declaration-of-intent', '/deadlines-2027',
-  '/registration', '/payroll-providers'];
+  '/registration', '/payroll-providers',
+  // Added 31 October 2026. Footer map only, so each still shows the 9-link top nav.
+  '/maryland-paid-family-leave', '/sick-and-safe-leave-vs-famli',
+  '/social-security-wage-base-2027'];
+// Pages whose H1 leads with another name for the program (see ALT_NAMED in qa.py).
+// They must still name Maryland before FAMLI.
+const ALT_NAMED = new Set(['/maryland-paid-family-leave', '/sick-and-safe-leave-vs-famli',
+  '/social-security-wage-base-2027', '/contribution-rate-2027']);
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8' };
@@ -99,7 +106,12 @@ function serve() {
       check(tag + ' no horizontal page scroll', m.scrollW <= m.clientW + 1,
         m.scrollW + ' > ' + m.clientW);
       check(tag + ' exactly one h1', m.h1count === 1, String(m.h1count));
-      check(tag + ' h1 names Maryland FAMLI', /Maryland FAMLI/.test(m.h1), m.h1.slice(0, 60));
+      if (ALT_NAMED.has(p)) {
+        check(tag + ' h1 names Maryland before FAMLI', /Maryland[\s\S]*FAMLI/.test(m.h1),
+          m.h1.slice(0, 60));
+      } else {
+        check(tag + ' h1 names Maryland FAMLI', /Maryland FAMLI/.test(m.h1), m.h1.slice(0, 60));
+      }
       check(tag + ' nav has 9 links', m.navLinks === 9, String(m.navLinks));
       check(tag + ' calculator entry point present', m.runBtn === true);
       check(tag + ' no element overflows its box', m.overflowing === 0, String(m.overflowing));

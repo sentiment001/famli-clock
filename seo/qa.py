@@ -15,7 +15,27 @@ import re
 import sys
 from html.parser import HTMLParser
 
-from build import NAV, SITE, VERIFIED, load_examples
+from build import NAV, PAGES, SITE, VERIFIED, load_examples, verified
+
+# Pages whose primary search term is another name for the same program, so the
+# title and H1 cannot lead with the literal "Maryland FAMLI" (SEO handoff 30 Oct
+# 2026). They still have to name Maryland, and name it before FAMLI, which is what
+# the Colorado rule (FACTS_REGISTER F16) actually needs. Every other page keeps the
+# original, stricter check.
+ALT_NAMED = {
+    "/maryland-paid-family-leave",
+    "/sick-and-safe-leave-vs-famli",
+    "/social-security-wage-base-2027",
+    "/contribution-rate-2027",
+}
+# Pages built or retitled under the 30 Oct 2026 handoff, which sets tighter limits:
+# title 60 characters or fewer, meta description 155 or fewer.
+HANDOFF_LIMITS = ALT_NAMED
+
+
+def maryland_before_famli(text):
+    i, j = text.find("Maryland"), text.find("FAMLI")
+    return i != -1 and j != -1 and i < j
 
 FAILURES = []
 CHECKS = [0]
@@ -100,7 +120,7 @@ def main():
     cap_literal = "$" + "{:,}".format(int(meta["wage_cap"]))
 
     expected = [("/", "index.html")] + [(p, p.lstrip("/") + ".html")
-                                        for p, _l in NAV if p != "/"]
+                                        for p, _l in PAGES if p != "/"]
 
     # ------------------------------------------------------------- files exist
     for path, fname in expected:
@@ -129,21 +149,35 @@ def main():
         check("%s: exactly one <h1>" % tag, html.count("<h1") == 1,
               "found %d" % html.count("<h1"))
         h1text = " ".join(c.h1)
-        check("%s: h1 names Maryland FAMLI" % tag, "Maryland FAMLI" in h1text, h1text[:70])
+        if path in ALT_NAMED:
+            check("%s: h1 names Maryland before FAMLI" % tag, maryland_before_famli(h1text),
+                  h1text[:70])
+        else:
+            check("%s: h1 names Maryland FAMLI" % tag, "Maryland FAMLI" in h1text, h1text[:70])
 
         m = re.search(r"<title>(.*?)</title>", html, re.S)
         check("%s: has a title" % tag, bool(m))
         title = m.group(1) if m else ""
-        check("%s: title leads with Maryland FAMLI" % tag,
-              title.startswith("Maryland FAMLI"), title[:80])
+        if path in ALT_NAMED:
+            check("%s: title names Maryland before FAMLI" % tag,
+                  maryland_before_famli(title), title[:80])
+        else:
+            check("%s: title leads with Maryland FAMLI" % tag,
+                  title.startswith("Maryland FAMLI"), title[:80])
         check("%s: title is 40 to 95 chars" % tag, 40 <= len(title) <= 95,
               "%d chars" % len(title))
+        if path in HANDOFF_LIMITS:
+            check("%s: title is 60 chars or fewer" % tag, len(title) <= 60,
+                  "%d chars" % len(title))
 
         m = re.search(r'<meta name="description" content="(.*?)">', html, re.S)
         check("%s: has a meta description" % tag, bool(m))
         if m:
             check("%s: description is 80 to 260 chars" % tag,
                   80 <= len(m.group(1)) <= 260, "%d chars" % len(m.group(1)))
+            if path in HANDOFF_LIMITS:
+                check("%s: description is 155 chars or fewer" % tag,
+                      len(m.group(1)) <= 155, "%d chars" % len(m.group(1)))
 
         want_canon = SITE + ("/" if path == "/" else path)
         check("%s: canonical is self-referencing" % tag,
@@ -156,7 +190,7 @@ def main():
         check("%s: names the administering agency" % tag,
               "Maryland Department of Labor" in body)
         check("%s: carries the last-verified line" % tag,
-              VERIFIED in body, VERIFIED)
+              verified(path) in body, verified(path))
         check("%s: loads the shared stylesheet" % tag,
               'href="/famli_pages.css"' in html)
         check("%s: links to the calculator" % tag,
@@ -245,7 +279,7 @@ def main():
     with open(os.path.join(d, "sitemap.xml")) as f:
         sm = f.read()
     locs = re.findall(r"<loc>(.*?)</loc>", sm)
-    want = [SITE + ("/" if p == "/" else p) for p, _l in NAV]
+    want = [SITE + ("/" if p == "/" else p) for p, _l in PAGES]
     check("sitemap lists every page exactly once", sorted(locs) == sorted(want),
           "missing=%s extra=%s" % (sorted(set(want) - set(locs)), sorted(set(locs) - set(want))))
     check("sitemap is well formed XML", _xml_ok(sm))
@@ -263,7 +297,7 @@ def main():
     # --------------------------------------------------------------- llms.txt
     with open(os.path.join(d, "llms.txt")) as f:
         lt = f.read()
-    for p, _l in NAV:
+    for p, _l in PAGES:
         check("llms.txt lists %s" % p, (SITE + ("/" if p == "/" else p)) in lt)
     check("llms.txt states the Colorado distinction", "Colorado runs a separate" in lt)
     check("llms.txt has no unrendered markers", "%(" not in lt)
@@ -277,6 +311,34 @@ def main():
         hits = WRONG.findall(re.sub(r"<[^>]+>", " ", pages[path]))
         check("%s: never says withholding is required" % fname, not hits, str(hits))
     check("llms.txt: never says withholding is required", not WRONG.search(lt))
+
+    # ------------------------------------------- wage base page, two-source traces
+    # Added 31 October 2026. (1) The SSA history table's current-year row must be the
+    # engine's own CONFIG cap, and every earlier row must match the stored copy of
+    # SSA's table in content_e.SSA_CBB. (2) The per-employee maximum the page prints
+    # must equal the cap times the rate, worked out here independently of the engine.
+    import content_e
+    wb = pages.get("/social-security-wage-base-2027", "")
+    rows = re.findall(r'<tr><th>(20\d\d)</th><td class="num">([0-9,]+)</td></tr>', wb)
+    got = {int(y): int(a.replace(",", "")) for y, a in rows}
+    want_rows = dict(content_e.ssa_rows(meta))
+    check("wage base page: SSA history table matches SSA_CBB plus the engine cap",
+          got == want_rows, "got %s" % sorted(got.items())[-3:])
+    check("wage base page: current-year row is the engine cap",
+          got.get(meta["wage_cap_year"]) == int(meta["wage_cap"]))
+    check("wage base page: history rows carry no dollar sign (cap literal guard)",
+          all("$" not in a for _y, a in rows))
+    cap_c = int(meta["wage_cap"]) * 100
+    std = ex["W_cap_std"]["annual_total"]
+    small = ex["W_cap_small"]["annual_total"]
+    check("engine per-employee max at 0.9%% equals cap x 0.9%% (%d cents)" % std,
+          std == (cap_c * 90 + 5000) // 10000, str((cap_c * 90 + 5000) // 10000))
+    check("engine per-employee max at 0.45%% equals cap x 0.45%% (%d cents)" % small,
+          small == (cap_c * 45 + 5000) // 10000, str((cap_c * 45 + 5000) // 10000))
+    from build import money
+    for label, cents in (("0.9%", std), ("0.45%", small)):
+        check("wage base page prints the %s maximum %s" % (label, money(cents)),
+              money(cents) in wb)
 
     print("\n%d checks, %d failed" % (CHECKS[0], len(FAILURES)))
     if FAILURES:
