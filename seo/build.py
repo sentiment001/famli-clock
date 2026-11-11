@@ -176,11 +176,23 @@ def nav_html(current, brand=True):
     return "\n".join(out)
 
 
+# Cross-links to the other three 02Launch clocks (finish-up E3, option A, 11 Nov 2026).
+# Same footmap classes, so no new CSS; full width, wraps like the list above it.
+OTHER_TOOLS = [
+    ("https://www.flcomplianceclock.com/", "Florida condo milestone and SIRS dates"),
+    ("https://www.famliclock.com/", "Maryland FAMLI calculator"),
+    ("https://www.nycclock.com/", "NYC building law due dates"),
+    ("https://www.form5500clock.com/", "Form 5500 due dates and late filing"),
+]
+TOOLS_BLOCK = ('<div class="footmap"><div class="fmcap">More free tools from 02Launch</div><ul>%s</ul></div>'
+               % "".join('<li><a href="%s">%s</a></li>' % (u, l) for u, l in OTHER_TOOLS if "famliclock.com" not in u))
+
+
 def footmap_html(current):
     items = "".join(
         '<li><a href="%s">%s</a></li>' % (h, l) for h, l in PAGES if h != current)
     return ('<div class="footmap"><div class="fmcap">More on Maryland FAMLI</div>'
-            '<ul>%s</ul></div>' % items)
+            '<ul>%s</ul></div>' % items + TOOLS_BLOCK)
 
 
 def toolcard_html(text):
